@@ -22,8 +22,7 @@
         <activity
             android:name="com.mickstarify.zotero.AttachmentManager.AttachmentManager"
             android:label="@string/title_activity_attachment_manager"
-            android:parentActivityName="com.mickstarify.zotero.LibraryActivity.LibraryActivity"
-            android:theme="@style/AppTheme">
+            android:parentActivityName="com.mickstarify.zotero.LibraryActivity.LibraryActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mickstarify.zotero.LibraryActivity.LibraryActivity" />
@@ -31,8 +30,7 @@
         <activity
             android:name="com.mickstarify.zotero.LibraryActivity.WebDAV.WebDAVSetup"
             android:label="@string/title_activity_web_davsetup"
-            android:parentActivityName="com.mickstarify.zotero.LibraryActivity.LibraryActivity"
-            android:theme="@style/AppTheme">
+            android:parentActivityName="com.mickstarify.zotero.LibraryActivity.LibraryActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mickstarify.zotero.LibraryActivity.LibraryActivity" />
@@ -84,8 +82,7 @@
             android:name="com.mickstarify.zotero.SyncSetup.ZoteroAPISetup.ZoteroAPISetup"
             android:label="@string/title_activity_zotero_api_setup"
             android:launchMode="singleInstance"
-            android:parentActivityName="com.mickstarify.zotero.SyncSetup.SyncSetupView"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:parentActivityName="com.mickstarify.zotero.SyncSetup.SyncSetupView">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mickstarify.zotero.SyncSetup.SyncSetupView" />
@@ -103,8 +100,7 @@
         </activity>
         <activity
             android:name="com.mickstarify.zotero.SyncSetup.SyncSetupView"
-            android:label="@string/title_activity_sync_setup"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_sync_setup"/>
         <activity android:name="com.mickstarify.zotero.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

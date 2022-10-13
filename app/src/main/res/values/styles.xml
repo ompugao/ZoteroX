@@ -10,12 +10,10 @@
     </style>
 
     <style name="AppTheme.Light" parent="AppTheme">
-        <item name="colorPrimary">#1c48db</item>
+        <item name="colorPrimary">#5B6CD8</item>
         <item name="colorPrimaryDark">#ccc</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">#1c48db</item>
         <item name="actionBarTheme">@style/AppTheme.Actionbar</item>
-
-        <!--        <item name="android:textColor">#8c919a</item>-->
     </style>
 
     <style name="AppTheme.Actionbar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
