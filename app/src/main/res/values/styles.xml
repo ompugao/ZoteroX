@@ -1,10 +1,21 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionBarTheme">@style/AppTheme.Actionbar</item>
+
+<!--        <item name="android:textColor">#8c919a</item>-->
+    </style>
+
+    <style name="AppTheme.Light" parent="AppTheme">
+        <item name="colorPrimary">#1c48db</item>
+        <item name="colorPrimaryDark">#ccc</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionBarTheme">@style/AppTheme.Actionbar</item>
+
+        <!--        <item name="android:textColor">#8c919a</item>-->
     </style>
 
     <style name="AppTheme.Actionbar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">

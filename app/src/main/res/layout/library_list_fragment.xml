@@ -33,11 +33,11 @@
                     android:id="@+id/textView_Library_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="32dp"
                     android:layout_marginTop="96dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="32dp"
                     android:text="@string/catalog_empty"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -67,6 +67,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         app:fab_labelStyle="@style/menu_labels_style"
+        app:fab_addButtonColorNormal="?attr/colorPrimary"
         app:fab_labelsPosition="left"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">

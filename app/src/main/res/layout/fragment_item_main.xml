@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:colorBackground"
@@ -11,60 +12,64 @@
         android:id="@+id/constraintLayout_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp">
+        android:layout_marginTop="12dp">
 
         <TextView
             android:id="@+id/textView_item_toolbar_title"
+            style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Name Goes Here."
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton_add_notes"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Item Name Title"
+            android:textColor="#2e3a56"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/imageButton_add_notes"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
-            android:layout_marginBottom="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
+            android:padding="3dp"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="@+id/imageButton_share_item"
             app:layout_constraintEnd_toStartOf="@+id/imageButton_share_item"
             app:layout_constraintTop_toTopOf="@+id/imageButton_share_item"
-            app:srcCompat="@drawable/toolbar_note_add_2x" />
+            app:srcCompat="@drawable/ic_toolbar_note_add" />
 
         <ImageButton
             android:id="@+id/imageButton_share_item"
             style="@android:style/Widget.Material.ImageButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:tint="@android:color/darker_gray"
+            android:padding="3dp"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/baseline_share_white_48" />
+            app:layout_constraintTop_toBottomOf="@+id/textView_item_toolbar_title"
+            app:srcCompat="@drawable/ic_toolbar_share" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="12dp">
 
         <LinearLayout
-            android:theme="@style/AppTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:theme="@style/AppTheme">
 
             <LinearLayout
                 android:id="@+id/item_fragment_scrollview_ll_attachments"
@@ -75,11 +80,13 @@
 
                 <TextView
                     android:id="@+id/textView_attachments_title"
+                    style="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Attachments"
-                    android:textSize="20sp"
+                    android:text="@string/attachments"
+                    android:textColor="#353e54"
                     android:textStyle="bold" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -90,11 +97,12 @@
 
                 <TextView
                     android:id="@+id/textView_information_title"
+                    style="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:text="Information"
-                    android:textSize="20sp"
+                    android:text="@string/information"
+                    android:textColor="#353e54"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -107,13 +115,13 @@
                 android:layout_margin="16dp"
                 android:orientation="vertical">
 
-
                 <TextView
                     android:id="@+id/textView_notes_title"
+                    style="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Notes"
-                    android:textSize="20sp"
+                    android:text="@string/notes"
+                    android:textColor="#353e54"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -124,14 +132,15 @@
                 android:layout_margin="16dp"
                 android:orientation="vertical">
 
-
                 <TextView
                     android:id="@+id/textView_tags_title"
+                    style="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Tags"
-                    android:textSize="20sp"
+                    android:text="@string/tags"
+                    android:textColor="#353e54"
                     android:textStyle="bold" />
+
             </LinearLayout>
 
         </LinearLayout>

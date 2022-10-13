@@ -29,13 +29,12 @@
         app:layout_constraintTop_toBottomOf="@+id/textView4"
         tools:layout_editor_absoluteX="0dp" />
 
-
     <CheckBox
         android:id="@+id/checkBox_allow_insecure_ssl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="Don't Verify SSL Certificates (Insecure)"
+        android:text="@string/don_t_verify_ssl_certificates_insecure"
         app:layout_constraintTop_toBottomOf="@+id/editText_password"
         tools:layout_editor_absoluteX="0dp" />
 
@@ -45,7 +44,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:hint="Leave blank for no username"
+        android:hint="@string/leave_blank_for_no_username"
         android:maxLines="1"
         android:text=""
         android:textSize="18sp"
@@ -61,11 +60,11 @@
         style="@style/Widget.AppCompat.EditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Leave blank for no Password
-"
+        android:hint="@string/leave_blank_for_no_password"
         android:maxLines="1"
         android:text=""
         android:textSize="18sp"
+        android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="@+id/textView_password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

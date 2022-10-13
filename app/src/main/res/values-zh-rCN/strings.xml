@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Zotero</string>
+    <string name="title_activity_sync_setup">设置同步</string>
+    <string name="title_activity_zotero_api_setup">Zotero API</string>
+    <string name="title_activity_library">加载中...</string>
+    <string name="sync_header">同步</string>
+    <string name="settings">设置</string>
+    <string name="title">标题</string>
+    <string name="author">作者</string>
+    <string name="my_library">我的文库</string>
+    <string name="library_header">文库</string>
+    <string name="title_activity_web_davsetup">设置Webdav</string>
+    <string name="surname">姓</string>
+    <string name="firstname">名</string>
+    <string name="loading_library_text">加载文库中...</string>
+    <string name="unfiled_items">未分类条目</string>
+    <string name="syncing_header">同步</string>
+    <string name="search_hint">搜索</string>
+    <string name="search_title">搜索</string>
+    <string name="force_resync">强制同步</string>
+    <string name="app_frontpage_disclaimer">您必须使用官方Zotero帐户同步才能使用此应用程序。</string>
+    <string name="catalog_empty">此目录为空。如果这是一个错误，请刷新。</string>
+    <string name="enter_your_zotero_api_key_manually">手动输入Zotero API Key</string>
+    <string name="messages_header">消息</string>
+    <string name="setup_webdav">设置WebDAV</string>
+    <string name="attachment_manager">附件管理</string>
+    <string name="title_activity_attachment_manager">附件下载</string>
+    <string name="information">信息</string>
+    <string name="attachments">附件</string>
+    <string name="notes">笔记</string>
+    <string name="tags">标签</string>
+    <string name="submit">确定</string>
+    <string name="cancel">取消</string>
+    <string name="share">分享</string>
+    <string name="only_show_items_with_pdf_attachments">只显示有pdf附件的项</string>
+    <string name="only_show_items_with_notes">只显示有笔记的项</string>
+    <string name="sort_by">排序：</string>
+    <string name="loading_your_library">加载文库数据中...</string>
+    <string name="nav_menu_trash">回收站</string>
+    <string name="nav_menu_my_publication">我的出版物</string>
+    <string name="nav_menu_unfiled_items">未分类条目</string>
+    <string name="nav_header_collections">文献集</string>
+</resources>

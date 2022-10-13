@@ -15,8 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="96dp"
-        android:text="Library Loading Status"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        android:text="@string/library_loading_status"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
     <ProgressBar
         android:id="@+id/progressBar_library"

@@ -3,9 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:paddingTop="24dp"
+    android:paddingStart="24dp"
+    android:paddingRight="24dp"
+    android:paddingBottom="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,9 +20,8 @@
             android:id="@+id/textView_label_sortingmethod"
             android:layout_width="57dp"
             android:layout_height="wrap_content"
-            android:text="Sort By"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textSize="16sp"
+            android:text="@string/sort_by"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintBottom_toBottomOf="@+id/button_sort_by"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/button_sort_by" />
@@ -27,12 +29,13 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_sort_by"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="2"
             android:text="By Title"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_sort_order"
             app:layout_constraintStart_toEndOf="@+id/textView_label_sortingmethod"
@@ -40,15 +43,16 @@
 
         <ImageButton
             android:id="@+id/button_sort_order"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="0.1"
-            android:background="@color/colorPrimary"
             android:src="@drawable/ic_arrow_downward_24px"
-            android:tint="@android:color/white"
             app:layout_constraintBottom_toBottomOf="@+id/button_sort_by"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/button_sort_by" />
+            app:layout_constraintTop_toTopOf="@+id/button_sort_by"
+            app:tint="@color/colorPrimary" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -56,15 +60,15 @@
         android:id="@+id/checkBox_show_only_pdf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:text="Only show items with PDF Attachments" />
+        android:layout_marginBottom="5dp"
+        android:text="@string/only_show_items_with_pdf_attachments" />
 
     <CheckBox
         android:id="@+id/checkBox_show_only_notes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:text="Only show items with notes" />
+        android:text="@string/only_show_items_with_notes" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -75,14 +79,18 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@android:string/cancel"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:textColor="@color/colorAccent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/btn_submit"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:textColor="@color/colorAccent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Submit"
+            android:text="@string/submit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/btn_cancel" />
     </androidx.constraintlayout.widget.ConstraintLayout>
