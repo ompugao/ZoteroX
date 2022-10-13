@@ -3,7 +3,6 @@
     <string name="app_name">Zotero</string>
     <string name="title_activity_sync_setup">设置同步</string>
     <string name="title_activity_zotero_api_setup">Zotero API</string>
-    <string name="title_activity_library">加载中...</string>
     <string name="sync_header">同步</string>
     <string name="settings">设置</string>
     <string name="title">标题</string>
@@ -41,4 +40,15 @@
     <string name="nav_menu_my_publication">我的出版物</string>
     <string name="nav_menu_unfiled_items">未分类条目</string>
     <string name="nav_header_collections">文献集</string>
+    <string name="don_t_verify_ssl_certificates_insecure">不验证SSL证书（不安全）</string>
+    <string name="sync_method">同步方案</string>
+    <string name="setting_sync_attachments_location">附件存放位置</string>
+    <string name="sort_method_title">文库排序方式</string>
+    <string name="search_as_you_type">即时搜索</string>
+    <string name="description_live_search">如果搜索较慢的话，请关闭该选项</string>
+    <string name="verify_attachment_integrity">打开附件前验证其可用性</string>
+    <string name="description_use_webdav">使用Webdav来获取附件</string>
+    <string name="config_webdav">配置Webdav</string>
+    <string name="description_verify_attachment_integrity">启用该功能可能会降低打开附件的速度</string>
+    <string name="description_update_attachments">提供上传附件功能</string>
 </resources>

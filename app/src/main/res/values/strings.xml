@@ -66,4 +66,11 @@
     <string name="nav_menu_trash">Trash</string>
     <string name="nav_menu_my_publication">My Publications</string>
     <string name="nav_menu_unfiled_items">Unfiled Items</string>
+    <string name="search_as_you_type">Search as you type</string>
+    <string name="description_live_search">Turn off if your search is too slow</string>
+    <string name="verify_attachment_integrity">Verify attachment integrity before opening</string>
+    <string name="description_use_webdav">Use webdav to access attachments</string>
+    <string name="config_webdav">Configure Webdav</string>
+    <string name="description_verify_attachment_integrity">Enabling this may slow down the opening of large attachments</string>
+    <string name="description_update_attachments">Offer to upload attachments</string>
 </resources>

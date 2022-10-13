@@ -765,8 +765,7 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
                         zoteroAPI.patchItem(attachment, modificationJsonObject).blockingAwait()
                     }
                 }
-            )
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+            ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                     object : CompletableObserver {
                         override fun onComplete() {
                             presenter.stopUploadingAttachmentProgress()

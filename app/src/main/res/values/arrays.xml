@@ -1,6 +1,6 @@
 <resources>
     <string-array name="sync_options_entries">
-        <item>Zotero Account Sync</item>
+        <item>Zotero</item>
     </string-array>
     <string-array name="sync_options_values">
         <item>zoteroapi</item>

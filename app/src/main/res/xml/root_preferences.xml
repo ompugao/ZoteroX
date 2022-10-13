@@ -38,7 +38,7 @@
         <SwitchPreference
             android:defaultValue="true"
             android:key="attachments_uploading_enabled"
-            android:title="Offer to upload attachments" />
+            android:title="@string/description_update_attachments" />
 
     </PreferenceCategory>
 
@@ -52,15 +52,15 @@
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="should_live_search"
-            android:summary="Turn off if your search is too slow"
-            android:title="Search as you type" />
+            android:summary="@string/description_live_search"
+            android:title="@string/search_as_you_type" />
         <SwitchPreference
             android:defaultValue="false"
             android:key="check_md5sum_before_attachment_open"
-            android:summary="Enabling this may slow down the opening of large attachments"
-            android:title="Verify attachment integrity before opening" />
+            android:summary="@string/description_verify_attachment_integrity"
+            android:title="@string/verify_attachment_integrity" />
 
     </PreferenceCategory>
 
@@ -70,11 +70,11 @@
             android:enabled="true"
             app:enabled="true"
             android:key="use_webdav"
-            android:title="Use webdav to access attachments" />
+            android:title="@string/description_use_webdav" />
 
         <Preference
             android:enabled="true"
             android:key="configure_webdav"
-            android:title="Configure Webdav" />
+            android:title="@string/config_webdav" />
     </PreferenceCategory>
 </PreferenceScreen>
