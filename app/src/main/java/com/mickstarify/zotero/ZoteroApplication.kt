@@ -18,6 +18,7 @@ class ZoteroApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        // 初始化全局日志类
         MyLog.init()
 
 //        SoLoader.init(this, false)

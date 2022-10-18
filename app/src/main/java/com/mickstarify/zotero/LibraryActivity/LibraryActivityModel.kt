@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import com.google.gson.JsonObject
+import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.PreferenceManager
 import com.mickstarify.zotero.SyncSetup.AuthenticationStorage
 import com.mickstarify.zotero.ZoteroApplication
@@ -92,6 +93,7 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
         if (!zoteroDB.hasLegacyStorage()) {
             return true
         }
+        // 如果数据库上次修改时间超过1天，则刷新文献库
         val currentTimestamp = System.currentTimeMillis()
         val lastModified = zoteroDB.getLastModifiedTimestamp()
 
@@ -555,20 +557,20 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
             .unsubscribeOn(Schedulers.io())
             .subscribe(object : MaybeObserver<List<GroupInfo>> {
                 override fun onSuccess(groupInfo: List<GroupInfo>) {
-                    Log.d("zotero", "completed get group info.")
+                    MyLog.d("zotero", "completed get group info.")
                     this@LibraryActivityModel.groups = groupInfo
                     presenter.displayGroupsOnActionBar(groupInfo)
                 }
 
                 override fun onComplete() {
-                    Log.d("zotero", "User has no groups.")
+                    MyLog.d("zotero", "User has no groups.")
                 }
 
                 override fun onSubscribe(d: Disposable) {
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e("zotero", "error loading groups.")
+                    MyLog.e("zotero", "error loading groups.")
                     presenter.createErrorAlert(
                         "Error loading group data",
                         "Message: ${e.message}",
@@ -581,8 +583,11 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
             })
     }
 
+
+    /**
+     * This method loads a list of groups. It does not deal with getting items or catalogs.
+     * */
     fun loadGroups() {
-        /* This method loads a list of groups. It does not deal with getting items or catalogs. */
 
         val groupsObserver = zoteroAPI.getGroupInfo()
         groupsObserver.subscribeOn(Schedulers.io())
@@ -943,6 +948,9 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
         return state.currentGroup
     }
 
+    /**
+     * 加载本地的Zotero文库
+     */
     fun loadLibraryLocally() {
         if (!zoteroDB.isPopulated())
             finishLibrarySync(zoteroDB)

@@ -412,13 +412,18 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 
         libraryLoadingViewModel.setLoadingMessage("加载文库数据中...")
 
-        if (model.shouldIUpdateLibrary()) {
-            model.loadGroups()
-            model.downloadLibrary()
-        } else {
-            model.loadLibraryLocally()
-            model.loadGroups()
-        }
+        // 打开应用时，默认加载本地zotero文库
+        model.loadLibraryLocally()
+        model.loadGroups()
+
+//        // 默认一打开应用就连接zotero服务器，获取最新的文库列表
+//        if (model.shouldIUpdateLibrary()) {
+//            model.loadGroups()
+//            model.downloadLibrary()
+//        } else {
+//            model.loadLibraryLocally()
+//            model.loadGroups()
+//        }
 
         libraryListViewModel.getOnItemClicked().observe(view) { item ->
             this.selectItem(item, longPress = false)

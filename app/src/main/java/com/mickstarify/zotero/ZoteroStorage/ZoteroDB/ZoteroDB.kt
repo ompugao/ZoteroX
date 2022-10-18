@@ -94,7 +94,9 @@ class ZoteroDB constructor(
         editor.apply()
     }
 
-    /* Returns the timestamp in milliseconds of when the database was last updated.*/
+    /**
+     * Returns the timestamp in milliseconds of when the database was last updated.
+     * */
     fun getLastModifiedTimestamp(): Long {
         val sp = context.getSharedPreferences(namespace, MODE_PRIVATE)
         val timestamp = sp.getLong("lastModified", 0L)
