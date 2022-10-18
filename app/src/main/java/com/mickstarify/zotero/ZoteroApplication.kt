@@ -18,6 +18,8 @@ class ZoteroApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        MyLog.init()
+
 //        SoLoader.init(this, false)
 //
 //        if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(this)) {
