@@ -36,7 +36,6 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"
             android:parentActivityName=".LibraryActivity.LibraryActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -64,7 +63,6 @@
         </activity>
         <activity
             android:name=".LibraryActivity.LibraryActivity"
-            android:label="@string/title_activity_library"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Light">
             <meta-data

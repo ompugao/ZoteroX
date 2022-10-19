@@ -37,7 +37,6 @@
         </activity>
         <activity
             android:name="com.mickstarify.zotero.SettingsActivity"
-            android:label="@string/title_activity_settings"
             android:parentActivityName="com.mickstarify.zotero.LibraryActivity.LibraryActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -65,7 +64,6 @@
         </activity>
         <activity
             android:name="com.mickstarify.zotero.LibraryActivity.LibraryActivity"
-            android:label="@string/title_activity_library"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Light">
             <meta-data
