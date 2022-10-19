@@ -11,6 +11,12 @@
         <item>By Date</item>
         <item>By Date Added</item>
     </string-array>
+    <string-array name="pdf_reader_entries">
+        <item>System app picker</item>
+    </string-array>
+    <string-array name="pdf_reader_value">
+        <item>Default</item>
+    </string-array>
     <string-array name="sort_options_values">
         <item>TITLE</item>
         <item>AUTHOR</item>

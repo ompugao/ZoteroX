@@ -77,4 +77,22 @@
             android:key="configure_webdav"
             android:title="@string/config_webdav" />
     </PreferenceCategory>
+
+    <PreferenceCategory app:title="Attachments">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:enabled="true"
+            app:enabled="true"
+            android:key="@string/pref_key_use_external_pdf_reader"
+            android:title="@string/use_external_pdf_reader" />
+        <ListPreference
+            app:defaultValue="Default"
+            app:entries="@array/pdf_reader_entries"
+            app:entryValues="@array/pdf_reader_value"
+            app:dependency="@string/pref_key_use_external_pdf_reader"
+            app:key="@string/pref_key_default_external_pdf_reader"
+            app:title="@string/default_pdf_reader"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
 </PreferenceScreen>

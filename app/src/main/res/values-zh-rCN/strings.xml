@@ -51,4 +51,8 @@
     <string name="config_webdav">配置Webdav</string>
     <string name="description_verify_attachment_integrity">启用该功能可能会降低打开附件的速度</string>
     <string name="description_update_attachments">提供上传附件功能</string>
+    <string name="pref_key_default_external_pdf_reader">默认打开的外部pdf阅读器</string>
+    <string name="default_pdf_reader">默认的外部pdf阅读器</string>
+    <string name="use_external_pdf_reader">使用外部阅读器打开pdf附件</string>
+    <string name="pref_key_use_external_pdf_reader">use_external_pdf_reader</string>
 </resources>
