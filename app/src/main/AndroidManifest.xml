@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        android:name="com.mickstarify.zotero.ZoteroApplication"
+        android:name=".ZoteroApplication"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -20,24 +20,27 @@
         android:theme="@style/AppTheme.Light"
         android:usesCleartextTraffic="true">
         <activity
-            android:name="com.mickstarify.zotero.AttachmentManager.AttachmentManager"
+            android:name=".PdfViewerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AttachmentManager.AttachmentManager"
             android:label="@string/title_activity_attachment_manager"
-            android:parentActivityName="com.mickstarify.zotero.LibraryActivity.LibraryActivity">
+            android:parentActivityName=".LibraryActivity.LibraryActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mickstarify.zotero.LibraryActivity.LibraryActivity" />
         </activity>
         <activity
-            android:name="com.mickstarify.zotero.LibraryActivity.WebDAV.WebDAVSetup"
+            android:name=".LibraryActivity.WebDAV.WebDAVSetup"
             android:label="@string/title_activity_web_davsetup"
-            android:parentActivityName="com.mickstarify.zotero.LibraryActivity.LibraryActivity">
+            android:parentActivityName=".LibraryActivity.LibraryActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mickstarify.zotero.LibraryActivity.LibraryActivity" />
         </activity>
         <activity
-            android:name="com.mickstarify.zotero.SettingsActivity"
-            android:parentActivityName="com.mickstarify.zotero.LibraryActivity.LibraryActivity">
+            android:name=".SettingsActivity"
+            android:parentActivityName=".LibraryActivity.LibraryActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mickstarify.zotero.LibraryActivity.LibraryActivity" />
@@ -52,7 +55,7 @@
             android:value=".LibraryActivity.SearchResultsActivity" />
 
         <activity
-            android:name="com.mickstarify.zotero.LibraryActivity.SearchResultsActivity"
+            android:name=".LibraryActivity.SearchResultsActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -63,7 +66,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name="com.mickstarify.zotero.LibraryActivity.LibraryActivity"
+            android:name=".LibraryActivity.LibraryActivity"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Light">
             <meta-data
@@ -77,10 +80,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.mickstarify.zotero.SyncSetup.ZoteroAPISetup.ZoteroAPISetup"
+            android:name=".SyncSetup.ZoteroAPISetup.ZoteroAPISetup"
             android:label="@string/title_activity_zotero_api_setup"
             android:launchMode="singleInstance"
-            android:parentActivityName="com.mickstarify.zotero.SyncSetup.SyncSetupView">
+            android:parentActivityName=".SyncSetup.SyncSetupView">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mickstarify.zotero.SyncSetup.SyncSetupView" />
@@ -97,16 +100,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.mickstarify.zotero.SyncSetup.SyncSetupView"
-            android:label="@string/title_activity_sync_setup"/>
-        <activity android:name="com.mickstarify.zotero.MainActivity">
+            android:name=".SyncSetup.SyncSetupView"
+            android:label="@string/title_activity_sync_setup" />
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>

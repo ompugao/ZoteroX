@@ -220,6 +220,13 @@ class PreferenceManager @Inject constructor(context: Context) {
         return sharedPreferences.getBoolean("check_md5sum_before_attachment_open", false)
     }
 
+    /**
+     * 打开pdf附件时，是否使用外部的pdf阅读器
+     */
+    fun isUserExternalPdfReader(): Boolean {
+        return sharedPreferences.getBoolean("use_external_pdf_reader", false)
+    }
+
     companion object {
         val SORT_METHOD_ASCENDING = "ASCENDING"
         val SORT_METHOD_DESCENDING = "DESCENDING"

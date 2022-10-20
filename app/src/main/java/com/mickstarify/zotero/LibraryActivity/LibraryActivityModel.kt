@@ -179,8 +179,12 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
         } ?: LinkedList()
     }
 
+
+    /**
+     *  This method creates an intent to open a PDF for Android.
+     *
+     *  */
     override fun openPDF(attachment: Item) {
-        /* This method creates an intent to open a PDF for Android. */
 
         Completable.fromAction {
             // used to check attachments for filechanges.
@@ -194,8 +198,15 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
             }
         }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnComplete {
             try {
-                val intent = attachmentStorageManager.openAttachment(attachment)
-                context.startActivity(intent)
+                // Use an external pdf reader to open this attachment.
+                if (!preferences.isUserExternalPdfReader()) {
+                    // todo: implement this code to use in-app pdf reader to open pdf.
+                    presenter.makeToastAlert("使用内置的pdf阅读器打开附件，代码待写！！！")
+                } else {
+                    val intent = attachmentStorageManager.openAttachment(attachment)
+                    context.startActivity(intent)
+                }
+
             } catch (exception: ActivityNotFoundException) {
                 presenter.createErrorAlert("No PDF Viewer installed",
                     "There is no app that handles ${attachment.getFileExtension()} documents available on your device. Would you like to install one?",
@@ -237,9 +248,12 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
         }.subscribe()
     }
 
+
+    /**
+     *  This is the point of entry when a user clicks an attachment on the UI.
+     *  We must decide whether we want to intitiate a download or just open a local copy.
+     *  */
     override fun openAttachment(item: Item) {
-        /* This is the point of entry when a user clicks an attachment on the UI.
-        *  We must decide whether we want to intitiate a download or just open a local copy. */
 
         // first check to see if we are opening a linked attachment
         if (item.data["linkMode"] == "linked_file") {
@@ -283,12 +297,16 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
                         downloadAttachment(item)
                     }, {
                         presenter.hideLoadingAlertDialog()
+
+                        // todo: use the corresponding open method to open the attachment according to it's format
                         openPDF(item)
                     }
                 )
                 return
             } else {
                 presenter.hideLoadingAlertDialog()
+
+                // todo: use the corresponding open method to open the attachment according to it's format
                 openPDF(item)
             }
 

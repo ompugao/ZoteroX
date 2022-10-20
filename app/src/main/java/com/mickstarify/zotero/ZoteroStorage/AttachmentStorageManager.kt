@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.core.content.FileProvider
 import androidx.documentfile.provider.DocumentFile
+import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.PreferenceManager
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import okhttp3.internal.toHexString
@@ -47,7 +47,7 @@ class AttachmentStorageManager @Inject constructor(
 
     init {
 //        ((context as Activity).application as ZooForZoteroApplication).component.inject(this)
-        Log.e("zotero", "MADE AN INSTANCE OF ATTACHMENT MANAGER")
+        MyLog.e("zotero", "MADE AN INSTANCE OF ATTACHMENT MANAGER")
     }
 
     fun validateAccess() {
@@ -70,7 +70,7 @@ class AttachmentStorageManager @Inject constructor(
             throw(Exception("error invalid item ${item.itemKey}: ${item.itemType} cannot calculate md5."))
         }
         if (md5Key == "") {
-            Log.d("zotero", "error cannot check MD5, no MD5 Available")
+            MyLog.d("zotero", "error cannot check MD5, no MD5 Available")
             return true
         }
         val calculatedMd5Key = calculateMd5(item)
@@ -107,8 +107,8 @@ class AttachmentStorageManager @Inject constructor(
 //            val helper = SAFHelper(location)
 //            val file = DocumentFile.fromSingleUri(context, helper.getUriForItem(item.itemKey.toUpperCase(Locale.ROOT), filename))
 
-//            Log.d("zotero", "actual URI: ${file?.uri}")
-//            Log.d("zotero", "my     URI: ${helper.getUriForItem(item.itemKey.toUpperCase(Locale.ROOT), filename)}")
+//            MyLog.d("zotero", "actual URI: ${file?.uri}")
+//            MyLog.d("zotero", "my     URI: ${helper.getUriForItem(item.itemKey.toUpperCase(Locale.ROOT), filename)}")
 
             if (file == null) {
                 return false
@@ -230,7 +230,7 @@ class AttachmentStorageManager @Inject constructor(
     fun openAttachment(attachment: Item): Intent {
         var intent = Intent(Intent.ACTION_VIEW)
         var attachmentUri = getAttachmentUri(attachment)
-        Log.d("zotero", "opening PDF with Uri $attachmentUri")
+        MyLog.d("zotero", "opening PDF with Uri $attachmentUri")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent = Intent(Intent.ACTION_VIEW)
             intent.data = attachmentUri
@@ -248,7 +248,7 @@ class AttachmentStorageManager @Inject constructor(
 
     fun openAttachment(uri: Uri, contentType:String = ""): Intent {
         var intent = Intent(Intent.ACTION_VIEW)
-        Log.d("zotero", "opening PDF with Uri $uri")
+        MyLog.d("zotero", "opening PDF with Uri $uri")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent = Intent(Intent.ACTION_VIEW)
             intent.data = uri
@@ -275,7 +275,7 @@ class AttachmentStorageManager @Inject constructor(
             return false
         }
         val rootDocFile = DocumentFile.fromTreeUri(context, Uri.parse(location))
-        Log.d(
+        MyLog.d(
             "zotero",
             "testing dir canWrite=${rootDocFile?.canWrite()} canRead=${rootDocFile?.canRead()}"
         )
@@ -292,7 +292,7 @@ class AttachmentStorageManager @Inject constructor(
 
     fun setStorage(location: String?) {
         if (location == null) {
-            Log.e("zotero", "error got null for location in setStorage()")
+            MyLog.e("zotero", "error got null for location in setStorage()")
             return
         }
 
@@ -377,7 +377,7 @@ class AttachmentStorageManager @Inject constructor(
                 try {
                     getAttachmentFile(attachment).delete()
                 } catch (e: Exception) {
-                    Log.d("zotero", "cannot delete file. Not found.")
+                    MyLog.d("zotero", "cannot delete file. Not found.")
                 }
             }
             StorageMode.CUSTOM -> {
@@ -385,7 +385,7 @@ class AttachmentStorageManager @Inject constructor(
                     val docFile = DocumentFile.fromSingleUri(context, getAttachmentUri(attachment))
                     docFile?.delete()
                 } catch (e: java.io.FileNotFoundException) {
-                    Log.d("zotero", "cannot delete file. Not found.")
+                    MyLog.d("zotero", "cannot delete file. Not found.")
                 }
             }
             else -> throw Exception("not implemented")
@@ -420,7 +420,7 @@ class AttachmentStorageManager @Inject constructor(
                 var i = index
                 while (i < directories.size) {
                     documentFile = documentFile?.findFile(directories[i])
-                    Log.d("zotero", "checking ${directories[i]}")
+                    MyLog.d("zotero", "checking ${directories[i]}")
                     if (documentFile?.exists() ?: false) {
                         i++
                     } else {
@@ -428,18 +428,18 @@ class AttachmentStorageManager @Inject constructor(
                     }
                 }
                 if (documentFile?.isFile ?: false) {
-                    Log.d("zotero", "found file ${documentFile?.name}")
+                    MyLog.d("zotero", "found file ${documentFile?.name}")
                     return openAttachment(documentFile!!.uri, item.data["contentType"]?:"")
                 }
             }
         } else if (storageMode == StorageMode.EXTERNAL_CACHE) {
-            // logic using File api is much simpler
+            // Logic using File api is much simpler
             for (i in directories.indices){
                 var path = directories.slice(i..directories.size-1).joinToString("/")
                 if (path.first() == '/'){
                    path = path.slice(1..path.length-1)
                 }
-                Log.d("zotero", "checking path $path")
+                MyLog.d("zotero", "checking path $path")
                 var document = File(context.externalCacheDir, path)
                 if (document.exists()){
                     val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
