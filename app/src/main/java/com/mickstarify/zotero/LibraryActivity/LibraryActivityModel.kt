@@ -10,6 +10,7 @@ import android.os.Handler
 import android.util.Log
 import com.google.gson.JsonObject
 import com.mickstarify.zotero.MyLog
+import com.mickstarify.zotero.PdfViewerActivity
 import com.mickstarify.zotero.PreferenceManager
 import com.mickstarify.zotero.SyncSetup.AuthenticationStorage
 import com.mickstarify.zotero.ZoteroApplication
@@ -201,7 +202,13 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
                 // Use an external pdf reader to open this attachment.
                 if (!preferences.isUserExternalPdfReader()) {
                     // todo: implement this code to use in-app pdf reader to open pdf.
-                    presenter.makeToastAlert("使用内置的pdf阅读器打开附件，代码待写！！！")
+//                    presenter.makeToastAlert("使用内置的pdf阅读器打开附件，代码待写！！！")
+
+                    val attachment_uri = attachmentStorageManager.getAttachmentUri(attachment)
+
+                    val intent = Intent(context, PdfViewerActivity::class.java)
+                    intent.data = attachment_uri
+                    context.startActivity(intent)
                 } else {
                     val intent = attachmentStorageManager.openAttachment(attachment)
                     context.startActivity(intent)
