@@ -110,11 +110,16 @@ dependencies {
 //    implementation 'com.google.firebase:firebase-crashlytics'
 
     // Dagger Dependencies
-    implementation 'com.google.dagger:dagger:2.28.3'
-    kapt 'com.google.dagger:dagger-compiler:2.28.3'
+    implementation 'com.google.dagger:dagger:2.44'
+    kapt 'com.google.dagger:dagger-compiler:2.44'
 
     // for fab on main screen
     implementation 'com.getbase:floatingactionbutton:1.10.1'
+
+    // pdf viewer
+    implementation 'com.github.barteksc:android-pdf-viewer:3.1.0-beta.1'
+
+//    implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'
 
     // barcode stuff
 //    implementation 'com.google.android.gms:play-services-vision:20.1.3'
