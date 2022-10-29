@@ -182,7 +182,7 @@ class LibraryListRecyclerViewAdapter(
             holder.textView_title.text = collection.name
             holder.textView_author.visibility = View.GONE
             holder.pdfImage.visibility = View.GONE
-            holder.imageView.setImageResource(R.drawable.treesource_collection_2x)
+            holder.imageView.setImageResource(R.drawable.treesource_folder)
             holder.layout.setOnClickListener {
                 Log.d("zotero", "Open Collection")
                 listener.onCollectionOpen(collection)
