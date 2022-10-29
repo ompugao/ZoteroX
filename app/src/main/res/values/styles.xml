@@ -35,4 +35,10 @@
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:background">@drawable/fab_actiontext_background</item>
     </style>
+
+    <!--ShapeableImageView 圆 -->
+    <style name="CircleStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

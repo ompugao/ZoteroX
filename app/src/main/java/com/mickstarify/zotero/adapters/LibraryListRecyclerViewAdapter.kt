@@ -65,16 +65,16 @@ class LibraryListRecyclerViewAdapter(
 
             val iconResource = when (item.itemType) {
                 "note" -> {
-                    R.drawable.note_24dp
+                    R.drawable.ic_item_note
                 }
                 "book" -> {
-                    R.drawable.book_24dp
+                    R.drawable.ic_book
                 }
                 "bookSection" -> {
-                    R.drawable.book_section_24dp
+                    R.drawable.ic_book_section
                 }
                 "journalArticle" -> {
-                    R.drawable.journal_article_24dp
+                    R.drawable.journal_article
                 }
                 "magazineArticle" -> {
                     R.drawable.magazine_article_24dp
@@ -83,7 +83,7 @@ class LibraryListRecyclerViewAdapter(
                     R.drawable.newspaper_article_24dp
                 }
                 "thesis" -> {
-                    R.drawable.thesis_24dp
+                    R.drawable.ic_thesis
                 }
                 "letter" -> {
                     R.drawable.letter_24dp
@@ -101,10 +101,10 @@ class LibraryListRecyclerViewAdapter(
                     R.drawable.artwork_24dp
                 }
                 "webpage" -> {
-                    R.drawable.web_page_24dp
+                    R.drawable.ic_web_page
                 }
                 "attachment" -> {
-                    R.drawable.treeitem_attachment_web_link_2x
+                    R.drawable.ic_treeitem_attachment
                 }
                 "report" -> {
                     R.drawable.report_24dp
@@ -161,7 +161,7 @@ class LibraryListRecyclerViewAdapter(
                     R.drawable.computer_program_24dp
                 }
                 "conferencePaper" -> {
-                    R.drawable.conference_paper_24dp
+                    R.drawable.ic_conference_paper
                 }
                 "document" -> {
                     R.drawable.document_24dp
@@ -173,7 +173,7 @@ class LibraryListRecyclerViewAdapter(
                     R.drawable.dictionary_entry_24dp
                 }
                 else -> {
-                    R.drawable.treeitem_2x
+                    R.drawable.ic_item_known
                 }
             }
             holder.imageView.setImageResource(iconResource)
