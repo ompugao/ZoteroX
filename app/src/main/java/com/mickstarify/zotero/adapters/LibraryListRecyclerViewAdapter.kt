@@ -164,7 +164,7 @@ class LibraryListRecyclerViewAdapter(
                     R.drawable.ic_conference_paper
                 }
                 "document" -> {
-                    R.drawable.document_24dp
+                    R.drawable.ic_document
                 }
                 "encyclopediaArticle" -> {
                     R.drawable.encyclopedia_article_24dp

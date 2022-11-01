@@ -4,6 +4,7 @@
         <item name="colorPrimary">#5B6CD8</item>
         <item name="colorPrimaryDark">#fff</item>
         <item name="colorAccent">#1c48db</item>
+        <item name="colorControlNormal">#000</item>
         <item name="actionBarTheme">@style/AppTheme.Actionbar</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>

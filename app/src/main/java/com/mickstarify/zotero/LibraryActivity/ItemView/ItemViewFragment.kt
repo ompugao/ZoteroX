@@ -4,12 +4,11 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
 import com.mickstarify.zotero.LibraryActivity.Notes.EditNoteDialog
 import com.mickstarify.zotero.LibraryActivity.Notes.NoteInteractionListener
@@ -32,6 +31,8 @@ class ItemViewFragment : BottomSheetDialogFragment(),
     ItemTagEntry.OnTagEntryInteractionListener {
 
     lateinit var libraryViewModel: LibraryListViewModel
+
+    lateinit var chipTags: ChipGroup
 
     private lateinit var attachments: List<Item>
     private lateinit var notes: List<Note>
@@ -115,16 +116,25 @@ class ItemViewFragment : BottomSheetDialogFragment(),
             dismiss()
         }
 
-        val addNotesButton = requireView().findViewById<ImageButton>(R.id.imageButton_add_notes)
-        val shareButton = requireView().findViewById<ImageButton>(R.id.imageButton_share_item)
+        val txtItemType = requireView().findViewById<TextView>(R.id.txt_item_type)
+
+        chipTags = requireView().findViewById<ChipGroup>(R.id.Chips_item_tags)
+
+        val closeButton = requireView().findViewById<ImageButton>(R.id.btn_close)
+        val moreButton = requireView().findViewById<ImageButton>(R.id.btn_more)
+
+        val addNotesButton = requireView().findViewById<ImageButton>(R.id.btn_add_note)
         val textViewTitle = requireView().findViewById<TextView>(R.id.textView_item_toolbar_title)
 
         libraryViewModel.getOnItemClicked().observe(viewLifecycleOwner) { item ->
             attachments = item.attachments
             notes = item.notes
 
-            addTextEntry("Item Type", item.data["itemType"] ?: "Unknown")
-            addTextEntry("title", item.getTitle())
+            txtItemType.text = item.itemType ?: "Unknown"
+
+//            addTextEntry("Item Type", item.data["itemType"] ?: "Unknown")
+//            addTextEntry("title", item.getTitle())
+
             if (item.creators.isNotEmpty()) {
                 this.addCreators(item.getSortedCreators())
             } else {
@@ -143,8 +153,23 @@ class ItemViewFragment : BottomSheetDialogFragment(),
             addNotesButton.setOnClickListener {
                 showCreateNoteDialog()
             }
-            shareButton.setOnClickListener {
-                showShareItemDialog()
+
+            closeButton.setOnClickListener {
+                this.dismiss()
+            }
+
+            moreButton.setOnClickListener {
+                val popupMenu = PopupMenu(context, moreButton)
+                popupMenu.inflate(R.menu.fragment_library_item_actionbar)
+
+                popupMenu.setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.add_note -> showCreateNoteDialog()
+                        R.id.share_item -> showShareItemDialog()
+                    }
+                    false
+                }
+                popupMenu.show()
             }
 
 
@@ -159,6 +184,14 @@ class ItemViewFragment : BottomSheetDialogFragment(),
                 R.id.item_fragment_scrollview_ll_tags,
                 ItemTagEntry.newInstance(tag)
             )
+            val chip = Chip(context)
+            chip.text = tag
+
+            chip.setOnClickListener {
+
+            }
+
+            chipTags.addView(chip)
         }
         fmt.commit()
     }
@@ -228,13 +261,20 @@ class ItemViewFragment : BottomSheetDialogFragment(),
             val view = (parent as ViewGroup).getChildAt(index)
 
             val creatorType = view.findViewById<TextView>(R.id.textView_creator_type)
-            val lastName = view.findViewById<TextInputEditText>(R.id.editText_lastname)
-            val firstName = view.findViewById<TextInputEditText>(R.id.editText_firstname)
 
-            creatorType.text = creator.creatorType
-            lastName.setText(creator.lastName ?: "")
-            firstName.setText(creator.firstName ?: "")
+            val txtAuthorName = view.findViewById<TextView>(R.id.txt_author)
 
+//        0
+
+            creatorType.text = creator.creatorType + ":"
+
+            val lastName = creator.lastName ?: ""
+            val firstName = creator.firstName ?: ""
+
+            txtAuthorName.text = "$lastName'$firstName"
+
+//            edtLastName.setText(creator.lastName ?: "")
+//            edtFirstName.setText(creator.firstName ?: "")
         }
     }
 
