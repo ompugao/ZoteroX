@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 def apikeyPropertiesFile = rootProject.file("apikeys.properties")
 def apikeyProperties = new Properties()
-//apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
 
 android {
     compileSdkVersion 30
@@ -15,8 +15,8 @@ android {
         versionCode 46
         versionName "3.0a"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-//        buildConfigField("String", "zotero_api_key", apikeyProperties['zotero_api_key'])
-//        buildConfigField("String", "zotero_api_secret", apikeyProperties['zotero_api_secret'])
+        buildConfigField("String", "zotero_api_key", apikeyProperties['zotero_api_key'])
+        buildConfigField("String", "zotero_api_secret", apikeyProperties['zotero_api_secret'])
     }
     buildTypes {
         release {

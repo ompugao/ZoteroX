@@ -97,8 +97,7 @@
         </activity>
         <activity
             android:name=".SyncSetup.SyncSetupView"
-            android:label="@string/title_activity_sync_setup"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_sync_setup" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

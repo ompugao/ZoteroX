@@ -56,4 +56,7 @@
     <string name="use_external_pdf_reader">使用外部阅读器打开pdf附件</string>
     <string name="pref_key_use_external_pdf_reader">use_external_pdf_reader</string>
     <string name="filter">过滤</string>
+    <string name="pick_your_cloud_storage_provider">选择你的云储存提供商</string>
+    <string name="zotero_account_sync">Zotero账号登录</string>
+    <string name="proceed">继续</string>
 </resources>
