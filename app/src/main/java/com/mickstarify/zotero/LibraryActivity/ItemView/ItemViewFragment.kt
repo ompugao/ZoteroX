@@ -264,7 +264,6 @@ class ItemViewFragment : BottomSheetDialogFragment(),
 
             val txtAuthorName = view.findViewById<TextView>(R.id.txt_author)
 
-//        0
 
             creatorType.text = creator.creatorType + ":"
 

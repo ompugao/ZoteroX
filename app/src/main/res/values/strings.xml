@@ -6,7 +6,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_title">Search</string>
-    <string name="search_hint">Search</string>
+    <string name="search_hint" translatable="false">Search</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
@@ -53,8 +53,6 @@
     <string name="share">Share</string>
     <string name="nav_header_collections">Collections</string>
     <string name="don_t_verify_ssl_certificates_insecure">Don\'t Verify SSL Certificates (Insecure)</string>
-    <string name="leave_blank_for_no_username">Leave blank for no username</string>
-    <string name="leave_blank_for_no_password">Leave blank for no Password</string>
     <string name="library_loading_status">Library Loading Status</string>
     <string name="nav_menu_trash">Trash</string>
     <string name="nav_menu_my_publication">My Publications</string>
@@ -70,4 +68,10 @@
     <string name="pref_key_use_external_pdf_reader">use_external_pdf_reader</string>
     <string name="pref_key_default_external_pdf_reader">default_external_pdf_reader</string>
     <string name="default_pdf_reader">Default Pdf reader</string>
+    <string name="download_all_attachments">Download all Attachments</string>
+    <string name="login">Login</string>
+    <string name="verify">Verify</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="webdav_address">Webdav Address</string>
 </resources>

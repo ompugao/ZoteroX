@@ -59,4 +59,10 @@
     <string name="pick_your_cloud_storage_provider">选择你的云储存提供商</string>
     <string name="zotero_account_sync">Zotero账号登录</string>
     <string name="proceed">继续</string>
+    <string name="download_all_attachments">下载所有附件</string>
+    <string name="login">登录</string>
+    <string name="verify">验证</string>
+    <string name="password">密码</string>
+    <string name="username">用户名</string>
+    <string name="webdav_address">Webdav地址</string>
 </resources>
