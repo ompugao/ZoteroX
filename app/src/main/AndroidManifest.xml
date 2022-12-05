@@ -67,8 +67,7 @@
         </activity>
         <activity
             android:name=".LibraryActivity.LibraryActivity"
-            android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.Light">
+            android:launchMode="singleInstance">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
