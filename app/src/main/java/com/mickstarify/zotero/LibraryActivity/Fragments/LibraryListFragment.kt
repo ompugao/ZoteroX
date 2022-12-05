@@ -166,6 +166,9 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         fabISBNScanner.setOnClickListener {
             findNavController().navigate(R.id.action_libraryListFragment_to_barcodeScanningScreen)
         }
+
+
+        hideFabButtonWhenScrolling()
     }
 
     override fun onResume() {
@@ -201,5 +204,40 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         val layout =
             requireView().findViewById<ConstraintLayout>(R.id.constraintLayout_library_content)
         layout.visibility = View.GONE
+    }
+
+    fun hideFabButtonWhenScrolling() {
+        val recyclerView = requireView().findViewById<RecyclerView>(R.id.recyclerView)
+        val fab = requireView().findViewById<FloatingActionsMenu>(R.id.fab_add_item)
+
+        // now creating the scroll listener for the recycler view
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                // if the recycler view is scrolled
+                // above hide the FAB
+                if (dy > 10 && fab.isShown) {
+//                    fab.hide()
+                    fab.visibility = View.GONE
+                }
+
+                // if the recycler view is
+                // scrolled above show the FAB
+                if (dy < -10 && !fab.isShown) {
+//                    fab.expand()
+                    fab.visibility = View.VISIBLE
+//                    fab.show()
+                }
+
+                // of the recycler view is at the first
+                // item always show the FAB
+                if (!recyclerView.canScrollVertically(-1)) {
+                    fab.visibility = View.VISIBLE
+//                    fab.expand()
+//                    fab.show()
+                }
+            }
+        })
     }
 }
