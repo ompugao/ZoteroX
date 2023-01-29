@@ -57,34 +57,19 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_anchor="@id/library_swipe_refresh"
         app:layout_anchorGravity="bottom|right|end"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:fab_labelStyle="@style/menu_labels_style"
-        app:fab_addButtonColorNormal="?attr/colorPrimary"
-        app:fab_labelsPosition="left">
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_action_zotero_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tint="#fff"
-            app:fab_icon="@drawable/baseline_save_24"
-            app:fab_title="Zotero Save" />
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_action_barcode_scanner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tint="#fff"
-            app:fab_icon="@drawable/baseline_photo_camera_24"
-            app:fab_title="Scan ISBN" />
-
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        app:backgroundTint="?attr/colorPrimary"
+        app:tint="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_more_vert" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

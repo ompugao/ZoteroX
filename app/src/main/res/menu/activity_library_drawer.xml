@@ -5,6 +5,10 @@
         android:id="@+id/group_collections"
         android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_outline_home"
+            android:title="主页" />
+        <item
             android:id="@+id/my_library"
             android:icon="@drawable/ic_menu_library"
             android:title="@string/my_library" />

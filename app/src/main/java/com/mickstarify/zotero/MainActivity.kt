@@ -13,7 +13,7 @@ import com.mickstarify.zotero.SyncSetup.SyncSetupView
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main)
 
         if (intent != null){
             if (intent.action == Intent.ACTION_SEND){

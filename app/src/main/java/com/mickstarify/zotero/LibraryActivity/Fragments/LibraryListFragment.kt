@@ -14,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -22,8 +23,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.getbase.floatingactionbutton.FloatingActionButton
-import com.getbase.floatingactionbutton.FloatingActionsMenu
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mickstarify.zotero.LibraryActivity.LibraryActivity
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
 import com.mickstarify.zotero.PreferenceManager
@@ -45,7 +45,7 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
 
     private lateinit var viewModel: LibraryListViewModel
 
-    private lateinit var fab: FloatingActionsMenu
+    private lateinit var fab: FloatingActionButton
 
     @Inject
     lateinit var preferenceManager: PreferenceManager
@@ -65,7 +65,8 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         //If no view currently has focus, create a new one, just so we can grab a window token from it
         if (view == null) {
             view = View(activity)
-        }
+        } 
+        
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
@@ -151,22 +152,25 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
             swipeRefresh.isRefreshing = it
         }
 
-        fab = requireView().findViewById<FloatingActionsMenu>(R.id.fab_add_item)
+        fab = requireView().findViewById(R.id.fab_add_item)
 
-        val fabZoteroSave =
-            requireView().findViewById<FloatingActionButton>(R.id.fab_action_zotero_save)
-        fabZoteroSave.setOnClickListener {
-            val url = "https://www.zotero.org/save"
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse(url)
-            startActivity(intent)
-        }
-        val fabISBNScanner =
-            requireView().findViewById<FloatingActionButton>(R.id.fab_action_barcode_scanner)
-        fabISBNScanner.setOnClickListener {
-            findNavController().navigate(R.id.action_libraryListFragment_to_barcodeScanningScreen)
-        }
+        fab.setOnClickListener {
+            val array = arrayOf("Zotero Save", "Scan ISBN")
 
+            val dialog = AlertDialog.Builder(requireContext())
+            dialog.setItems(array) { dialog, which ->
+                when (which) {
+                    0 -> {
+                        val url = "https://www.zotero.org/save"
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = Uri.parse(url)
+                        startActivity(intent)
+                    }
+                    1 -> findNavController().navigate(R.id.action_libraryListFragment_to_barcodeScanningScreen)
+                }
+            }
+            dialog.show()
+        }
 
         hideFabButtonWhenScrolling()
     }
@@ -174,7 +178,7 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
     override fun onResume() {
         super.onResume()
 
-        fab.collapse()
+//        fab.collapse()
     }
 
     override fun onItemOpen(item: Item) {
@@ -208,7 +212,7 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
 
     fun hideFabButtonWhenScrolling() {
         val recyclerView = requireView().findViewById<RecyclerView>(R.id.recyclerView)
-        val fab = requireView().findViewById<FloatingActionsMenu>(R.id.fab_add_item)
+        val fab = requireView().findViewById<FloatingActionButton>(R.id.fab_add_item)
 
         // now creating the scroll listener for the recycler view
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -218,16 +222,14 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
                 // if the recycler view is scrolled
                 // above hide the FAB
                 if (dy > 10 && fab.isShown) {
-//                    fab.hide()
-                    fab.visibility = View.GONE
+                    fab.hide()
                 }
 
                 // if the recycler view is
                 // scrolled above show the FAB
                 if (dy < -10 && !fab.isShown) {
 //                    fab.expand()
-                    fab.visibility = View.VISIBLE
-//                    fab.show()
+                    fab.show()
                 }
 
                 // of the recycler view is at the first
@@ -235,7 +237,7 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
                 if (!recyclerView.canScrollVertically(-1)) {
                     fab.visibility = View.VISIBLE
 //                    fab.expand()
-//                    fab.show()
+                    fab.show()
                 }
             }
         })

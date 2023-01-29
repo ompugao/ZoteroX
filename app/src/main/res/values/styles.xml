@@ -8,7 +8,7 @@
 
 <!--        <item name="android:windowAnimationStyle">@style/AnimationActivity</item>-->
 <!--        <item name="android:windowShowWallpaper">true</item>-->
-        <item name="android:windowIsTranslucent">true</item>
+<!--        <item name="android:windowIsTranslucent">true</item>-->
 
     </style>
 
@@ -34,10 +34,10 @@
 
     <style name="AppTheme.PopupOverlay" parent="AppTheme" />
 
-    <style name="menu_labels_style">
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:background">@drawable/fab_actiontext_background</item>
-    </style>
+<!--    <style name="menu_labels_style">-->
+<!--        <item name="android:textColor">#FFFFFF</item>-->
+<!--        <item name="android:background">@drawable/fab_actiontext_background</item>-->
+<!--    </style>-->
 
     <!--ShapeableImageView 圆 -->
     <style name="CircleStyle">

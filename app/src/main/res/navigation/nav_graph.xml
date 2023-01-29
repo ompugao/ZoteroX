@@ -6,6 +6,12 @@
     app:startDestination="@id/libraryLoadingScreen">
 
     <fragment
+        android:id="@+id/homeLibraryFragment"
+        android:name="com.mickstarify.zotero.LibraryActivity.Fragments.HomeFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_library_home" />
+
+    <fragment
         android:id="@+id/libraryListFragment"
         android:name="com.mickstarify.zotero.LibraryActivity.Fragments.LibraryListFragment"
         android:label="library_list_fragment"

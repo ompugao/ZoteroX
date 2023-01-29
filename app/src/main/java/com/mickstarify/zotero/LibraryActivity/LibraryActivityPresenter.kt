@@ -333,7 +333,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
         Log.d("zotero", "Got request to change collection to ${collectionKey}")
         model.setCurrentCollection(collectionKey, usePersonalLibrary = fromNavigationDrawer)
         if (collectionKey == "all" && !model.isUsingGroups()) {
-            view.setTitle("My Library")
+            view.setTitle("我的文库")
             val entries = model.getLibraryItems().sort().map { ListEntry(it) }
             model.isDisplayingItems = entries.size > 0
             libraryListViewModel.setItems(entries)
@@ -458,5 +458,9 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 
     fun deleteLocalAttachment(attachment: Item) {
         model.deleteLocalAttachment(attachment)
+    }
+
+    fun openHome() {
+        view.navController.navigate(R.id.homeLibraryFragment)
     }
 }

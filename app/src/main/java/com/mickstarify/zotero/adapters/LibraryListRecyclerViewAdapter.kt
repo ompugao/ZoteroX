@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.mickstarify.zotero.LibraryActivity.ListEntry
@@ -19,12 +20,15 @@ class LibraryListRecyclerViewAdapter(
     val listener: LibraryListInteractionListener
 ) : RecyclerView.Adapter<LibraryListRecyclerViewAdapter.ListEntryViewHolder>() {
     class ListEntryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imageView = view.findViewById<ImageView>(R.id.imageView_library_list_image)
-        val textView_title = view.findViewById<TextView>(R.id.TextView_library_list_title)
-        val textView_author = view.findViewById<TextView>(R.id.TextView_library_list_author)
-        val pdfImage = view.findViewById<ImageButton>(R.id.imageButton_library_list_attachment)
-        val layout = view.findViewById<ConstraintLayout>(R.id.constraintLayout_library_list_item)
+        val imageView = view.findViewById<ImageView>(R.id.imgEntryIcon)
+        val textView_title = view.findViewById<TextView>(R.id.txtEntryTitle)
+        val textView_author = view.findViewById<TextView>(R.id.txtEntryAuthor)
+        val pdfImage = view.findViewById<ImageButton>(R.id.imgOpenAttachment)
+        val layout = view.findViewById<ConstraintLayout>(R.id.container_item_library_entry)
     }
+
+    // ItemView long click Listener
+    var onItemLongClickListener: LibraryItemLongClickListener? = null
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -60,122 +64,19 @@ class LibraryListRecyclerViewAdapter(
             }
             holder.layout.setOnClickListener {
                 Log.d("zotero", "Open Item")
-                listener.onItemOpen(item)
+//                listener.onItemOpen(item)
+
+                //原来是点击打开item信息，修改后变成打开pdf附件
+                listener.onItemAttachmentOpen(item)
             }
 
-            val iconResource = when (item.itemType) {
-                "note" -> {
-                    R.drawable.ic_item_note
-                }
-                "book" -> {
-                    R.drawable.ic_book
-                }
-                "bookSection" -> {
-                    R.drawable.ic_book_section
-                }
-                "journalArticle" -> {
-                    R.drawable.journal_article
-                }
-                "magazineArticle" -> {
-                    R.drawable.magazine_article_24dp
-                }
-                "newspaperArticle" -> {
-                    R.drawable.newspaper_article_24dp
-                }
-                "thesis" -> {
-                    R.drawable.ic_thesis
-                }
-                "letter" -> {
-                    R.drawable.letter_24dp
-                }
-                "manuscript" -> {
-                    R.drawable.manuscript_24dp
-                }
-                "interview" -> {
-                    R.drawable.interview_24dp
-                }
-                "film" -> {
-                    R.drawable.film_24dp
-                }
-                "artwork" -> {
-                    R.drawable.artwork_24dp
-                }
-                "webpage" -> {
-                    R.drawable.ic_web_page
-                }
-                "attachment" -> {
-                    R.drawable.ic_treeitem_attachment
-                }
-                "report" -> {
-                    R.drawable.report_24dp
-                }
-                "bill" -> {
-                    R.drawable.bill_24dp
-                }
-                "case" -> {
-                    R.drawable.case_24dp
-                }
-                "hearing" -> {
-                    R.drawable.hearing_24dp
-                }
-                "patent" -> {
-                    R.drawable.patent_24dp
-                }
-                "statute" -> {
-                    R.drawable.statute_24dp
-                }
-                "email" -> {
-                    R.drawable.email_24dp
-                }
-                "map" -> {
-                    R.drawable.map_24dp
-                }
-                "blogPost" -> {
-                    R.drawable.blog_post_24dp
-                }
-                "instantMessage" -> {
-                    R.drawable.instant_message_24dp
-                }
-                "forumPost" -> {
-                    R.drawable.forum_post_24dp
-                }
-                "audioRecording" -> {
-                    R.drawable.audio_recording_24dp
-                }
-                "presentation" -> {
-                    R.drawable.presentation_24dp
-                }
-                "videoRecording" -> {
-                    R.drawable.video_recording_24dp
-                }
-                "tvBroadcast" -> {
-                    R.drawable.tv_broadcast_24dp
-                }
-                "radioBroadcast" -> {
-                    R.drawable.radio_broadcast_24dp
-                }
-                "podcast" -> {
-                    R.drawable.podcast_24dp
-                }
-                "computerProgram" -> {
-                    R.drawable.computer_program_24dp
-                }
-                "conferencePaper" -> {
-                    R.drawable.ic_conference_paper
-                }
-                "document" -> {
-                    R.drawable.ic_document
-                }
-                "encyclopediaArticle" -> {
-                    R.drawable.encyclopedia_article_24dp
-                }
-                "dictionaryEntry" -> {
-                    R.drawable.dictionary_entry_24dp
-                }
-                else -> {
-                    R.drawable.ic_item_known
-                }
+            holder.layout.setOnLongClickListener {
+                this.onItemLongClickListener?.onItemClick(item)
+                false
             }
+
+            // Use itemType to get the target icon resource.
+            val iconResource = requireItemIconRes(item.itemType)
             holder.imageView.setImageResource(iconResource)
         } else {
             val collection = entry.getCollection()
@@ -190,6 +91,131 @@ class LibraryListRecyclerViewAdapter(
         }
     }
 
+    fun setItemLongClick(onLongClick:LibraryItemLongClickListener) {
+        this.onItemLongClickListener = onLongClick
+    }
+
+    /**
+     * Use itemType to get target icon res, which is built-in
+     */
+    private fun requireItemIconRes(itemType: String): Int {
+        val iconResource = when (itemType) {
+            "note" -> {
+                R.drawable.ic_item_note
+            }
+            "book" -> {
+                R.drawable.ic_book
+            }
+            "bookSection" -> {
+                R.drawable.ic_book_section
+            }
+            "journalArticle" -> {
+                R.drawable.journal_article
+            }
+            "magazineArticle" -> {
+                R.drawable.magazine_article_24dp
+            }
+            "newspaperArticle" -> {
+                R.drawable.newspaper_article_24dp
+            }
+            "thesis" -> {
+                R.drawable.ic_thesis
+            }
+            "letter" -> {
+                R.drawable.letter_24dp
+            }
+            "manuscript" -> {
+                R.drawable.manuscript_24dp
+            }
+            "interview" -> {
+                R.drawable.interview_24dp
+            }
+            "film" -> {
+                R.drawable.film_24dp
+            }
+            "artwork" -> {
+                R.drawable.artwork_24dp
+            }
+            "webpage" -> {
+                R.drawable.ic_web_page
+            }
+            "attachment" -> {
+                R.drawable.ic_treeitem_attachment
+            }
+            "report" -> {
+                R.drawable.report_24dp
+            }
+            "bill" -> {
+                R.drawable.bill_24dp
+            }
+            "case" -> {
+                R.drawable.case_24dp
+            }
+            "hearing" -> {
+                R.drawable.hearing_24dp
+            }
+            "patent" -> {
+                R.drawable.patent_24dp
+            }
+            "statute" -> {
+                R.drawable.statute_24dp
+            }
+            "email" -> {
+                R.drawable.email_24dp
+            }
+            "map" -> {
+                R.drawable.map_24dp
+            }
+            "blogPost" -> {
+                R.drawable.blog_post_24dp
+            }
+            "instantMessage" -> {
+                R.drawable.instant_message_24dp
+            }
+            "forumPost" -> {
+                R.drawable.forum_post_24dp
+            }
+            "audioRecording" -> {
+                R.drawable.audio_recording_24dp
+            }
+            "presentation" -> {
+                R.drawable.presentation_24dp
+            }
+            "videoRecording" -> {
+                R.drawable.video_recording_24dp
+            }
+            "tvBroadcast" -> {
+                R.drawable.tv_broadcast_24dp
+            }
+            "radioBroadcast" -> {
+                R.drawable.radio_broadcast_24dp
+            }
+            "podcast" -> {
+                R.drawable.podcast_24dp
+            }
+            "computerProgram" -> {
+                R.drawable.computer_program_24dp
+            }
+            "conferencePaper" -> {
+                R.drawable.ic_conference_paper
+            }
+            "document" -> {
+                R.drawable.ic_document
+            }
+            "encyclopediaArticle" -> {
+                R.drawable.encyclopedia_article_24dp
+            }
+            "dictionaryEntry" -> {
+                R.drawable.dictionary_entry_24dp
+            }
+            else -> {
+                R.drawable.ic_item_known
+            }
+        }
+
+        return iconResource
+    }
+
     override fun getItemCount(): Int {
         return items.size
     }
@@ -199,4 +225,8 @@ interface LibraryListInteractionListener {
     fun onItemOpen(item: Item)
     fun onCollectionOpen(collection: Collection)
     fun onItemAttachmentOpen(item: Item)
+}
+
+interface LibraryItemLongClickListener {
+    fun onItemClick(item: Item)
 }

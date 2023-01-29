@@ -13,36 +13,42 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.core.view.iterator
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.tabs.TabLayoutMediator
 import com.mickstarify.zotero.AttachmentManager.AttachmentManager
 import com.mickstarify.zotero.BaseActivity
-import com.mickstarify.zotero.LibraryActivity.ItemView.ItemAttachmentEntry
-import com.mickstarify.zotero.LibraryActivity.ItemView.ItemViewFragment
+import com.mickstarify.zotero.LibraryActivity.ItemView.*
+import com.mickstarify.zotero.LibraryActivity.Notes.EditNoteDialog
 import com.mickstarify.zotero.LibraryActivity.Notes.NoteInteractionListener
 import com.mickstarify.zotero.LibraryActivity.Notes.NoteView
+import com.mickstarify.zotero.LibraryActivity.Notes.onEditNoteChangeListener
+import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.SettingsActivity
 import com.mickstarify.zotero.ZoteroAPI.Model.Note
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
 import com.mickstarify.zotero.ZoteroStorage.Database.GroupInfo
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
+import com.mickstarify.zotero.ZoteroStorage.ZoteroUtils
+import com.mickstarify.zotero.adapters.ItemPageAdapter
+import com.mickstarify.zotero.databinding.FragmentItemInfoBinding
 
 
 class LibraryActivity : BaseActivity(),
     NavigationView.OnNavigationItemSelectedListener,
-
-    ItemViewFragment.OnItemFragmentInteractionListener,
     ItemAttachmentEntry.OnAttachmentFragmentInteractionListener,
     NoteInteractionListener {
 
@@ -53,7 +59,7 @@ class LibraryActivity : BaseActivity(),
     private val MENU_ID_COLLECTIONS_OFFSET: Int = 10
 
     lateinit var presenter: LibraryActivityPresenter
-    private var itemView: ItemViewFragment? = null
+//    private var itemView: ItemViewFragment? = null
 
     lateinit var navController: NavController
     lateinit var navHostFragment: NavHostFragment
@@ -80,6 +86,9 @@ class LibraryActivity : BaseActivity(),
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
+                R.id.homeLibraryFragment -> {
+                    libraryHomeScreenShown()
+                }
                 R.id.libraryListFragment -> {
                     libraryListScreenShown()
                 }
@@ -96,6 +105,13 @@ class LibraryActivity : BaseActivity(),
             }
 
         }
+
+    }
+
+    private fun libraryHomeScreenShown() {
+        supportActionBar?.title = "主页"
+        mDrawerToggle.isDrawerIndicatorEnabled = true
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun barcodeScanningScreenShown() {
@@ -288,6 +304,9 @@ class LibraryActivity : BaseActivity(),
         currentPressedMenuItem = item
         if (item.itemId == R.id.my_library) {
             presenter.setCollection("all", fromNavigationDrawer = true)
+        } else if (item.itemId == R.id.nav_home) {
+            //todo: 打开首页页面
+            presenter.openHome()
         } else if (item.itemId == MENU_ID_UNFILED_ITEMS) {
             presenter.setCollection("unfiled_items", fromNavigationDrawer = true)
         } else if (item.itemId == MENU_ID_MY_PUBLICATIONS) {
@@ -360,10 +379,102 @@ class LibraryActivity : BaseActivity(),
 
     fun showItemDialog(
     ) {
-        itemView = ItemViewFragment()
-        val fm = supportFragmentManager
-        itemView?.show(fm, "ItemDialog")
+//        itemView = ItemViewFragment()
+//        val fm = supportFragmentManager
+//        itemView?.show(fm, "ItemDialog")
 
+        val binding = FragmentItemInfoBinding.inflate(layoutInflater)
+
+        val libraryViewModel =
+            ViewModelProvider(this).get(LibraryListViewModel::class.java)
+
+        val tabs = arrayListOf(
+            ItemPageAdapter.TabItem("基本", ItemBasicInfoFragment(libraryViewModel)),
+            ItemPageAdapter.TabItem("标签", ItemTagsFragment(libraryViewModel)),
+            ItemPageAdapter.TabItem("笔记", ItemNotesFragment(libraryViewModel))
+        )
+
+        val itemPageAdapter = ItemPageAdapter(libraryViewModel,
+            supportFragmentManager, lifecycle, tabs)
+        binding.viewPager.adapter = itemPageAdapter
+
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = tabs[position].tabTitle
+        }.attach()
+
+        val bottomSheetDialog = BottomSheetDialog(this)
+
+        bottomSheetDialog.behavior.peekHeight = 800
+
+        binding.btnClose.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        libraryViewModel.getOnItemClicked().observe(this) { item ->
+            binding.txtItemType.text = ZoteroUtils.getItemTypeHumanReadableString(item.itemType)
+//            binding.textViewItemToolbarTitle.text = item.getTitle()
+
+            binding.btnAddNote.setOnClickListener {
+                showCreateNoteDialog(item)
+            }
+
+            binding.btnMore.setOnClickListener {
+                val popupMenu = PopupMenu(this, it)
+                popupMenu.inflate(R.menu.fragment_library_item_actionbar)
+
+                popupMenu.setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.add_note -> showCreateNoteDialog(item)
+                        R.id.share_item -> showShareItemDialog(item)
+                    }
+                    false
+                }
+                popupMenu.show()
+            }
+        }
+
+
+        bottomSheetDialog.setContentView(binding.root)
+        bottomSheetDialog.show()
+    }
+
+    /**
+     * 显示创建笔记对话框
+     */
+    private fun showCreateNoteDialog(item: Item) {
+        EditNoteDialog()
+            .show(this, "", object :
+                onEditNoteChangeListener {
+                override fun onCancel() {
+                }
+
+                override fun onSubmit(noteText: String) {
+                    Log.d("zotero", "got note $noteText")
+                    if (item == null) {
+                        Toast.makeText(applicationContext,
+                            "Error, item unloaded from memory, please backup text and reopen app.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return
+                    }
+                    val note = Note(noteText, item.itemKey)
+                    onNoteCreate(note)
+                }
+            })
+    }
+
+
+    private fun showShareItemDialog(item: Item) {
+        if (item == null) {
+            Toast.makeText(this, "Item not loaded yet.", Toast.LENGTH_SHORT).show()
+        } else {
+            ShareItemDialog(item).show(this, object : onShareItemListener {
+                override fun shareItem(shareText: String) {
+                    shareText(shareText)
+                }
+
+            })
+        }
     }
 
     fun showNote(note: Note) {
@@ -372,8 +483,8 @@ class LibraryActivity : BaseActivity(),
     }
 
     fun closeItemView() {
-        itemView?.dismiss()
-        itemView = null
+//        itemView?.dismiss()
+//        itemView = null
     }
 
     fun showLoadingAlertDialog(message: String) {
@@ -479,9 +590,9 @@ class LibraryActivity : BaseActivity(),
         Toast.makeText(this, "Deleted attachment ${item.getTitle()}", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onListFragmentInteraction(item: Item?) {
-        Log.d("zotero", "got onListFragmentInteraction from item ${item?.itemKey}")
-    }
+//    override fun onListFragmentInteraction(item: Item?) {
+//        Log.d("zotero", "got onListFragmentInteraction from item ${item?.itemKey}")
+//    }
 
     fun makeToastAlert(message: String) {
         val toast = Toast.makeText(this, message, Toast.LENGTH_LONG)
@@ -519,17 +630,17 @@ class LibraryActivity : BaseActivity(),
         Log.d("zotero", "onResume called.")
     }
 
-    override fun onNoteCreate(note: Note) {
+    private fun onNoteCreate(note: Note) {
         presenter.createNote(note)
     }
 
-    override fun onNoteEdit(note: Note) {
-        presenter.modifyNote(note)
-    }
-
-    override fun onNoteDelete(note: Note) {
-        presenter.deleteNote(note)
-    }
+//    override fun onNoteEdit(note: Note) {
+//        presenter.modifyNote(note)
+//    }
+//
+//    override fun onNoteDelete(note: Note) {
+//        presenter.deleteNote(note)
+//    }
 
     private var doubleBackToExitPressedOnce = false
     override fun onBackPressed() {
@@ -558,7 +669,7 @@ class LibraryActivity : BaseActivity(),
         presenter.modifyNote(note)
     }
 
-    override fun shareText(shareText: String) {
+    private fun shareText(shareText: String) {
         /* Used to share zotero items. */
 
         val sendIntent: Intent = Intent().apply {
@@ -570,12 +681,13 @@ class LibraryActivity : BaseActivity(),
         startActivity(shareIntent)
     }
 
-    override fun onTagOpenListener(tag: String) {
-        presenter.onTagOpen(tag)
-    }
+//    override fun onTagOpenListener(tag: String) {
+//        presenter.onTagOpen(tag)
+//    }
 
     fun getCurrentScreen(): AvailableScreens {
         return when (navController.currentDestination?.id) {
+            R.id.homeLibraryFragment -> AvailableScreens.LIBRARY_HOME_SCREEN
             R.id.libraryListFragment -> AvailableScreens.LIBRARY_LISTVIEW_SCREEN
             R.id.libraryLoadingScreen -> AvailableScreens.LIBRARY_LOADING_SCREEN
             R.id.barcodeScanningScreen -> AvailableScreens.BARCODE_SCANNING_SCREEN
@@ -589,10 +701,12 @@ class LibraryActivity : BaseActivity(),
         intent.data = Uri.parse(url)
         startActivity(intent)
     }
+
 }
 
 enum class AvailableScreens {
     LIBRARY_LOADING_SCREEN,
+    LIBRARY_HOME_SCREEN,
     LIBRARY_LISTVIEW_SCREEN,
     BARCODE_SCANNING_SCREEN
 }

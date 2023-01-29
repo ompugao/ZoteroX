@@ -1,7 +1,6 @@
 package com.mickstarify.zotero.AttachmentManager
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -11,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.R
 
 class AttachmentManager : AppCompatActivity(), Contract.View {
@@ -28,7 +28,13 @@ class AttachmentManager : AppCompatActivity(), Contract.View {
         findViewById<Button>(R.id.button_download).setOnClickListener {
             presenter.pressedDownloadAttachments()
         }
-        setDownloadButtonState("Loading Library", false)
+
+        disableDownloadButton()
+    }
+
+    private fun disableDownloadButton() {
+//        setDownloadButtonState("Loading Library", false)
+        findViewById<Button>(R.id.button_download).visibility = View.GONE
     }
 
     override fun makeToastAlert(message: String) {
@@ -45,7 +51,7 @@ class AttachmentManager : AppCompatActivity(), Contract.View {
         try {
             alert.show()
         } catch (exception: WindowManager.BadTokenException) {
-            Log.e("zotero", "error cannot show error dialog. ${message}")
+            MyLog.e("zotero", "error cannot show error dialog. ${message}")
         }
     }
 
@@ -65,19 +71,23 @@ class AttachmentManager : AppCompatActivity(), Contract.View {
     }
 
     override fun hideLibraryLoadingAnimation() {
-        progressBar?.let {
-            it.visibility = View.INVISIBLE
-            it.isActivated = false
-        }
+//        progressBar?.let {
+//            it.visibility = View.INVISIBLE
+//            it.isActivated = false
+//        }
         val textView = findViewById<TextView>(R.id.txt_loading_library_text)
-        textView.visibility = View.INVISIBLE
+//        textView.visibility = View.INVISIBLE
+        textView.visibility = View.VISIBLE
+
+        textView.text = "Downloading attachments"
     }
 
     override fun setDownloadButtonState(text: String, enabled: Boolean) {
         val button = findViewById<Button>(R.id.button_download)
+        button.visibility = View.VISIBLE
         button.isEnabled = enabled
         button.text = text
-        Log.d("zotero", "button state changed. ${button.text} ${button.isEnabled}")
+        MyLog.d("zotero", "button state changed. ${button.text} ${button.isEnabled}")
     }
 
     override fun updateLoadingProgress(message: String, current: Int, total: Int) {
@@ -92,7 +102,8 @@ class AttachmentManager : AppCompatActivity(), Contract.View {
             it.isActivated = true
         }
 
-        val textView = findViewById<TextView>(R.id.txt_loading_library_text)
+//        val textView = findViewById<TextView>(R.id.txt_loading_library_text)
+        val textView = findViewById<TextView>(R.id.txt_attachment_downloading)
         textView.visibility = View.VISIBLE
         textView.text = message
     }
