@@ -34,7 +34,16 @@
 
     <style name="AppTheme.PopupOverlay" parent="AppTheme" />
 
-<!--    <style name="menu_labels_style">-->
+
+    <style name="ThemeToolbar" parent="AppTheme">
+        <!-- navigation icon color -->
+        <item name="colorControlNormal">#000000</item>
+        <!-- color of the menu overflow icon -->
+        <item name="android:textColorSecondary">#000000</item>
+    </style>
+
+
+    <!--    <style name="menu_labels_style">-->
 <!--        <item name="android:textColor">#FFFFFF</item>-->
 <!--        <item name="android:background">@drawable/fab_actiontext_background</item>-->
 <!--    </style>-->

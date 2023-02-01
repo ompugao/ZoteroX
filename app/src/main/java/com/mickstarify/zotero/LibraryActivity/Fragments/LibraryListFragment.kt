@@ -26,11 +26,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mickstarify.zotero.LibraryActivity.LibraryActivity
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
+import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.PreferenceManager
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.ZoteroApplication
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
+import com.mickstarify.zotero.adapters.LibraryItemLongClickListener
 import com.mickstarify.zotero.adapters.LibraryListInteractionListener
 import com.mickstarify.zotero.adapters.LibraryListRecyclerViewAdapter
 import javax.inject.Inject
@@ -134,22 +136,25 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         viewModel.getItems().observe(viewLifecycleOwner) { entries ->
-            Log.d("zotero", "Loading new set of item (${entries.size} length)")
-            adapter.items = entries
-            adapter.notifyDataSetChanged()
-
-            if (entries.size == 0) {
+            if (entries.isEmpty()) {
                 showEmptyList()
             } else {
                 hideEmptyList()
             }
+
+            Log.d("zotero", "Loading new set of item (${entries.size} length)")
+            adapter.items = entries
+            adapter.notifyDataSetChanged()
         }
 
         val swipeRefresh =
             requireView().findViewById<SwipeRefreshLayout>(R.id.library_swipe_refresh)
         swipeRefresh.setOnRefreshListener(this)
         viewModel.getIsShowingLoadingAnimation().observe(viewLifecycleOwner) {
-            swipeRefresh.isRefreshing = it
+            if (swipeRefresh.isRefreshing != it) {
+                swipeRefresh.isRefreshing = it
+                MyLog.d("Zotero UI", "SwipeRefresher isRefreshing: $it")
+            }
         }
 
         fab = requireView().findViewById(R.id.fab_add_item)
@@ -172,6 +177,12 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
             dialog.show()
         }
 
+        adapter.setItemLongClick(object : LibraryItemLongClickListener {
+            override fun onItemClick(item: Item) {
+                showMoreOperateMenuDialog(item)
+            }
+        })
+
         hideFabButtonWhenScrolling()
     }
 
@@ -179,6 +190,20 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         super.onResume()
 
 //        fab.collapse()
+    }
+
+    private fun showMoreOperateMenuDialog(item: Item) {
+        val array = arrayOf("查看信息", "打开附件")
+
+        val dialog = AlertDialog.Builder(requireContext())
+        dialog.setItems(array) { dialog, which ->
+            when (which) {
+                0 -> onItemOpen(item)
+                1 -> onItemAttachmentOpen(item)
+
+            }
+        }
+        dialog.show()
     }
 
     override fun onItemOpen(item: Item) {

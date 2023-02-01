@@ -67,7 +67,8 @@ class LibraryListRecyclerViewAdapter(
 //                listener.onItemOpen(item)
 
                 //原来是点击打开item信息，修改后变成打开pdf附件
-                listener.onItemAttachmentOpen(item)
+                val pdfFile = item.getPdfAttachment()
+                if (pdfFile != null) listener.onItemAttachmentOpen(pdfFile)
             }
 
             holder.layout.setOnLongClickListener {

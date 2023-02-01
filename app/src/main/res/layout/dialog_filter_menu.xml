@@ -22,20 +22,18 @@
             android:layout_height="wrap_content"
             android:text="@string/sort_by"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            app:layout_constraintBottom_toBottomOf="@+id/button_sort_by"
+            app:layout_constraintBottom_toBottomOf="@+id/spinner_sort_by"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/button_sort_by" />
+            app:layout_constraintTop_toTopOf="@+id/spinner_sort_by" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_sort_by"
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/spinner_sort_by"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="2"
-            android:text="By Title"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:entries="@array/sort_options_entries"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_sort_order"
             app:layout_constraintStart_toEndOf="@+id/textView_label_sortingmethod"
@@ -49,9 +47,9 @@
             android:layout_marginEnd="8dp"
             android:layout_weight="0.1"
             android:src="@drawable/ic_arrow_downward_24px"
-            app:layout_constraintBottom_toBottomOf="@+id/button_sort_by"
+            app:layout_constraintBottom_toBottomOf="@+id/spinner_sort_by"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/button_sort_by"
+            app:layout_constraintTop_toTopOf="@+id/spinner_sort_by"
             app:tint="@color/colorPrimary" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -46,7 +46,7 @@
                     android:id="@+id/item_fragment_scrollview_ll_attachments"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="16dp"
+                    android:layout_margin="12dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -71,45 +71,8 @@
                         style="@style/TextAppearance.AppCompat.Subhead"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
+                        android:layout_margin="12dp"
                         android:text="@string/information"
-                        android:textColor="#353e54"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/item_fragment_scrollview_ll_notes"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="16dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textView_notes_title"
-                        style="@style/TextAppearance.AppCompat.Subhead"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/notes"
-                        android:textColor="#353e54"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/item_fragment_scrollview_ll_tags"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textView_tags_title"
-                        style="@style/TextAppearance.AppCompat.Subhead"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/tags"
                         android:textColor="#353e54"
                         android:textStyle="bold" />
 

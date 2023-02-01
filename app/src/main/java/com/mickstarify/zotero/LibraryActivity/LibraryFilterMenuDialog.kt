@@ -2,17 +2,20 @@ package com.mickstarify.zotero.LibraryActivity
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.AdapterView
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageButton
+import androidx.appcompat.widget.AppCompatSpinner
 //import com.google.firebase.analytics.FirebaseAnalytics
 import com.mickstarify.zotero.PreferenceManager
 import com.mickstarify.zotero.R
+import android.widget.ArrayAdapter
+
 
 class LibraryFilterMenuDialog(val context: Context, val onFilterChange: (() -> (Unit))) {
     lateinit var preferences: PreferenceManager
@@ -78,27 +81,41 @@ class LibraryFilterMenuDialog(val context: Context, val onFilterChange: (() -> (
         val inflater = LayoutInflater.from(context)
         val dialogView: View = inflater.inflate(R.layout.dialog_filter_menu, null)
 
-        val sortingMethodButton = dialogView.findViewById<Button>(R.id.button_sort_by)
-        sortingMethodButton.text = this.getSortString(selected_sorting_method)
+        val sortingMethodSpinner = dialogView.findViewById<AppCompatSpinner>(R.id.spinner_sort_by)
         val checkbox_show_only_pdf = dialogView.findViewById<CheckBox>(R.id.checkBox_show_only_pdf)
         val checkbox_show_only_notes =
             dialogView.findViewById<CheckBox>(R.id.checkBox_show_only_notes)
 
-
         checkbox_show_only_notes.isChecked = this.is_showing_notes
         checkbox_show_only_pdf.isChecked = this.is_showing_pdf
 
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle("Sorting Method")
-        builder.setItems(context.resources.getTextArray(R.array.sort_options_entries),
-            DialogInterface.OnClickListener
-            { dialogInterface, i ->
-                this.setSortingMethod(i)
-                sortingMethodButton.text = this.getSortString(this.selected_sorting_method)
+        val spinnerItems = context.resources.getTextArray(R.array.sort_options_entries)
+        val spinnerAdapter = ArrayAdapter(
+            this.context,
+            R.layout.simple_spinner_item_select, spinnerItems
+        )
+        sortingMethodSpinner.adapter = spinnerAdapter
+        sortingMethodSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
-            })
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                setSortingMethod(position)
+            }
 
-        sortingMethodButton.setOnClickListener { builder.show() }
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
+
+        //设置spinner显示未当前的排序模式
+        spinnerItems.forEachIndexed { index, charSequence ->
+            if (charSequence.equals(this.getSortString(selected_sorting_method)))
+                sortingMethodSpinner.setSelection(index)
+        }
 
         val cancelButton = dialogView.findViewById<Button>(R.id.btn_cancel)
         val submitButton = dialogView.findViewById<Button>(R.id.btn_submit)

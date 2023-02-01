@@ -11,6 +11,7 @@ import com.mickstarify.zotero.ZoteroAPI.Model.Note
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
 import com.mickstarify.zotero.ZoteroStorage.Database.GroupInfo
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
+import java.text.Collator
 import java.util.LinkedList
 import java.util.Locale
 
@@ -20,11 +21,11 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 
     val sortMethod = compareBy<Item> {
         when (model.preferences.getSortMethod()) {
-            SortMethod.TITLE -> it.getTitle().toLowerCase(Locale.ROOT)
+            SortMethod.TITLE -> it.getTitle().lowercase(Locale.ROOT)
             SortMethod.DATE -> it.getSortableDateString()
             SortMethod.DATE_ADDED -> it.getSortableDateAddedString()
             SortMethod.AUTHOR -> {
-                val authorText = it.getAuthor().toLowerCase(Locale.ROOT)
+                val authorText = it.getAuthor().lowercase(Locale.ROOT)
                 // force empty authors to the bottom. Just like the zotero desktop client.
                 if (authorText == "") {
                     "zzz"
@@ -33,7 +34,18 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
                 }
             }
         }
-    }.thenBy { it.getTitle().toLowerCase(Locale.ROOT) }
+    }.thenBy { it.getTitle().lowercase(Locale.ROOT) }
+//        .then(PinyinComparator())
+//        .thenComparator { o1, o2 ->
+//        Collator.getInstance(Locale.CHINA).compare(o1.getTitle(), o2.getTitle())
+//    }
+
+//    class PinyinComparator : Comparator<Item> {
+//        override fun compare(o1: Item, o2: Item): Int {
+//            return Collator.getInstance(Locale.CHINA).compare(o1.getTitle(), o2.getTitle())
+//        }
+//    }
+
 
     override fun openGroup(groupTitle: String) {
         model.getGroupByTitle(groupTitle)?.also {
@@ -451,9 +463,20 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
     // extension function to sort lists of items
     private fun List<Item>.sort(): List<Item> {
         if (model.preferences.isSortedAscendingly()) {
-            return this.sortedWith(sortMethod)
+            return this.sortedWith(sortMethod).sortByPinyin()
         }
-        return this.sortedWith(sortMethod).reversed()
+
+        return this.sortedWith(sortMethod).sortByPinyin().reversed()
+    }
+
+    /**
+     * 列表按Item标题的中文拼音进行排序
+     * 顺序如下：数字在前，然后是中文拼音，而后是英语字母
+     */
+    private fun List<Item>.sortByPinyin(): List<Item> {
+        return this.sortedWith { o1, o2 ->
+            Collator.getInstance(Locale.CHINA).compare(o1?.getTitle(), o2?.getTitle())
+        }
     }
 
     fun deleteLocalAttachment(attachment: Item) {
@@ -463,4 +486,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
     fun openHome() {
         view.navController.navigate(R.id.homeLibraryFragment)
     }
+
+
+
 }
