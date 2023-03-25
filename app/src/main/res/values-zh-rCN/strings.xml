@@ -65,4 +65,9 @@
     <string name="password">密码</string>
     <string name="username">用户名</string>
     <string name="webdav_address">Webdav地址</string>
+    <string name="custom_zotero_storage_path">自定义Zotero工作路径</string>
+    <string name="by_title">标题</string>
+    <string name="by_author">作者</string>
+    <string name="by_date">日期</string>
+    <string name="by_date_added">添加日期</string>
 </resources>

@@ -35,6 +35,11 @@
             app:title="@string/setting_sync_attachments_location"
             app:useSimpleSummaryProvider="true" />
 
+        <Preference
+            android:enabled="true"
+            android:key="config_storage_path"
+            android:title="@string/custom_zotero_storage_path"/>
+
         <SwitchPreference
             android:defaultValue="true"
             android:key="attachments_uploading_enabled"
@@ -75,6 +80,7 @@
         <Preference
             android:enabled="true"
             android:key="configure_webdav"
+            android:dependency="use_webdav"
             android:title="@string/config_webdav" />
     </PreferenceCategory>
 

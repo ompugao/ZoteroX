@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
@@ -24,7 +25,12 @@ class SettingsActivity : AppCompatActivity() {
             .beginTransaction()
             .replace(R.id.settings, SettingsFragment())
             .commit()
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        supportActionBar?.title = "应用设置"
 
         // get our storage manager
         (application as ZoteroApplication).component.inject(this)
@@ -67,12 +73,19 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-            if (preference?.key == "configure_webdav") {
-                val intent = Intent(requireContext(), WebDAVSetup::class.java)
-                startActivity(intent)
-                return true
-            } else {
-                return super.onPreferenceTreeClick(preference)
+
+            when (preference?.key) {
+                "configure_webdav" -> {
+                    val intent = Intent(requireContext(), WebDAVSetup::class.java)
+                    startActivity(intent)
+                    return true
+                }
+                "config_storage_path" -> {
+                    (this.activity as SettingsActivity).openStoragePicker()
+                    // todo: 切换工作路径时迁移原始路径下的所有文件
+                    return true
+                }
+                else -> return super.onPreferenceTreeClick(preference)
             }
         }
 

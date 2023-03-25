@@ -258,6 +258,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 
     override fun requestLibraryRefresh() {
         libraryListViewModel.setIsShowingLoadingAnimation(true)
+        // 正式开始从zotero服务器获取数据，然后刷新
         model.refreshLibrary(useSmallLoadingAnimation = true)
     }
 

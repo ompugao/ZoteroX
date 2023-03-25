@@ -63,7 +63,7 @@ class ItemBasicInfoFragment(val viewModel: LibraryListViewModel) : Fragment() {
             for ((key, value) in item.data) {
                 if (value != "" && key != "itemType" && key != "title") {
 
-                    // 转换为易读的key信息
+                    // 将key转换为实际所代表的真实信息
                     var keyString = ZoteroUtils.getItemKeyNameHumanReadableString(key)
 
                     addTextEntry(keyString, value)

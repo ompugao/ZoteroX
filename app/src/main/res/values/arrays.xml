@@ -6,10 +6,10 @@
         <item>zoteroapi</item>
     </string-array>
     <string-array name="sort_options_entries">
-        <item>By Title</item>
-        <item>By Author</item>
-        <item>By Date</item>
-        <item>By Date Added</item>
+        <item>@string/by_title</item>
+        <item>@string/by_author</item>
+        <item>@string/by_date</item>
+        <item>@string/by_date_added</item>
     </string-array>
     <string-array name="pdf_reader_entries">
         <item>System app picker</item>

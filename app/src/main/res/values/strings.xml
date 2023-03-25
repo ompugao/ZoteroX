@@ -12,6 +12,11 @@
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
 
+    <string name="by_title">By Title</string>
+    <string name="by_author">By Author</string>
+    <string name="by_date">By Date</string>
+    <string name="by_date_added">By Date Added</string>
+
     <!-- Sync Preferences -->
     <string name="settings">Settings</string>
     <string name="sync_method">Sync Method</string>
@@ -74,4 +79,5 @@
     <string name="password">Password</string>
     <string name="username">Username</string>
     <string name="webdav_address">Webdav Address</string>
+    <string name="custom_zotero_storage_path">Custom zotero storage path</string>
 </resources>

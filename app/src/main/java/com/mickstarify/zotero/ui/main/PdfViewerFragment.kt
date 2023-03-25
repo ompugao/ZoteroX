@@ -12,12 +12,13 @@ import com.github.barteksc.pdfviewer.PDFView
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.databinding.PdfViewerFragmentBinding
 
-class PdfViewerFragment(val pdfUri: Uri?) : Fragment() {
+class PdfViewerFragment : Fragment() {
 
-    companion object {
-        fun newInstance(pdfUri: Uri?) = PdfViewerFragment(pdfUri)
+    private var pdfUri: Uri? = null
+
+    fun setPdfByUri(uri: Uri) {
+        this.pdfUri = uri
     }
-
 
     private lateinit var viewModel: PdfViewerModel
 
@@ -34,7 +35,10 @@ class PdfViewerFragment(val pdfUri: Uri?) : Fragment() {
         cPDFView.enableAntialiasing(true)
         cPDFView.isScrollbarFadingEnabled = true
 //        cPDFView.isSwipeEnabled = true
-        cPDFView.fromUri(pdfUri).load()
+
+        if (pdfUri != null) {
+            cPDFView.fromUri(pdfUri).load()
+        }
 
         return rootView
     }

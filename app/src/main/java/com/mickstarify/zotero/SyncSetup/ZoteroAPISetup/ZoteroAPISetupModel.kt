@@ -40,11 +40,8 @@ class ZoteroAPISetupModel(val presenter: Contract.Presenter) : Contract.Model {
         zotero_api_secret="insert_key"
     *
     * */
-//    private val client_key = BuildConfig.zotero_api_key
-//    private val client_secret = BuildConfig.zotero_api_secret
-
-    private val client_key = ""
-    private val client_secret = ""
+    private val client_key = BuildConfig.zotero_api_key
+    private val client_secret = BuildConfig.zotero_api_secret
 
     val OAuthProvider = CommonsHttpOAuthProvider(
         REQUEST_TOKEN_ENDPOINT,

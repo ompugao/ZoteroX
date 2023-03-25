@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
+import android.util.Log
 import androidx.core.content.FileProvider
 import androidx.documentfile.provider.DocumentFile
 import com.mickstarify.zotero.MyLog
@@ -30,6 +32,12 @@ class AttachmentStorageManager @Inject constructor(
     val context: Context,
     val preferenceManager: PreferenceManager
 ) {
+
+    companion object {
+        const val ZOTERO_WORKSPACE = "zotero"
+        const val ZOTERO_STORAGE = "storage"
+
+    }
 
     enum class StorageMode {
         CUSTOM,
@@ -80,7 +88,8 @@ class AttachmentStorageManager @Inject constructor(
     fun checkIfAttachmentExists(item: Item, checkMd5: Boolean = true): Boolean {
         val filename = getFilenameForItem(item)
         if (storageMode == StorageMode.EXTERNAL_CACHE) {
-            val outputDir = File(context.externalCacheDir, item.itemKey.toUpperCase(Locale.ROOT))
+//            val outputDir = File(context.externalCacheDir, item.itemKey.toUpperCase(Locale.ROOT))
+            val outputDir = File(getDefaultStorage(), item.itemKey.uppercase(Locale.ROOT))
             if (!outputDir.exists() || outputDir.isDirectory == false) {
                 return false
             }
@@ -331,9 +340,35 @@ class AttachmentStorageManager @Inject constructor(
 
     }
 
+    /**
+     * 获取zotero的默认工作路径
+     * 默认路径为：Android/data/应用包名/file/zotero
+     */
+    fun getZoteroDefaultWorkSpace(): File {
+        return context.getExternalFilesDir(ZOTERO_WORKSPACE)!!
+//        val workspace = context.getExternalFilesDir(ZOTERO_WORKSPACE)
+//        if (!workspace!!.exists()) workspace.mkdirs()
+
+//        return File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), ZOTERO_WORKSPACE)
+//        return context.getExternalFilesDir(ZOTERO_WORKSPACE)
+    }
+
+    /**
+     * 获取默认的储存目录
+     * 默认路径为：Android/data/应用包名/file/zotero/storage
+     */
+    fun getDefaultStorage(): File {
+        Log.e("Zotero Storage", getZoteroDefaultWorkSpace().path)
+        return File(getZoteroDefaultWorkSpace(), ZOTERO_STORAGE)
+    }
+
     private fun getAttachmentFile(attachment: Item): File {
         val filename = getFilenameForItem(attachment)
-        val directory = File(context.externalCacheDir, attachment.itemKey.toUpperCase(Locale.ROOT))
+
+        val defaultStorage = getDefaultStorage()
+
+//        val directory = File(context.externalCacheDir, attachment.itemKey.uppercase(Locale.ROOT))
+        val directory = File(defaultStorage, attachment.itemKey.uppercase(Locale.ROOT))
         if (!directory.exists()) {
             directory.mkdirs()
         }
@@ -440,7 +475,7 @@ class AttachmentStorageManager @Inject constructor(
                    path = path.slice(1..path.length-1)
                 }
                 MyLog.d("zotero", "checking path $path")
-                var document = File(context.externalCacheDir, path)
+                var document = File(getDefaultStorage(), path)
                 if (document.exists()){
                     val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         FileProvider.getUriForFile(
