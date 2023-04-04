@@ -9,6 +9,16 @@ class LibraryLoadingScreenViewModel : ViewModel() {
     private val amountOfDownloadedEntries = MutableLiveData<Int>()
     private val loadingMessage = MutableLiveData<String>()
 
+    private val isFirstLoad = MutableLiveData<Boolean>()
+
+    fun isFirstLoad(): LiveData<Boolean> {
+        if (isFirstLoad.value == null) isFirstLoad.value = true
+        return isFirstLoad
+    }
+    fun setFirstLoad(firstLoad: Boolean) {
+        isFirstLoad.value = firstLoad
+    }
+
     fun gettotalAmountOfEntries(): LiveData<Int> = totalAmountOfEntries
     fun setTotalAmountOfEntries(amount: Int) {
         totalAmountOfEntries.value = amount
@@ -23,4 +33,5 @@ class LibraryLoadingScreenViewModel : ViewModel() {
     fun setLoadingMessage(message: String) {
         loadingMessage.value = message
     }
+
 }

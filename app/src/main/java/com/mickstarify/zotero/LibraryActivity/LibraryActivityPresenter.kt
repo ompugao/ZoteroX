@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryLoadingScreenViewModel
+import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.SortMethod
 import com.mickstarify.zotero.ZoteroAPI.Model.Note
@@ -230,6 +231,8 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 
     override fun openAttachment(item: Item) {
         model.openAttachment(item)
+        MyLog.d("ZoteroTest", "open attachment: ${item.itemKey}")
+
     }
 
     override fun updateAttachmentDownloadProgress(progress: Long, total: Long) {
@@ -419,15 +422,16 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 
         view.initUI()
 
-        // 显示 “加载页面”以及加载信息
-        // todo start loading screen.
-        view.navController.navigate(R.id.libraryLoadingScreen)
+        if (libraryLoadingViewModel.isFirstLoad().value!!) {
+            // 显示 “加载页面”以及加载信息
+            // todo start loading screen.
+            view.navController.navigate(R.id.libraryLoadingScreen)
 
-        libraryLoadingViewModel.setLoadingMessage("加载文库数据中...")
+            libraryLoadingViewModel.setLoadingMessage("加载文库数据中...")
 
-        // 打开应用时，默认加载本地zotero文库
-        model.loadLibraryLocally()
-        model.loadGroups()
+            // 打开应用时，默认加载本地zotero文库
+            model.loadLibraryLocally()
+            model.loadGroups()
 
 //        // 默认一打开应用就连接zotero服务器，获取最新的文库列表
 //        if (model.shouldIUpdateLibrary()) {
@@ -437,6 +441,9 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 //            model.loadLibraryLocally()
 //            model.loadGroups()
 //        }
+            libraryLoadingViewModel.setFirstLoad(false)
+        }
+
 
         libraryListViewModel.getOnItemClicked().observe(view) { item ->
             this.selectItem(item, longPress = false)
