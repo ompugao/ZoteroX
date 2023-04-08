@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mickstarify.zotero.LibraryActivity.LibraryActivity
@@ -133,7 +134,25 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         val adapter = LibraryListRecyclerViewAdapter(emptyList(), this)
 
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        val linearLayoutManager = LinearLayoutManager(requireContext())
+        recyclerView.layoutManager = linearLayoutManager
+
+        recyclerView.addOnScrollListener(object : OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val view = recyclerView.layoutManager?.getChildAt(0) ?: return
+
+                //获取第一个view所在的位置
+                recyclerView.layoutManager?.getPosition(view)?.let {  viewModel.setMutativePosition(it) }
+
+                recyclerView.layoutManager?.getChildAt(0)?.top?.let { viewModel.setMutativeOffset(it) }
+            }
+        })
+
+        linearLayoutManager.scrollToPositionWithOffset(viewModel.getMutativePosition(), viewModel.getMutativeOffset())
+
 
         viewModel.getItems().observe(viewLifecycleOwner) { entries ->
             if (entries.isEmpty()) {
@@ -216,6 +235,7 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
 
     override fun onItemAttachmentOpen(item: Item) {
         viewModel.onAttachmentClicked(item)
+//        MyLog.d("Zotero attachment", "open attachment of " + item.itemKey)
     }
 
     override fun onRefresh() {

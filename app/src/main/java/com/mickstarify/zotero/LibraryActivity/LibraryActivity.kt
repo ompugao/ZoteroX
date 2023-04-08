@@ -36,6 +36,7 @@ import com.mickstarify.zotero.LibraryActivity.Notes.NoteInteractionListener
 import com.mickstarify.zotero.LibraryActivity.Notes.NoteView
 import com.mickstarify.zotero.LibraryActivity.Notes.onEditNoteChangeListener
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
+import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.SettingsActivity
 import com.mickstarify.zotero.ZoteroAPI.Model.Note
@@ -377,8 +378,7 @@ class LibraryActivity : BaseActivity(),
         supportActionBar?.title = title
     }
 
-    fun showItemDialog(
-    ) {
+    fun showItemDialog(item: Item) {
 //        itemView = ItemViewFragment()
 //        val fm = supportFragmentManager
 //        itemView?.show(fm, "ItemDialog")
@@ -389,9 +389,9 @@ class LibraryActivity : BaseActivity(),
             ViewModelProvider(this).get(LibraryListViewModel::class.java)
 
         val tabs = arrayListOf(
-            ItemPageAdapter.TabItem("基本", ItemBasicInfoFragment(libraryViewModel)),
-            ItemPageAdapter.TabItem("标签", ItemTagsFragment(libraryViewModel)),
-            ItemPageAdapter.TabItem("笔记", ItemNotesFragment(libraryViewModel))
+            ItemPageAdapter.TabItem("基本", ItemBasicInfoFragment.newInstance(item)),
+            ItemPageAdapter.TabItem("标签", ItemTagsFragment.newInstance(item)),
+            ItemPageAdapter.TabItem("笔记", ItemNotesFragment.newInstance(item))
         )
 
         val itemPageAdapter = ItemPageAdapter(libraryViewModel,
@@ -402,13 +402,7 @@ class LibraryActivity : BaseActivity(),
             tab.text = tabs[position].tabTitle
         }.attach()
 
-        val bottomSheetDialog = BottomSheetDialog(this)
 
-        bottomSheetDialog.behavior.peekHeight = 800
-
-        binding.btnClose.setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }
 
         libraryViewModel.getOnItemClicked().observe(this) { item ->
             binding.txtItemType.text = ZoteroUtils.getItemTypeHumanReadableString(item.itemType)
@@ -433,9 +427,16 @@ class LibraryActivity : BaseActivity(),
             }
         }
 
+        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.behavior.peekHeight = 800
 
         bottomSheetDialog.setContentView(binding.root)
         bottomSheetDialog.show()
+
+
+        binding.btnClose.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
     }
 
     /**

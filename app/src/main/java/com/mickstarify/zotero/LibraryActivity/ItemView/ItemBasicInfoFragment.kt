@@ -8,34 +8,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
-import com.google.android.material.chip.Chip
-import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
 import com.mickstarify.zotero.R
+import com.mickstarify.zotero.ZoteroApplication
 import com.mickstarify.zotero.ZoteroStorage.Database.Creator
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
+import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
 import com.mickstarify.zotero.ZoteroStorage.ZoteroUtils
 import com.mickstarify.zotero.databinding.FragmentItemBasicInfoBinding
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-class ItemBasicInfoFragment(val viewModel: LibraryListViewModel) : Fragment() {
+class ItemBasicInfoFragment : Fragment() {
 
     private lateinit var attachments: List<Item>
 
-    private var param1: String? = null
-    private var param2: String? = null
-
     private lateinit var mBinding: FragmentItemBasicInfoBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var item: Item? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,34 +31,34 @@ class ItemBasicInfoFragment(val viewModel: LibraryListViewModel) : Fragment() {
 
         mBinding = FragmentItemBasicInfoBinding.inflate(inflater)
         return mBinding.root
-
-//        return inflater.inflate(R.layout.fragment_item_basic_info, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getOnItemClicked().observe(viewLifecycleOwner) { item ->
-            attachments = item.attachments
+        item?.let { showItemInfo(it) }
+    }
 
-            if (item.creators.isNotEmpty()) {
-                this.addCreators(item.getSortedCreators())
-            } else {
-                // empty creator.
-                this.addCreators(listOf(Creator("null", "", "", "", -1)))
-            }
-            for ((key, value) in item.data) {
-                if (value != "" && key != "itemType" && key != "title") {
+    private fun showItemInfo(item: Item) {
 
-                    // 将key转换为实际所代表的真实信息
-                    var keyString = ZoteroUtils.getItemKeyNameHumanReadableString(key)
+        attachments = item.attachments
 
-                    addTextEntry(keyString, value)
-                }
-            }
-            this.addAttachments(attachments)
+        if (item.creators.isNotEmpty()) {
+            this.addCreators(item.getSortedCreators())
+        } else {
+            // empty creator.
+            this.addCreators(listOf(Creator("null", "", "", "", -1)))
         }
+        for ((key, value) in item.data) {
+            if (value != "" && key != "itemType" && key != "title") {
 
+                // 将key转换为实际所代表的真实信息
+                var keyString = ZoteroUtils.getItemKeyNameHumanReadableString(key)
+
+                addTextEntry(keyString, value)
+            }
+        }
+        this.addAttachments(attachments)
     }
 
     private fun addCreators(creators: List<Creator>) {
@@ -138,16 +125,11 @@ class ItemBasicInfoFragment(val viewModel: LibraryListViewModel) : Fragment() {
         textViewInfo.setText(content)
     }
 
-
-
     companion object {
         @JvmStatic
-        fun newInstance(viewModel: LibraryListViewModel, param1: String, param2: String) =
-            ItemBasicInfoFragment(viewModel).apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+        fun newInstance(item: Item) =
+            ItemBasicInfoFragment().apply {
+                this.item = item
             }
     }
 }

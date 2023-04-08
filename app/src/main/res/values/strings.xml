@@ -80,4 +80,5 @@
     <string name="username">Username</string>
     <string name="webdav_address">Webdav Address</string>
     <string name="custom_zotero_storage_path">Custom zotero storage path</string>
+    <string name="downloading">downloading</string>
 </resources>

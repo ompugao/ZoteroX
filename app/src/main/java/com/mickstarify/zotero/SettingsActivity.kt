@@ -32,6 +32,8 @@ class SettingsActivity : AppCompatActivity() {
 
         supportActionBar?.title = "应用设置"
 
+        toolbar.setNavigationOnClickListener { finish() }
+
         // get our storage manager
         (application as ZoteroApplication).component.inject(this)
     }
