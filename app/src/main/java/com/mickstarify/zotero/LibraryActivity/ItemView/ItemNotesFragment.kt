@@ -8,13 +8,16 @@ import android.view.ViewGroup
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.ZoteroAPI.Model.Note
+import com.mickstarify.zotero.ZoteroStorage.Database.Item
+import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
 import com.mickstarify.zotero.databinding.FragmentItemNotesBinding
 import com.mickstarify.zotero.databinding.FragmentItemTagsBinding
 
-class ItemNotesFragment(libraryListViewModel: LibraryListViewModel) : Fragment() {
-    private var libraryListViewModel: LibraryListViewModel = libraryListViewModel
+class ItemNotesFragment : Fragment() {
 
     private lateinit var mBinding: FragmentItemNotesBinding
+
+    private var item: Item? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,9 +29,8 @@ class ItemNotesFragment(libraryListViewModel: LibraryListViewModel) : Fragment()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        libraryListViewModel.getOnItemClicked().observe(viewLifecycleOwner) { item ->
-            populateNotes(item.notes)
-        }
+
+        item?.let {  populateNotes(it.notes) }
     }
 
     private fun populateNotes(notes: List<Note>) {
@@ -45,4 +47,14 @@ class ItemNotesFragment(libraryListViewModel: LibraryListViewModel) : Fragment()
         }
         fmt.commit()
     }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(item: Item) =
+            ItemNotesFragment().apply {
+                this.item = item
+            }
+    }
+
+
 }

@@ -1,6 +1,7 @@
 package com.mickstarify.zotero.LibraryActivity
 
 import android.app.Activity
+import android.app.Application
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -8,6 +9,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import com.google.gson.JsonObject
 import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.PdfViewerActivity
@@ -39,7 +42,9 @@ import javax.inject.Inject
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection as ZoteroCollection
 
 
-class LibraryActivityModel(private val presenter: Contract.Presenter, val context: Context) :
+class LibraryActivityModel(application: Application) : AndroidViewModel(
+    application
+),
     Contract.Model, OnSyncChangeListener {
 
     // stores the current item being viewed by the user. (useful for refreshing the view)
@@ -52,6 +57,8 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
 
     private var syncManager: SyncManager
 
+    private lateinit var presenter: LibraryActivityPresenter
+
     @Inject
     lateinit var zoteroDatabase: ZoteroDatabase
 
@@ -59,12 +66,12 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
     lateinit var attachmentStorageManager: AttachmentStorageManager
     private val zoteroGroupDB =
         ZoteroGroupDB(
-            context
+            application.applicationContext
         )
     private var zoteroDBPicker =
         ZoteroDBPicker(
             ZoteroDB(
-                context,
+                application.applicationContext,
                 groupID = -1
             ), zoteroGroupDB
         )
@@ -197,21 +204,22 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
                     )
                 ).blockingAwait()
             }
-        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnComplete {
+        }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnComplete {
             try {
                 // Use an external pdf reader to open this attachment.
                 if (!preferences.isUserExternalPdfReader()) {
                     // todo: implement this code to use in-app pdf reader to open pdf.
-//                    presenter.makeToastAlert("使用内置的pdf阅读器打开附件，代码待写！！！")
 
                     val attachment_uri = attachmentStorageManager.getAttachmentUri(attachment)
 
-                    val intent = Intent(context, PdfViewerActivity::class.java)
+                    val intent = presenter.requireIntent(PdfViewerActivity::class.java)
                     intent.data = attachment_uri
-                    context.startActivity(intent)
+                    presenter.startActivity(intent)
                 } else {
                     val intent = attachmentStorageManager.openAttachment(attachment)
-                    context.startActivity(intent)
+                    presenter.startActivity(intent)
                 }
 
             } catch (exception: ActivityNotFoundException) {
@@ -219,14 +227,14 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
                     "There is no app that handles ${attachment.getFileExtension()} documents available on your device. Would you like to install one?",
                     onClick = {
                         try {
-                            context.startActivity(
+                            presenter.startActivity(
                                 Intent(
                                     Intent.ACTION_VIEW,
                                     Uri.parse("market://details?id=com.xodo.pdf.reader")
                                 )
                             )
                         } catch (e: ActivityNotFoundException) {
-                            context.startActivity(
+                            presenter.startActivity(
                                 Intent(
                                     Intent.ACTION_VIEW,
                                     Uri.parse("https://play.google.com/store/apps/details?id=com.xodo.pdf.reader")
@@ -266,13 +274,14 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
         if (item.data["linkMode"] == "linked_file") {
             val intent = attachmentStorageManager.openLinkedAttachment(item)
             if (intent != null) {
-                context.startActivity(intent)
+                presenter.startActivity(intent)
+
             } else {
                 presenter.makeToastAlert("Error, could not find linked attachment ${item.data["path"]}")
             }
             return
         }
-        presenter.showLoadingAlertDialog("Opening your attachment")
+//        presenter.makeToastAlert("Opening your attachment")
         // check to see if the attachment exists but is invalid
         val attachmentExists: Boolean
         try {
@@ -286,7 +295,7 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
         }
         if (attachmentExists) {
             // check the validity of the attachment before opening.
-            presenter.showLoadingAlertDialog("Verifying MD5 Checksum")
+//            presenter.makeToastAlert("Verifying MD5 Checksum")
             if (preferences.shouldCheckMd5SumBeforeOpening() && zoteroDB.hasMd5Key(
                     item,
                     onlyWebdav = preferences.isWebDAVEnabled()
@@ -343,7 +352,7 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
         }
         isDownloading = true
 
-        zoteroAPI.downloadItemRx(item, state.currentGroup.id, context)
+        zoteroAPI.downloadItemRx(item, state.currentGroup.id, getApplication<Application>().applicationContext)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<DownloadProgress> {
@@ -785,7 +794,7 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
             mtime = attachment.getMtime()
         }
         if (preferences.isWebDAVEnabled()) {
-            zoteroAPI.uploadAttachmentWithWebdav(attachment, context).andThen(
+            zoteroAPI.uploadAttachmentWithWebdav(attachment, getApplication<Application>().applicationContext).andThen(
                 Completable.fromAction {
                     // TODO extract this complexity to some other class.
                     if (preferences.isWebDAVEnabled()) {
@@ -981,6 +990,10 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
             finishLibrarySync(zoteroDB)
     }
 
+    fun setLibraryActivityPresenter(presenter: LibraryActivityPresenter) {
+        this.presenter = presenter
+    }
+
     override fun finishLibrarySync(db: ZoteroDB) {
         /* This method is the endpoint for zotero api syncs,
         The role of this function is to load the library into memory and then
@@ -1060,7 +1073,8 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
         // check at 2.
         if (states.size <= 2) {
             if (doubleBackToExitPressedOnce) {
-                (this.context as Activity).finish()
+//                (this.context as Activity).finish()
+                presenter.finish()
                 return
             }
 
@@ -1101,9 +1115,10 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
     }
 
     init {
-        ((context as Activity).application as ZoteroApplication).component.inject(this)
+//        ((context as Activity).application as ZoteroApplication).component.inject(this)
+        (application as ZoteroApplication).component.inject(this)
 //        firebaseAnalytics = FirebaseAnalytics.getInstance(context)
-        val auth = AuthenticationStorage(context)
+        val auth = AuthenticationStorage(application.applicationContext)
         // add the first library state.
         states.push(LibraryModelState())
 
@@ -1120,13 +1135,16 @@ class LibraryActivityModel(private val presenter: Contract.Presenter, val contex
                 "Error with stored API",
                 "The API Key we have stored in the application is invalid!" +
                         "Please re-authenticate the application"
-            ) { context.finish() }
+            ) {
+//                context.finish()
+            }
             auth.destroyCredentials()
             zoteroDB.clearItemsVersion()
         }
 
         syncManager = SyncManager(zoteroAPI, this)
-        ((context as Activity).application as ZoteroApplication).component.inject(syncManager)
+//        ((context as Activity).application as ZoteroApplication).component.inject(syncManager)
+        (application as ZoteroApplication).component.inject(syncManager)
 
         checkAttachmentStorageAccess()
     }

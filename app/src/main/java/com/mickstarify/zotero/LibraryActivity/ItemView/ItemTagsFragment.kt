@@ -9,10 +9,13 @@ import android.widget.Toast
 import com.google.android.material.chip.Chip
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
 import com.mickstarify.zotero.R
+import com.mickstarify.zotero.ZoteroStorage.Database.Item
+import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
 import com.mickstarify.zotero.databinding.FragmentItemTagsBinding
 
-class ItemTagsFragment(libraryListViewModel: LibraryListViewModel) : Fragment() {
-    private var viewModel: LibraryListViewModel = libraryListViewModel
+class ItemTagsFragment : Fragment() {
+
+    private var item: Item? = null
 
     private lateinit var mBinding: FragmentItemTagsBinding
 
@@ -21,8 +24,9 @@ class ItemTagsFragment(libraryListViewModel: LibraryListViewModel) : Fragment() 
         savedInstanceState: Bundle?
     ): View? {
         mBinding = FragmentItemTagsBinding.inflate(inflater)
-        viewModel.getOnItemClicked().observe(viewLifecycleOwner) { item ->
-            populateTags(item.tags.map { it.tag })
+
+        item?.apply {
+            populateTags(this.tags.map { it.tag })
         }
         return mBinding.root
     }
@@ -46,6 +50,14 @@ class ItemTagsFragment(libraryListViewModel: LibraryListViewModel) : Fragment() 
 
             mBinding.ChipsItemTags.addView(chip)
         }
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(item: Item) =
+            ItemTagsFragment().apply {
+                this.item = item
+            }
     }
 
 

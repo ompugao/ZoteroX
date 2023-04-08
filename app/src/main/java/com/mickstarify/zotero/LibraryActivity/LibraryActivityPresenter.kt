@@ -1,6 +1,9 @@
 package com.mickstarify.zotero.LibraryActivity
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
@@ -231,7 +234,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 
     override fun openAttachment(item: Item) {
         model.openAttachment(item)
-        MyLog.d("ZoteroTest", "open attachment: ${item.itemKey}")
+        MyLog.d("ZoteroDebug", "open attachment: ${item.itemKey}")
 
     }
 
@@ -277,7 +280,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
             view.showNote(note)
         } else {
             model.selectedItem = item
-            view.showItemDialog()
+            view.showItemDialog(item)
         }
     }
 
@@ -285,7 +288,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
         val item = model.selectedItem
         if (item != null) {
             view.closeItemView()
-            view.showItemDialog()
+            view.showItemDialog(item)
         }
     }
 
@@ -412,9 +415,16 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
         view.makeToastAlert(message)
     }
 
-    private val model = LibraryActivityModel(this, context)
+    private lateinit var model: LibraryActivityModel
+
+//    private val model = LibraryActivityModel(this, (context as Activity).application)
+//    private var model: LibraryActivityModel = ViewModelProvider(view as LibraryActivity).get(LibraryActivityModel::class.java)
 
     init {
+
+        model = ViewModelProvider(view as LibraryActivity).get(LibraryActivityModel::class.java)
+        model.setLibraryActivityPresenter(this)
+
         libraryListViewModel =
             ViewModelProvider(view as LibraryActivity).get(LibraryListViewModel::class.java)
         libraryLoadingViewModel =
@@ -442,6 +452,12 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 //            model.loadGroups()
 //        }
             libraryLoadingViewModel.setFirstLoad(false)
+        } else {
+            // 显示侧边栏列表
+            val collections = this.model.getCollections()
+            receiveCollections(collections)
+
+            MyLog.d("ZoteroDebug", "set drawer menus!!!!!!")
         }
 
 
@@ -495,6 +511,17 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
         view.navController.navigate(R.id.homeLibraryFragment)
     }
 
+    fun requireIntent(clz: Class<*>): Intent {
+        return Intent(view, clz)
+    }
+
+    fun startActivity(intent: Intent) {
+        view.startActivity(intent)
+    }
+
+    fun finish() {
+        view.finish()
+    }
 
 
 }

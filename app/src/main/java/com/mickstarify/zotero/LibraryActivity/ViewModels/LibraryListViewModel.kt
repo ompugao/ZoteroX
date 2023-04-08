@@ -4,24 +4,32 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mickstarify.zotero.LibraryActivity.ListEntry
+import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
+import com.mickstarify.zotero.global.SingleLiveEvent
 
 class LibraryListViewModel : ViewModel() {
     private val items = MutableLiveData<List<ListEntry>>()
+
+
+    // view的位置
+    private var mutativePosition: Int = 0
+    //偏移
+    private var rvMutativeOffset: Int = 0
 
     fun getItems(): LiveData<List<ListEntry>> = items
     fun setItems(items: List<ListEntry>) {
         this.items.value = items
     }
 
-    private val itemClicked = MutableLiveData<Item>()
-    fun getOnItemClicked(): LiveData<Item> = itemClicked
+    private val itemClicked = SingleLiveEvent<Item>()
+    fun getOnItemClicked(): SingleLiveEvent<Item> = itemClicked
     fun onItemClicked(item: Item) {
         this.itemClicked.value = item
     }
 
-    private val attachmentClicked = MutableLiveData<Item>()
+    private val attachmentClicked = SingleLiveEvent<Item>()
     fun getOnAttachmentClicked(): LiveData<Item> = attachmentClicked
     fun onAttachmentClicked(attachment: Item) {
         this.attachmentClicked.value = attachment
@@ -49,7 +57,7 @@ class LibraryListViewModel : ViewModel() {
 
     fun getIsShowingLoadingAnimation(): LiveData<Boolean> = isShowingLoadingAnimation
 
-    private val onLibraryRefreshRequested = MutableLiveData<Int>()
+    private val onLibraryRefreshRequested = SingleLiveEvent<Int>()
     fun onLibraryRefreshRequested() {
         // changes the value so any listener will get pinged.
         onLibraryRefreshRequested.value = (onLibraryRefreshRequested.value ?: 0) + 1
@@ -64,4 +72,18 @@ class LibraryListViewModel : ViewModel() {
             this.libraryFilterText.value = query
         }
     }
+
+
+    fun getMutativePosition(): Int = mutativePosition
+    fun setMutativePosition(position: Int) {
+        mutativePosition = position
+    }
+
+    fun getMutativeOffset(): Int = rvMutativeOffset
+    fun setMutativeOffset(offset: Int) {
+        rvMutativeOffset = offset
+    }
+
+
+
 }

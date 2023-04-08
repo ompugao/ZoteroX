@@ -29,7 +29,8 @@ class ZoteroDB constructor(
 ) {
 
     init {
-        ((context as Activity).application as ZoteroApplication).component.inject(this)
+//        ((context as Activity).application as ZoteroApplication).component.inject(this)
+        (context.applicationContext as ZoteroApplication).component.inject(this)
     }
 
     @Inject

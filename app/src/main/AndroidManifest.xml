@@ -66,8 +66,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".LibraryActivity.LibraryActivity"
-            android:launchMode="singleInstance">
+            android:name=".LibraryActivity.LibraryActivity">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
