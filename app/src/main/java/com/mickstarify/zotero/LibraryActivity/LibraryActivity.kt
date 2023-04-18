@@ -1,5 +1,6 @@
 package com.mickstarify.zotero.LibraryActivity
 
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Intent
 import android.content.res.Configuration
@@ -28,6 +29,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayoutMediator
+import com.kongzue.dialogx.dialogs.CustomDialog
 import com.mickstarify.zotero.AttachmentManager.AttachmentManager
 import com.mickstarify.zotero.BaseActivity
 import com.mickstarify.zotero.LibraryActivity.ItemView.*
@@ -46,6 +48,7 @@ import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.ZoteroStorage.ZoteroUtils
 import com.mickstarify.zotero.adapters.ItemPageAdapter
 import com.mickstarify.zotero.databinding.FragmentItemInfoBinding
+import com.mickstarify.zotero.global.ScreenUtils
 
 
 class LibraryActivity : BaseActivity(),
@@ -402,8 +405,6 @@ class LibraryActivity : BaseActivity(),
             tab.text = tabs[position].tabTitle
         }.attach()
 
-
-
         libraryViewModel.getOnItemClicked().observe(this) { item ->
             binding.txtItemType.text = ZoteroUtils.getItemTypeHumanReadableString(item.itemType)
 //            binding.textViewItemToolbarTitle.text = item.getTitle()
@@ -427,16 +428,22 @@ class LibraryActivity : BaseActivity(),
             }
         }
 
-        val bottomSheetDialog = BottomSheetDialog(this)
-        bottomSheetDialog.behavior.peekHeight = 800
+        var dialog: Dialog? = null
 
-        bottomSheetDialog.setContentView(binding.root)
-        bottomSheetDialog.show()
+        if (ScreenUtils.isTabletWindow(this)) {
+            dialog = Dialog(this)
+        } else {
+            dialog = BottomSheetDialog(this)
+            dialog.behavior.peekHeight = 800
+        }
 
+        dialog.setContentView(binding.root)
+        dialog.show()
 
         binding.btnClose.setOnClickListener {
-            bottomSheetDialog.dismiss()
+            dialog?.dismiss()
         }
+
     }
 
     /**

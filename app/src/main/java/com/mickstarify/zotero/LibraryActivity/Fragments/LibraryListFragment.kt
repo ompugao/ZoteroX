@@ -131,7 +131,7 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         viewModel = ViewModelProvider(requireActivity()).get(LibraryListViewModel::class.java)
         (requireActivity().application as ZoteroApplication).component.inject(this)
         val recyclerView = requireView().findViewById<RecyclerView>(R.id.recyclerView)
-        val adapter = LibraryListRecyclerViewAdapter(emptyList(), this)
+        val adapter = LibraryListRecyclerViewAdapter(requireContext(), emptyList(), this)
 
         recyclerView.adapter = adapter
 

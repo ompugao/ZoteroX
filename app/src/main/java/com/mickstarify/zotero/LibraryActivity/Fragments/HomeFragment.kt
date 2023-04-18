@@ -59,7 +59,7 @@ class HomeFragment : Fragment() , LibraryListInteractionListener, SwipeRefreshLa
         viewModel = ViewModelProvider(requireActivity()).get(LibraryListViewModel::class.java)
 
         val recyclerView = mBinding.recyclerView
-        val adapter = LibraryListRecyclerViewAdapter(emptyList(), this)
+        val adapter = LibraryListRecyclerViewAdapter(requireContext(), emptyList(), this)
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())

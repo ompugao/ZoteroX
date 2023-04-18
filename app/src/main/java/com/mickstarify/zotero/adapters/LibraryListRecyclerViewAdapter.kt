@@ -1,5 +1,6 @@
 package com.mickstarify.zotero.adapters
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +11,13 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.mickstarify.zotero.LibraryActivity.ListEntry
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 
-class LibraryListRecyclerViewAdapter(
+class LibraryListRecyclerViewAdapter(val context: Context,
     var items: List<ListEntry>,
     val listener: LibraryListInteractionListener
 ) : RecyclerView.Adapter<LibraryListRecyclerViewAdapter.ListEntryViewHolder>() {
@@ -79,6 +81,14 @@ class LibraryListRecyclerViewAdapter(
             // Use itemType to get the target icon resource.
             val iconResource = requireItemIconRes(item.itemType)
             holder.imageView.setImageResource(iconResource)
+
+//            Glide.with(context)
+//                .load(iconResource)
+////                .placeholder(iconResource)
+////                .error(R.drawable.ic_item_known)
+//                .crossFade()//或者使用 dontAnimate() 关闭动画
+//                .into(holder.imageView)
+
         } else {
             val collection = entry.getCollection()
             holder.textView_title.text = collection.name
@@ -89,6 +99,11 @@ class LibraryListRecyclerViewAdapter(
                 Log.d("zotero", "Open Collection")
                 listener.onCollectionOpen(collection)
             }
+
+//            Glide.with(context)
+//                .load(R.drawable.treesource_folder)
+//                .crossFade()//或者使用 dontAnimate() 关闭动画
+//                .into(holder.imageView);
         }
     }
 

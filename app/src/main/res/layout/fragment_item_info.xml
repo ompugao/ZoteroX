@@ -32,7 +32,7 @@
                     android:layout_alignParentStart="true"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="3dp"
-                    android:tint="#474B5C"
+                    app:tint="#474B5C"
                     app:srcCompat="@drawable/ic_close" />
 
                 <TextView
@@ -57,7 +57,7 @@
                     android:focusable="true"
                     android:padding="3dp"
                     android:scaleType="fitCenter"
-                    android:tint="#474B5C"
+                    app:tint="#474B5C"
                     app:srcCompat="@drawable/ic_toolbar_note_add" />
 
                 <ImageButton
@@ -70,7 +70,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="3dp"
                     android:scaleType="fitCenter"
-                    android:tint="#474B5C"
+                    app:tint="#474B5C"
                     app:srcCompat="@drawable/ic_more_vert" />
 
             </RelativeLayout>
