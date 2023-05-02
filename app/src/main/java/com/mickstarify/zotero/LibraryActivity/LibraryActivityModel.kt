@@ -1014,11 +1014,12 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
 
         loadCollections
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .andThen(loadItems)
             .andThen(db.loadTrashItemsFromDB())
+            .observeOn(AndroidSchedulers.mainThread())
             .doOnComplete {
                 presenter.hideBasicSyncAnimation()
+
                 if (db.groupID == GroupInfo.NO_GROUP_ID) {
                     presenter.receiveCollections(getCollections())
                     if (state.currentCollection == "unset") {

@@ -14,12 +14,14 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
@@ -161,9 +163,28 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
                 hideEmptyList()
             }
 
-            Log.d("zotero", "Loading new set of item (${entries.size} length)")
-            adapter.items = entries
-            adapter.notifyDataSetChanged()
+            val oldList = adapter.items ?: listOf()
+            val newList = entries
+            adapter.items = newList
+            DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+                override fun getOldListSize() = oldList.size
+
+                override fun getNewListSize() = newList.size
+
+                override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                    //不考虑大小写，如果equals就是同个元素
+                    return oldList[oldItemPosition] == newList[newItemPosition]
+                }
+
+                override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                    //如果equals就内容相同
+                    return oldList[oldItemPosition] == newList[newItemPosition]
+                }
+            }, false).dispatchUpdatesTo(adapter)
+
+            MyLog.d("zotero", "Loading new set of item (${entries.size} length)")
+//            adapter.items = entries
+//            adapter.notifyDataSetChanged()
         }
 
         val swipeRefresh =
@@ -172,7 +193,6 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         viewModel.getIsShowingLoadingAnimation().observe(viewLifecycleOwner) {
             if (swipeRefresh.isRefreshing != it) {
                 swipeRefresh.isRefreshing = it
-                MyLog.d("Zotero UI", "SwipeRefresher isRefreshing: $it")
             }
         }
 
@@ -245,13 +265,13 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
 
     fun showEmptyList() {
         val layout =
-            requireView().findViewById<ConstraintLayout>(R.id.constraintLayout_library_content)
+            requireView().findViewById<LinearLayout>(R.id.list_empty_view)
         layout.visibility = View.VISIBLE
     }
 
     fun hideEmptyList() {
         val layout =
-            requireView().findViewById<ConstraintLayout>(R.id.constraintLayout_library_content)
+            requireView().findViewById<LinearLayout>(R.id.list_empty_view)
         layout.visibility = View.GONE
     }
 

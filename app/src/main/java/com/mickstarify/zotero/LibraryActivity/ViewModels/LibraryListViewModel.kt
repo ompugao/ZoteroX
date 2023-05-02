@@ -23,6 +23,10 @@ class LibraryListViewModel : ViewModel() {
         this.items.value = items
     }
 
+    fun setItemsInBackgroundThread(items: List<ListEntry>) {
+        this.items.postValue(items)
+    }
+
     private val itemClicked = SingleLiveEvent<Item>()
     fun getOnItemClicked(): SingleLiveEvent<Item> = itemClicked
     fun onItemClicked(item: Item) {

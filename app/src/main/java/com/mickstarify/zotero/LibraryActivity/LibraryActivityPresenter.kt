@@ -15,9 +15,14 @@ import com.mickstarify.zotero.ZoteroAPI.Model.Note
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
 import com.mickstarify.zotero.ZoteroStorage.Database.GroupInfo
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import java.text.Collator
 import java.util.LinkedList
 import java.util.Locale
+import kotlin.concurrent.thread
 
 class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Contract.Presenter {
     override lateinit var libraryListViewModel: LibraryListViewModel
@@ -351,45 +356,66 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 
         Log.d("zotero", "Got request to change collection to ${collectionKey}")
         model.setCurrentCollection(collectionKey, usePersonalLibrary = fromNavigationDrawer)
+
         if (collectionKey == "all" && !model.isUsingGroups()) {
             view.setTitle("我的文库")
-            val entries = model.getLibraryItems().sort().map { ListEntry(it) }
-            model.isDisplayingItems = entries.size > 0
-            libraryListViewModel.setItems(entries)
+
+            thread {
+                val entries = model.getLibraryItems().sort().map { ListEntry(it) }
+                model.isDisplayingItems = entries.size > 0
+
+                // 在子线程中设置数据的话需调用该方法，否为会报错
+                libraryListViewModel.setItemsInBackgroundThread(entries)
+            }
         } else if (collectionKey == "unfiled_items") {
             view.setTitle("Unfiled Items")
-            val entries = model.getUnfiledItems().sort().map { ListEntry(it) }
-            model.isDisplayingItems = entries.size > 0
-            libraryListViewModel.setItems(entries)
+
+            thread {
+                val entries = model.getUnfiledItems().sort().map { ListEntry(it) }
+                model.isDisplayingItems = entries.size > 0
+
+                libraryListViewModel.setItemsInBackgroundThread(entries)
+            }
         } else if (collectionKey == "zooforzotero_Trash"){
             this.openTrash()
         } else if (collectionKey == "zooforzotero_my_publications"){
             this.openMyPublications()
         }else if (collectionKey == "group_all" && model.isUsingGroups()) {
             view.setTitle(model.getCurrentGroup()?.name ?: "ERROR")
-            val entries = LinkedList<ListEntry>()
-            entries.addAll(model.getCollections().filter {
-                !it.hasParent()
-            }.sortedBy {
-                it.name.toLowerCase(Locale.ROOT)
-            }.map { ListEntry(it) })
-            entries.addAll(model.getLibraryItems().sort().map { ListEntry(it) })
-            model.isDisplayingItems = entries.size > 0
-            libraryListViewModel.setItems(entries)
+
+            thread {
+                val entries = LinkedList<ListEntry>()
+                entries.addAll(model.getCollections().filter {
+                    !it.hasParent()
+                }.sortedBy {
+                    it.name.toLowerCase(Locale.ROOT)
+                }.map { ListEntry(it) })
+                entries.addAll(model.getLibraryItems().sort().map { ListEntry(it) })
+                model.isDisplayingItems = entries.size > 0
+
+                libraryListViewModel.setItemsInBackgroundThread(entries)
+            }
+
         }
         // It is an actual collection on the user's private.
         else {
-            val collection = model.getCollectionFromKey(collectionKey)
+            thread {
+                val collection = model.getCollectionFromKey(collectionKey)
 
-            view.setTitle(collection?.name ?: "Unknown Collection")
-            val entries = LinkedList<ListEntry>()
-            entries.addAll(model.getSubCollections(collectionKey).sortedBy {
-                it.name.toLowerCase(Locale.ROOT)
-            }.map { ListEntry(it) })
+                val entries = LinkedList<ListEntry>()
+                entries.addAll(model.getSubCollections(collectionKey).sortedBy {
+                    it.name.toLowerCase(Locale.ROOT)
+                }.map { ListEntry(it) })
 
-            entries.addAll(model.getItemsFromCollection(collectionKey).sort().map { ListEntry(it) })
-            model.isDisplayingItems = entries.size > 0
-            libraryListViewModel.setItems(entries)
+                entries.addAll(model.getItemsFromCollection(collectionKey).sort().map { ListEntry(it) })
+                model.isDisplayingItems = entries.size > 0
+
+                view.runOnUiThread {
+                    view.setTitle(collection?.name ?: "Unknown Collection")
+                    libraryListViewModel.setItems(entries)
+                }
+            }
+
         }
     }
 
