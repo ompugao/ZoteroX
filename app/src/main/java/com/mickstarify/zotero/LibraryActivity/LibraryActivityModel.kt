@@ -33,12 +33,17 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.util.LinkedList
 import java.util.Locale
 import java.util.Stack
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.concurrent.thread
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection as ZoteroCollection
 
 
@@ -1048,15 +1053,32 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
                         "Resync",
                         "No",
                         {
-                            zoteroDatabase.deleteAllItemsForGroup(GroupInfo.NO_GROUP_ID).blockingAwait()
-                            groups?.forEach {
-                                val zDb = zoteroGroupDB.getGroup(it.id)
-                                zDb.destroyItemsDatabase()
-                                zoteroDatabase.deleteAllItemsForGroup(it.id).blockingAwait()
+
+                            CoroutineScope(Dispatchers.IO).launch {
+                                zoteroDatabase.deleteAllItemsForGroup(GroupInfo.NO_GROUP_ID)
+                                groups?.forEach {
+                                    val zDb = zoteroGroupDB.getGroup(it.id)
+                                    zDb.destroyItemsDatabase()
+                                    zoteroDatabase.deleteAllItemsForGroup(it.id)
+                                }
+
+                                destroyLibrary()
+
+                                withContext(Dispatchers.Main) {
+                                    refreshLibrary()
+                                }
+
                             }
 
-                            destroyLibrary()
-                            refreshLibrary()
+//                            zoteroDatabase.deleteAllItemsForGroup(GroupInfo.NO_GROUP_ID).blockingAwait()
+//                            groups?.forEach {
+//                                val zDb = zoteroGroupDB.getGroup(it.id)
+//                                zDb.destroyItemsDatabase()
+//                                zoteroDatabase.deleteAllItemsForGroup(it.id).blockingAwait()
+//                            }
+//
+//                            destroyLibrary()
+//                            refreshLibrary()
                         },
                         {}
                     )

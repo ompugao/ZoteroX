@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
+import com.mickstarify.zotero.ConstValues
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryLoadingScreenViewModel
 import com.mickstarify.zotero.MyLog
@@ -309,7 +310,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
         view.setTitle("我的出版物")
         val entries = model.getMyPublications().sort().map{ListEntry(it)}
         model.isDisplayingItems = entries.isNotEmpty()
-        model.setCurrentCollection("zooforzotero_my_publications")
+        model.setCurrentCollection(ConstValues.MY_PUBLICATIONS)
         libraryListViewModel.setItems(entries)
     }
 
@@ -325,7 +326,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
         view.setTitle("回收站")
         val entries = model.getTrashedItems().sort().map{ListEntry(it)}
         model.isDisplayingItems = entries.isNotEmpty()
-        model.setCurrentCollection("zooforzotero_Trash")
+        model.setCurrentCollection(ConstValues.TRASH)
         libraryListViewModel.setItems(entries)
     }
 
@@ -357,7 +358,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
         Log.d("zotero", "Got request to change collection to ${collectionKey}")
         model.setCurrentCollection(collectionKey, usePersonalLibrary = fromNavigationDrawer)
 
-        if (collectionKey == "all" && !model.isUsingGroups()) {
+        if (collectionKey == ConstValues.ALL_ITEMS && !model.isUsingGroups()) {
             view.setTitle("我的文库")
 
             thread {
@@ -367,7 +368,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
                 // 在子线程中设置数据的话需调用该方法，否为会报错
                 libraryListViewModel.setItemsInBackgroundThread(entries)
             }
-        } else if (collectionKey == "unfiled_items") {
+        } else if (collectionKey == ConstValues.UNFILED) {
             view.setTitle("Unfiled Items")
 
             thread {
@@ -376,11 +377,11 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 
                 libraryListViewModel.setItemsInBackgroundThread(entries)
             }
-        } else if (collectionKey == "zooforzotero_Trash"){
+        } else if (collectionKey == ConstValues.TRASH){
             this.openTrash()
-        } else if (collectionKey == "zooforzotero_my_publications"){
+        } else if (collectionKey == ConstValues.MY_PUBLICATIONS){
             this.openMyPublications()
-        }else if (collectionKey == "group_all" && model.isUsingGroups()) {
+        }else if (collectionKey == ConstValues.GROUP_ALL && model.isUsingGroups()) {
             view.setTitle(model.getCurrentGroup()?.name ?: "ERROR")
 
             thread {

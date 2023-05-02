@@ -94,7 +94,7 @@
 
                 <data
                     android:host="oauth_callback"
-                    android:scheme="zooforzotero" />
+                    android:scheme="zotero" />
             </intent-filter>
         </activity>
         <activity

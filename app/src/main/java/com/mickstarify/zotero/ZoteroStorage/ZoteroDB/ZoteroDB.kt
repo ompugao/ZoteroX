@@ -28,6 +28,11 @@ class ZoteroDB constructor(
     val groupID: Int
 ) {
 
+    companion object {
+        private val downloadedItemsInfo: HashMap<String, Int> = HashMap()
+
+    }
+
     init {
 //        ((context as Activity).application as ZoteroApplication).component.inject(this)
         (context.applicationContext as ZoteroApplication).component.inject(this)
@@ -283,33 +288,49 @@ class ZoteroDB constructor(
     }
 
     fun setDownloadProgress(progress: ItemsDownloadProgress) {
-        val sharedPreferences = context.getSharedPreferences(namespace, MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putInt("downloadedAmount", progress.nDownloaded)
-        editor.putInt("total", progress.total)
-        editor.putInt("downloadVersion", progress.libraryVersion)
-        editor.apply()
+//        val sharedPreferences = context.getSharedPreferences(namespace, MODE_PRIVATE)
+//        val editor = sharedPreferences.edit()
+//        editor.putInt("downloadedAmount", progress.nDownloaded)
+//        editor.putInt("total", progress.total)
+//        editor.putInt("downloadVersion", progress.libraryVersion)
+//        editor.apply()
+
+        downloadedItemsInfo["downloadedAmount"] = progress.nDownloaded
+        downloadedItemsInfo["total"] = progress.total
+        downloadedItemsInfo["downloadVersion"] = progress.libraryVersion
     }
 
     fun destroyDownloadProgress() {
-        val sharedPreferences = context.getSharedPreferences(namespace, MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.remove("downloadedAmount")
-        editor.remove("total")
-        editor.remove("downloadVersion")
-        editor.commit()
+//        val sharedPreferences = context.getSharedPreferences(namespace, MODE_PRIVATE)
+//        val editor = sharedPreferences.edit()
+//        editor.remove("downloadedAmount")
+//        editor.remove("total")
+//        editor.remove("downloadVersion")
+//        editor.commit()
     }
 
     fun getDownloadProgress(): ItemsDownloadProgress? {
-        val sharedPreferences = context.getSharedPreferences(namespace, MODE_PRIVATE)
-        val nDownload = sharedPreferences.getInt("downloadedAmount", 0)
+//        val sharedPreferences = context.getSharedPreferences(namespace, MODE_PRIVATE)
+//        val nDownload = sharedPreferences.getInt("downloadedAmount", 0)
+//        if (nDownload == 0) {
+//            return null
+//        }
+//
+//        val total = sharedPreferences.getInt("total", 0)
+//        val downloadVersion = sharedPreferences.getInt("downloadVersion", 0)
+//        if (nDownload == 0 || total == nDownload) {
+//            // completed job. there is no download progress.
+//            return null
+//        }
+
+        val nDownload = downloadedItemsInfo["downloadedAmount"] ?: 0
         if (nDownload == 0) {
             return null
         }
 
-        val total = sharedPreferences.getInt("total", 0)
-        val downloadVersion = sharedPreferences.getInt("downloadVersion", 0)
-        if (nDownload == 0 || total == nDownload) {
+        val total = downloadedItemsInfo["total"] ?: 0
+        val downloadVersion =  downloadedItemsInfo["downloadVersion"] ?: 0
+        if (total == nDownload) {
             // completed job. there is no download progress.
             return null
         }

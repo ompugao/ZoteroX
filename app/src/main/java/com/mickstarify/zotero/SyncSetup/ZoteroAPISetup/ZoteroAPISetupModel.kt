@@ -56,7 +56,7 @@ class ZoteroAPISetupModel(val presenter: Contract.Presenter) : Contract.Model {
 
     override fun establishAPIConnection() {
         val d = Observable.fromCallable {
-            OAuthProvider.retrieveRequestToken(OAuthConsumer, "zooforzotero://oauth_callback")
+            OAuthProvider.retrieveRequestToken(OAuthConsumer, "zotero://oauth_callback")
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

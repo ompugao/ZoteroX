@@ -30,17 +30,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kongzue.dialogx.dialogs.CustomDialog
+import com.mickstarify.zotero.*
 import com.mickstarify.zotero.AttachmentManager.AttachmentManager
-import com.mickstarify.zotero.BaseActivity
 import com.mickstarify.zotero.LibraryActivity.ItemView.*
 import com.mickstarify.zotero.LibraryActivity.Notes.EditNoteDialog
 import com.mickstarify.zotero.LibraryActivity.Notes.NoteInteractionListener
 import com.mickstarify.zotero.LibraryActivity.Notes.NoteView
 import com.mickstarify.zotero.LibraryActivity.Notes.onEditNoteChangeListener
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
-import com.mickstarify.zotero.MyLog
-import com.mickstarify.zotero.R
-import com.mickstarify.zotero.SettingsActivity
 import com.mickstarify.zotero.ZoteroAPI.Model.Note
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
 import com.mickstarify.zotero.ZoteroStorage.Database.GroupInfo
@@ -215,16 +212,16 @@ class LibraryActivity : BaseActivity(),
             return
         }
 
-        val menuItem: MenuItem? = if (state.currentCollection == "all") {
+        val menuItem: MenuItem? = if (state.currentCollection == ConstValues.ALL_ITEMS) {
             val navigationView = findViewById<NavigationView>(R.id.nav_view_library)
             navigationView.menu.findItem(R.id.my_library)
-        } else if (state.currentCollection == "unfiled_items") {
+        } else if (state.currentCollection == ConstValues.UNFILED) {
             val navigationView = findViewById<NavigationView>(R.id.nav_view_library)
             navigationView.menu.findItem(MENU_ID_UNFILED_ITEMS)
-        } else if (state.currentCollection == "zooforzotero_my_publications") {
+        } else if (state.currentCollection == ConstValues.MY_PUBLICATIONS) {
             val navigationView = findViewById<NavigationView>(R.id.nav_view_library)
             navigationView.menu.findItem(MENU_ID_MY_PUBLICATIONS)
-        } else if (state.currentCollection == "zooforzotero_Trash") {
+        } else if (state.currentCollection == ConstValues.TRASH) {
             val navigationView = findViewById<NavigationView>(R.id.nav_view_library)
             navigationView.menu.findItem(MENU_ID_TRASH)
         } else {
