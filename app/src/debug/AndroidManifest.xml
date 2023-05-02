@@ -107,7 +107,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.moyear.zotero.fileprovider.app"
+            android:authorities="${applicationId}.fileprovider.app"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
