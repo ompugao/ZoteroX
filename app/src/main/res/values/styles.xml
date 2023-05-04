@@ -37,9 +37,26 @@
 
     <style name="ThemeToolbar" parent="AppTheme">
         <!-- navigation icon color -->
-        <item name="colorControlNormal">#000000</item>
+        <item name="colorControlNormal">#313E5E</item>
         <!-- color of the menu overflow icon -->
         <item name="android:textColorSecondary">#000000</item>
+    </style>
+
+    <style name="TagAppearance">
+        <item name="chipBackgroundColor">#F1F2FA</item>
+        <item name="android:textColor">#5F70C0</item>
+
+        <item name="android:textSize">12dp</item>
+        <item name="chipMinHeight">20dp</item>
+        <item name="chipCornerRadius">3dp</item>
+
+        <item name="textStartPadding">1dp</item>
+        <item name="textEndPadding">1dp</item>
+    </style>
+
+    <style name="TagAppearance.Small" parent="TagAppearance">
+        <item name="chipMinHeight">18dp</item>
+        <item name="android:textSize">12dp</item>
     </style>
 
 

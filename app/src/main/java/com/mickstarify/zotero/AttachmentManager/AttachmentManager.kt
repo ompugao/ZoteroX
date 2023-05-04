@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.R
 
@@ -43,7 +44,7 @@ class AttachmentManager : AppCompatActivity(), Contract.View {
     }
 
     override fun createErrorAlert(title: String, message: String, onClick: () -> Unit) {
-        val alert = AlertDialog.Builder(this)
+        val alert = MaterialAlertDialogBuilder(this)
         alert.setIcon(R.drawable.ic_error_black_24dp)
         alert.setTitle(title)
         alert.setMessage(message)

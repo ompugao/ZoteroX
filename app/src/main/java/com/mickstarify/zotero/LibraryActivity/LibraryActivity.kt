@@ -15,6 +15,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.PopupMenu
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -27,6 +28,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kongzue.dialogx.dialogs.CustomDialog
@@ -44,6 +46,7 @@ import com.mickstarify.zotero.ZoteroStorage.Database.GroupInfo
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.ZoteroStorage.ZoteroUtils
 import com.mickstarify.zotero.adapters.ItemPageAdapter
+import com.mickstarify.zotero.databinding.ContentDialogProgressBinding
 import com.mickstarify.zotero.databinding.FragmentItemInfoBinding
 import com.mickstarify.zotero.global.ScreenUtils
 
@@ -65,6 +68,8 @@ class LibraryActivity : BaseActivity(),
     lateinit var navController: NavController
     lateinit var navHostFragment: NavHostFragment
 
+    private lateinit var toolbar: Toolbar
+
     // used to "uncheck" the last pressed menu item if we change via code.
     private var currentPressedMenuItem: MenuItem? = null
 
@@ -72,8 +77,9 @@ class LibraryActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_library)
 
-        val toolbar: Toolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
+        setTitle("")
 
         navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
@@ -110,13 +116,13 @@ class LibraryActivity : BaseActivity(),
     }
 
     private fun libraryHomeScreenShown() {
-        supportActionBar?.title = "主页"
+        setTitle(getString(R.string.homepage))
         mDrawerToggle.isDrawerIndicatorEnabled = true
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun barcodeScanningScreenShown() {
-        supportActionBar?.title = "Barcode Scanner"
+        setTitle("Barcode Scanner")
         mDrawerToggle.isDrawerIndicatorEnabled = false
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -127,7 +133,7 @@ class LibraryActivity : BaseActivity(),
     private fun libraryLoadingScreenShown() {
 //        supportActionBar?.title = "加载中..."
         //加载动画的时候不显示toolbar标题
-        supportActionBar?.title = ""
+        setTitle("")
         mDrawerToggle.isDrawerIndicatorEnabled = true
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
@@ -136,7 +142,7 @@ class LibraryActivity : BaseActivity(),
      * 显示文库界面
      */
     private fun libraryListScreenShown() {
-        supportActionBar?.title = "文库"
+        setTitle("文库")
         mDrawerToggle.isDrawerIndicatorEnabled = true
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -331,7 +337,7 @@ class LibraryActivity : BaseActivity(),
     }
 
     fun createErrorAlert(title: String, message: String, onClick: () -> Unit) {
-        val alert = AlertDialog.Builder(this)
+        val alert = MaterialAlertDialogBuilder(this)
         alert.setIcon(R.drawable.ic_error_black_24dp)
         alert.setTitle(title)
         alert.setMessage(message)
@@ -375,7 +381,9 @@ class LibraryActivity : BaseActivity(),
     }
 
     fun setTitle(title: String) {
-        supportActionBar?.title = title
+//        supportActionBar?.title = title
+        supportActionBar?.title = ""
+        toolbar.findViewById<TextView>(R.id.txt_title).text = title
     }
 
     fun showItemDialog(item: Item) {
@@ -494,12 +502,22 @@ class LibraryActivity : BaseActivity(),
 
     fun showLoadingAlertDialog(message: String) {
         if (progressDialog == null) {
-            progressDialog = ProgressDialog(this)
-        }
-        progressDialog?.isIndeterminate = true
-        progressDialog?.setMessage(message)
-        progressDialog?.show()
+            val dialogBuilder = MaterialAlertDialogBuilder(this)
 
+            val binding = ContentDialogProgressBinding.inflate(layoutInflater)
+            binding.txtContent.text = message
+
+            progressDialog = dialogBuilder.setView(binding.root)
+                .setCancelable(false)
+                .show()
+        }
+
+//        if (progressDialog == null) {
+//            progressDialog = ProgressDialog(this)
+//        }
+//        progressDialog?.isIndeterminate = true
+//        progressDialog?.setMessage(message)
+//        progressDialog?.show()
     }
 
     fun hideLoadingAlertDialog() {
@@ -507,37 +525,40 @@ class LibraryActivity : BaseActivity(),
         progressDialog = null
     }
 
-    @Suppress("DEPRECATION")
-    var progressDialog: ProgressDialog? = null
+    var progressDialog: AlertDialog? = null
+    var progressContentBinding: ContentDialogProgressBinding? = null
 
-    @Suppress("DEPRECATION")
     fun updateAttachmentDownloadProgress(progress: Int, total: Int) {
         if (progressDialog == null) {
-            progressDialog = ProgressDialog(this)
-            progressDialog?.setTitle("Downloading File")
-            progressDialog?.setButton("Cancel") { dialogInterface, _ ->
-                presenter.cancelAttachmentDownload()
-            }
-        }
-        if (true) { // if (total == 0) {
-            progressDialog?.isIndeterminate = true
-            val progressString = if (progress == 0) {
-                ""
-            } else {
-                if (total > 0) {
-                    "$progress/${total}KB"
-                } else {
-                    "${progress}KB"
-                }
-            }
+            val dialogBuilder = MaterialAlertDialogBuilder(this)
 
-            progressDialog?.setMessage("Downloading your Attachment. $progressString")
+            progressContentBinding = ContentDialogProgressBinding.inflate(layoutInflater)
+
+            dialogBuilder.setTitle(getString(R.string.downloading_file))
+                .setView(progressContentBinding!!.root)
+                .setCancelable(false)
+                .setNegativeButton(getString(R.string.cancel)) { dialogInterface, _ ->
+                    presenter.cancelAttachmentDownload()
+                }
+            progressDialog = dialogBuilder.show()
         }
-        progressDialog?.show()
+
+        val progressString = if (progress == 0) {
+            ""
+          } else {
+            if (total > 0) {
+                "$progress/${total} KB"
+            } else {
+                "${progress} KB"
+            }
+        }
+
+        progressContentBinding?.txtContent?.text = "${getString(R.string.downloading_your_attachment)} : $progressString"
     }
 
     fun hideAttachmentDownloadProgress() {
-        progressDialog?.hide()
+//        progressDialog?.hide()
+        progressDialog?.dismiss()
         progressDialog = null
     }
 
@@ -564,7 +585,7 @@ class LibraryActivity : BaseActivity(),
         onYesClick: () -> Unit,
         onNoClick: () -> Unit
     ) {
-        val alert = AlertDialog.Builder(this)
+        val alert = MaterialAlertDialogBuilder(this)
         alert.setIcon(R.drawable.ic_error_black_24dp)
         alert.setTitle(title)
         alert.setMessage(message)

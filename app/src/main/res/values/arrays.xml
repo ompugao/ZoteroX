@@ -25,8 +25,8 @@
     </string-array>
 
     <string-array name="attachment_storage_location_entries">
-        <item>External Cache</item>
-        <item>Custom Path</item>
+        <item>@string/external_cache</item>
+        <item>@string/custom_path</item>
     </string-array>
 
     <string-array name="attachment_storage_location_values">

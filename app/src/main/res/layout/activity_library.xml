@@ -21,11 +21,26 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="?attr/actionBarSize"
                 android:background="#fff"
-                android:minHeight="?attr/actionBarSize"
+                app:title=""
+                app:titleTextAppearance="@style/TextAppearance.AppCompat.Subhead"
+                app:layout_scrollFlags="scroll"
+                app:navigationIcon="@drawable/ic_navigation_menu"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:theme="@style/ThemeToolbar"/>
+                app:theme="@style/ThemeToolbar">
+
+                <TextView
+                    style="@style/TextAppearance.AppCompat.Subhead"
+                    android:id="@+id/txt_title"
+                    tools:text="Title"
+                    android:textStyle="bold"
+                    android:textColor="#313E5E"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+
+            </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 

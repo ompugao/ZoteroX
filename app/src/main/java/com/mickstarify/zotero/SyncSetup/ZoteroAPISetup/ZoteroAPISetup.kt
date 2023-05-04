@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mickstarify.zotero.LibraryActivity.LibraryActivity
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.SyncSetup.AuthenticationStorage
@@ -39,7 +40,7 @@ class ZoteroAPISetup : AppCompatActivity(), Contract.View {
     }
 
     override fun makeErrorAlert(title: String, message: String) {
-        val alert = AlertDialog.Builder(this)
+        val alert = MaterialAlertDialogBuilder(this)
         alert.setIcon(R.drawable.ic_error_black_24dp)
         alert.setTitle(title)
         alert.setMessage(message)

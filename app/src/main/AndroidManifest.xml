@@ -80,7 +80,6 @@
         <activity
             android:name=".SyncSetup.ZoteroAPISetup.ZoteroAPISetup"
             android:label="@string/title_activity_zotero_api_setup"
-            android:launchMode="singleInstance"
             android:parentActivityName=".SyncSetup.SyncSetupView">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

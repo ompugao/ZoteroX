@@ -1,5 +1,6 @@
 package com.mickstarify.zotero.LibraryActivity.ItemView
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.google.android.material.chip.Chip
+import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.ZoteroApplication
 import com.mickstarify.zotero.ZoteroStorage.Database.Creator
@@ -15,6 +18,8 @@ import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
 import com.mickstarify.zotero.ZoteroStorage.ZoteroUtils
 import com.mickstarify.zotero.databinding.FragmentItemBasicInfoBinding
+import com.mickstarify.zotero.databinding.LayoutItemBasicInfoEtcBinding
+import com.mickstarify.zotero.databinding.LayoutItemBasicInfoJournalPaperBinding
 
 class ItemBasicInfoFragment : Fragment() {
 
@@ -36,7 +41,15 @@ class ItemBasicInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        item?.let { showItemInfo(it) }
+        if (item == null) {
+            return
+        }
+
+        when (item?.itemType) {
+            "journalArticle" -> navigateToThesisInfoPage(item!!)
+            else -> showBasicInfo(item!!)
+        }
+
     }
 
     private fun showItemInfo(item: Item) {
@@ -92,6 +105,9 @@ class ItemBasicInfoFragment : Fragment() {
 
             txtAuthorName.text = "$lastName'$firstName"
 
+            
+        
+
 //            edtLastName.setText(creator.lastName ?: "")
 //            edtFirstName.setText(creator.firstName ?: "")
         }
@@ -123,6 +139,61 @@ class ItemBasicInfoFragment : Fragment() {
 
         val textViewInfo = textLayout.findViewById<TextView>(R.id.textView_item_info)
         textViewInfo.setText(content)
+    }
+
+    private fun showBasicInfo(item: Item) {
+        val binding = LayoutItemBasicInfoEtcBinding.inflate(layoutInflater)
+        navigateToView(binding.root)
+
+        item?.let { showItemInfo(it) }
+    }
+
+    private fun navigateToThesisInfoPage(item: Item) {
+        val binding = LayoutItemBasicInfoJournalPaperBinding.inflate(layoutInflater)
+        binding.txtThesisTitle.text = item.getTitle()
+
+        binding.txtAbstract.text = item.data["abstractNote"]
+
+        binding.txtDate.text = item.data["date"]
+        binding.txtJournalName.text = item.data["publicationTitle"]
+
+        // show creators of this paper
+        var authorsInfo = ""
+        item.creators.forEach {
+            authorsInfo += it.firstName + it.lastName + ";"
+        }
+        binding.txtAuthors.text = authorsInfo
+
+        var info = ""
+        for (datum in item.data) {
+            info += "\n ${datum.key} : ${datum.value}"
+        }
+        MyLog.d("ZoteroDebug", info)
+
+        // show extra info
+        val extraInfo =  "修改日期：${item.data["dateModified"]} \n创建日期：${item.data["dateAdded"]}"
+        binding.txtExtraInfo.text = extraInfo
+
+        // show information about this journal paper
+        val journalInfo = "卷次：${item.data["volume"]} \n期号：${item.data["issue"]} \n页码：${item.data["pages"]}" +
+                "\n语言：${item.data["language"]} \nISSN：${item.data["ISSN"]}" +
+                "\nDOI：${item.data["DOI"]} \nUrl：${item.data["url"]}"
+        binding.txtPaperInfo.text = journalInfo
+
+
+        item.tags.forEach {
+            val chip: Chip = layoutInflater.inflate(R.layout.tag_chip, null, false) as Chip
+            chip.text = it.tag
+            chip.setTextColor(Color.parseColor(ZoteroUtils.getTagColor(it.tag)))
+            binding.tagsContainer.addView(chip)
+        }
+
+        navigateToView(binding.root)
+    }
+
+    private fun navigateToView(view: View) {
+        mBinding.content.removeAllViews()
+        mBinding.content.addView(view)
     }
 
     companion object {

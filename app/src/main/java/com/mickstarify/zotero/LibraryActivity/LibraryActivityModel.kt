@@ -1,22 +1,16 @@
 package com.mickstarify.zotero.LibraryActivity
 
-import android.app.Activity
 import android.app.Application
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import com.google.gson.JsonObject
-import com.mickstarify.zotero.MyLog
-import com.mickstarify.zotero.PdfViewerActivity
-import com.mickstarify.zotero.PreferenceManager
+import com.mickstarify.zotero.*
 import com.mickstarify.zotero.SyncSetup.AuthenticationStorage
-import com.mickstarify.zotero.ZoteroApplication
 import com.mickstarify.zotero.ZoteroAPI.*
 import com.mickstarify.zotero.ZoteroAPI.Model.Note
 import com.mickstarify.zotero.ZoteroAPI.Syncing.OnSyncChangeListener
@@ -33,17 +27,12 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.util.LinkedList
 import java.util.Locale
 import java.util.Stack
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.concurrent.thread
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection as ZoteroCollection
 
 
@@ -69,7 +58,7 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
 
     @Inject
     lateinit var attachmentStorageManager: AttachmentStorageManager
-    private val zoteroGroupDB =
+    val zoteroGroupDB =
         ZoteroGroupDB(
             application.applicationContext
         )
@@ -80,7 +69,8 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
                 groupID = -1
             ), zoteroGroupDB
         )
-    private var groups: List<GroupInfo>? = null
+    var groups: List<GroupInfo>? = null
+        private set
 
     @Inject
     lateinit var preferences: PreferenceManager
@@ -295,7 +285,8 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
                 checkMd5 = false
             )
         } catch (e: Exception) {
-            presenter.makeToastAlert("could not open attachment, file not found.")
+            // could not open attachment, file not found.
+            presenter.makeToastAlert(getResString(R.string.attachment_file_not_found))
             return
         }
         if (attachmentExists) {
@@ -411,10 +402,9 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
 //                        return
 //                    }
 
+                    // The file does not exist on the Zotero server.
                     if (e is ZoteroNotFoundException) {
-                        presenter.attachmentDownloadError(
-                            "The file does not exist on the Zotero server."
-                        )
+                        presenter.attachmentDownloadError(getResString(R.string.file_not_exist_on_zotero_server))
                     } else {
                         presenter.attachmentDownloadError(
                             "Error Message: ${e.message}"
@@ -1048,44 +1038,12 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
                 this.checkAllAttachmentsForModification()
                 // TODO Remove next release.
                 if (preferences.firstRunForVersion42() && !performedCleanSync) {
-                    presenter.createYesNoPrompt("Tags are now supported",
-                        "Zoo requires a full library resync if you want to access your tags. Would you like to resync your library?",
-                        "Resync",
-                        "No",
-                        {
-
-                            CoroutineScope(Dispatchers.IO).launch {
-                                zoteroDatabase.deleteAllItemsForGroup(GroupInfo.NO_GROUP_ID)
-                                groups?.forEach {
-                                    val zDb = zoteroGroupDB.getGroup(it.id)
-                                    zDb.destroyItemsDatabase()
-                                    zoteroDatabase.deleteAllItemsForGroup(it.id)
-                                }
-
-                                destroyLibrary()
-
-                                withContext(Dispatchers.Main) {
-                                    refreshLibrary()
-                                }
-
-                            }
-
-//                            zoteroDatabase.deleteAllItemsForGroup(GroupInfo.NO_GROUP_ID).blockingAwait()
-//                            groups?.forEach {
-//                                val zDb = zoteroGroupDB.getGroup(it.id)
-//                                zDb.destroyItemsDatabase()
-//                                zoteroDatabase.deleteAllItemsForGroup(it.id).blockingAwait()
-//                            }
-//
-//                            destroyLibrary()
-//                            refreshLibrary()
-                        },
-                        {}
-                    )
+                    presenter.showFullSyncRequirementDialog()
                 }
 
             }.onErrorComplete {
-                presenter.createErrorAlert("error loading library", "got error message ${it}", {})
+                // error loading library
+                presenter.createErrorAlert(getResString(R.string.error_loading_library), "${getResString(R.string.got_error_message)}$it", {})
                 true
             }.subscribe()
     }
@@ -1102,7 +1060,9 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
             }
 
             this.doubleBackToExitPressedOnce = true
-            presenter.makeToastAlert("Please press BACK again to exit")
+
+            // Please press BACK again to exit
+            presenter.makeToastAlert( presenter.view.getString(R.string.press_back_again_to_exit))
             Handler().postDelayed(Runnable { doubleBackToExitPressedOnce = false }, 2000)
             return
         }
@@ -1156,8 +1116,7 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
         } else {
             presenter.createErrorAlert(
                 "Error with stored API",
-                "The API Key we have stored in the application is invalid!" +
-                        "Please re-authenticate the application"
+                "The API Key we have stored in the application is invalid! \nPlease re-authenticate the application"
             ) {
 //                context.finish()
             }
@@ -1197,5 +1156,9 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
 
     override fun makeToastAlert(message: String) {
         presenter.makeToastAlert(message)
+    }
+
+    fun getResString(stringId: Int): String {
+        return presenter.view.getString(stringId)
     }
 }

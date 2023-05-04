@@ -8,9 +8,11 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mickstarify.zotero.PreferenceManager
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.ZoteroAPI.Webdav
+import com.mickstarify.zotero.databinding.ContentDialogProgressBinding
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -43,7 +45,7 @@ class WebDAVSetup : AppCompatActivity() {
         val cancelButton = findViewById<Button>(R.id.btn_cancel)
 
         if (address_editText.text.toString() != "") {
-            Toast.makeText(this, "WebDAV is already configured.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.webdav_already_configured), Toast.LENGTH_SHORT).show()
         }
 
         submitButton.setOnClickListener {
@@ -117,41 +119,46 @@ class WebDAVSetup : AppCompatActivity() {
             })
     }
 
-    var progressDialog: ProgressDialog? = null
-    fun startProgressDialog() {
+    var progressDialog: AlertDialog? = null
+    private fun startProgressDialog() {
         if (progressDialog == null) {
-            progressDialog = ProgressDialog(this)
+            val dialogBuilder = MaterialAlertDialogBuilder(this)
+
+            val binding = ContentDialogProgressBinding.inflate(layoutInflater)
+            binding.txtContent.text = getString(R.string.test_webdav_server)
+
+            // Connecting to WebDAV Server
+            dialogBuilder.setTitle(getString(R.string.connecting_to_webdav))
+                .setView(binding.root)
+                .setCancelable(false)
+
+            progressDialog = dialogBuilder.show()
         }
-        progressDialog?.setTitle("Connecting to WebDAV Server")
-        progressDialog?.setMessage("We are testing your connection to the WebDAV Server.")
-        progressDialog?.isIndeterminate = true
-        progressDialog?.show()
     }
 
     fun hideProgressDialog() {
-        progressDialog?.hide()
+        progressDialog?.dismiss()
         progressDialog = null
     }
 
     fun notifyFailed(message: String = "") {
-        val alertDialog = AlertDialog.Builder(this)
-        alertDialog.setTitle("Error connecting to webDAV server")
+        val alertDialog = MaterialAlertDialogBuilder(this)
+        alertDialog.setTitle(getString(R.string.error_connectint_webdav))
         if (message == "") {
             alertDialog.setMessage(
-                "There was an error connecting to the webDAV server." +
-                        "Please verify the address, username and password."
+                getString(R.string.info_error_connect_webdav)
             )
         } else {
             alertDialog.setMessage(message)
         }
-        alertDialog.setPositiveButton("Ok") { _, _ -> {} }
+        alertDialog.setPositiveButton(getString(R.string.oK)) { _, _ -> {} }
         alertDialog.show()
     }
 
     fun setWebDAVAuthentication(address: String, username: String, password: String) {
         preferenceManager.setWebDAVAuthentication(address, username, password, allowInsecureSSL())
         preferenceManager.setWebDAVEnabled(true)
-        Toast.makeText(this, "Successfully added WebDAV.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.successfully_add_webdav), Toast.LENGTH_SHORT).show()
         this.finish()
     }
 
@@ -159,5 +166,10 @@ class WebDAVSetup : AppCompatActivity() {
         preferenceManager.destroyWebDAVAuthentication()
         preferenceManager.setWebDAVEnabled(false)
         this.finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        progressDialog?.dismiss()
     }
 }

@@ -15,6 +15,7 @@ import androidx.appcompat.widget.AppCompatSpinner
 import com.mickstarify.zotero.PreferenceManager
 import com.mickstarify.zotero.R
 import android.widget.ArrayAdapter
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
 class LibraryFilterMenuDialog(val context: Context, val onFilterChange: (() -> (Unit))) {
@@ -77,7 +78,7 @@ class LibraryFilterMenuDialog(val context: Context, val onFilterChange: (() -> (
     }
 
     fun show() {
-        val dialogBuilder = AlertDialog.Builder(context).create()
+        val dialogBuilder = MaterialAlertDialogBuilder(context).create()
         val inflater = LayoutInflater.from(context)
         val dialogView: View = inflater.inflate(R.layout.dialog_filter_menu, null)
 

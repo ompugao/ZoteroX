@@ -16,6 +16,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
@@ -75,7 +76,7 @@ class ItemAttachmentEntry(
                 filename.text = "[Linked Url] ${attachment?.getItemData("title")}"
                 layout.setOnClickListener {
                     val url = attachment?.getItemData("url")
-                    AlertDialog.Builder(context)
+                    MaterialAlertDialogBuilder(context!!)
                         .setMessage("Would you like to open this URL: $url")
                         .setPositiveButton("Yes") { dialog, which ->
                             val intent = Intent(Intent.ACTION_VIEW)

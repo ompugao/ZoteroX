@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/img_journal"
+                android:layout_width="80dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/img_journal" />
+
+            <TextView
+                android:id="@+id/txt_thesis_title"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:textStyle="bold"
+                android:textColor="#34425D"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/img_journal"
+                app:layout_constraintTop_toTopOf="@+id/img_journal"
+                tools:text="论文标题" />
+
+            <TextView
+                android:id="@+id/txt_authors"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textColor="#4B5672"
+                tools:text="Authors"
+                app:layout_constraintEnd_toStartOf="@+id/txt_date"
+                app:layout_constraintStart_toStartOf="@+id/txt_thesis_title"
+                app:layout_constraintTop_toBottomOf="@+id/txt_thesis_title" />
+
+            <TextView
+                android:id="@+id/txt_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                tools:text="发表日期"
+                android:textColor="#313E5E"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_thesis_title" />
+
+            <TextView
+                android:id="@+id/txt_journal_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:textColor="#4B5672"
+                android:gravity="center"
+                android:textIsSelectable="true"
+                app:layout_constraintEnd_toStartOf="@+id/txt_authors"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img_journal"
+                tools:text="论文期刊" />
+
+            <TextView
+                android:id="@+id/textView12"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="摘要"
+                android:textStyle="bold"
+                android:textColor="#34425D"
+                app:layout_constraintStart_toStartOf="@+id/img_journal"
+                app:layout_constraintTop_toBottomOf="@+id/txt_journal_name" />
+
+            <TextView
+                android:id="@+id/txt_abstract"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                tools:text="论文摘要描述"
+                android:maxLines="5"
+                android:ellipsize="end"
+                android:textColor="#34425D"
+                android:textIsSelectable="true"
+                app:layout_constraintEnd_toEndOf="@+id/txt_date"
+                app:layout_constraintStart_toStartOf="@+id/textView12"
+                app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+            <TextView
+                android:id="@+id/textView14"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="期刊信息"
+                android:textStyle="bold"
+                android:textColor="#34425D"
+                app:layout_constraintStart_toStartOf="@+id/textView12"
+                app:layout_constraintTop_toBottomOf="@+id/txt_abstract" />
+
+            <TextView
+                android:id="@+id/txt_paper_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                tools:text="论文的期刊发表信息"
+                android:textColor="#34425D"
+                android:textIsSelectable="true"
+                android:autoLink="web"
+                app:layout_constraintEnd_toEndOf="@+id/txt_date"
+                app:layout_constraintStart_toStartOf="@+id/textView14"
+                app:layout_constraintTop_toBottomOf="@+id/textView14" />
+
+            <TextView
+                android:id="@+id/textView16"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="额外信息"
+                android:textStyle="bold"
+                android:textColor="#34425D"
+                app:layout_constraintStart_toStartOf="@+id/img_journal"
+                app:layout_constraintTop_toBottomOf="@+id/txt_paper_info" />
+
+            <TextView
+                android:id="@+id/txt_extra_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                tools:text="额外信息"
+                android:textColor="#34425D"
+                android:textIsSelectable="true"
+                app:layout_constraintEnd_toEndOf="@+id/txt_date"
+                app:layout_constraintStart_toStartOf="@+id/img_journal"
+                app:layout_constraintTop_toBottomOf="@+id/textView16" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/tagsContainer"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:chipSpacing="5dp"
+                app:chipSpacingHorizontal="2dp"
+                app:chipSpacingVertical="2dp"
+                app:singleLine="true"
+                app:layout_constraintEnd_toEndOf="@+id/txt_thesis_title"
+                app:layout_constraintStart_toStartOf="@+id/txt_thesis_title"
+                app:layout_constraintTop_toBottomOf="@+id/txt_authors"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</layout>

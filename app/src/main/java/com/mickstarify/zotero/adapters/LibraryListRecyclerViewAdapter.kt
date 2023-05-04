@@ -1,6 +1,8 @@
 package com.mickstarify.zotero.adapters
 
+import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,14 +11,18 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.mickstarify.zotero.LibraryActivity.ListEntry
 import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
+import com.mickstarify.zotero.ZoteroStorage.ZoteroUtils
 
 class LibraryListRecyclerViewAdapter(val context: Context,
     var items: List<ListEntry>,
@@ -28,10 +34,15 @@ class LibraryListRecyclerViewAdapter(val context: Context,
         val textView_author = view.findViewById<TextView>(R.id.txtEntryAuthor)
         val pdfImage = view.findViewById<ImageButton>(R.id.imgOpenAttachment)
         val layout = view.findViewById<ConstraintLayout>(R.id.container_item_library_entry)
+
+        val tagContainer = view.findViewById<ChipGroup>(R.id.tagsContainer)
+
     }
 
     // ItemView long click Listener
     var onItemLongClickListener: LibraryItemLongClickListener? = null
+
+    lateinit var layoutInflater: LayoutInflater
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -40,6 +51,8 @@ class LibraryListRecyclerViewAdapter(val context: Context,
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.library_screen_list_item, parent, false)
+
+        layoutInflater = LayoutInflater.from(parent.context)
 
         return ListEntryViewHolder(view)
     }
@@ -54,7 +67,7 @@ class LibraryListRecyclerViewAdapter(val context: Context,
             val item = entry.getItem()
             holder.textView_title.text = item.getTitle()
             holder.textView_author.visibility = View.VISIBLE
-            holder.textView_author.text = item.getAuthor()
+            holder.textView_author.text = item.getAuthor().trimEnd()
             val pdfAttachment = item.getPdfAttachment()
             if (pdfAttachment != null) {
                 holder.pdfImage.visibility = View.VISIBLE
@@ -83,6 +96,21 @@ class LibraryListRecyclerViewAdapter(val context: Context,
             val iconResource = requireItemIconRes(item.itemType)
             holder.imageView.setImageResource(iconResource)
 
+            // 在recyclerview中使用addView添加控件需要先移除所用，不然会产生布局错乱
+            holder.tagContainer.removeAllViews()
+            // add tags
+            item.tags.forEach {
+                if (ZoteroUtils.isImportantTag(it.tag)) {
+                    val chip: Chip = layoutInflater.inflate(R.layout.tag_chip, null, false) as Chip
+//                    val chip = Chip(ContextThemeWrapper(context, R.style.TagAppearance_Small))
+                    chip.text = it.tag
+
+                    chip.setTextColor(Color.parseColor(ZoteroUtils.getTagColor(it.tag)))
+
+                    holder.tagContainer.addView(chip)
+                }
+            }
+
 //            Glide.with(context)
 //                .load(iconResource)
 ////                .placeholder(iconResource)
@@ -100,6 +128,10 @@ class LibraryListRecyclerViewAdapter(val context: Context,
                 Log.d("zotero", "Open Collection")
                 listener.onCollectionOpen(collection)
             }
+
+            // 实测需要移除所用，不然会因为复用问题产生布局错乱
+            holder.tagContainer.removeAllViews()
+            holder.tagContainer.visibility = View.GONE
 
 //            Glide.with(context)
 //                .load(R.drawable.treesource_folder)

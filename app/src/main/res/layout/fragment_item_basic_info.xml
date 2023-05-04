@@ -12,74 +12,15 @@
         android:layout_height="match_parent"
         tools:context=".LibraryActivity.ItemView.ItemBasicInfoFragment">
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/item_tags"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            app:chipSpacing="5dp"
-            app:chipSpacingHorizontal="5dp"
-            app:chipSpacingVertical="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/container_item_info"
-            android:layout_width="match_parent"
+        <FrameLayout
+            android:id="@+id/content"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_tags"
-            android:layout_marginTop="12dp">
+            app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:theme="@style/AppTheme">
-
-                <LinearLayout
-                    android:id="@+id/item_fragment_scrollview_ll_attachments"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="12dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textView_attachments_title"
-                        style="@style/TextAppearance.AppCompat.Subhead"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/attachments"
-                        android:textColor="#353e54"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/item_fragment_scrollview_ll_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textView_information_title"
-                        style="@style/TextAppearance.AppCompat.Subhead"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="12dp"
-                        android:text="@string/information"
-                        android:textColor="#353e54"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
-
+        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

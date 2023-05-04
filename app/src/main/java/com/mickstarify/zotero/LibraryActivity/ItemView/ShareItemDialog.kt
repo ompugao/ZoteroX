@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import java.util.HashMap
@@ -41,7 +42,7 @@ class ShareItemDialog(item: Item) {
             return
         }
 
-        val dialogBuilder = AlertDialog.Builder(context).create()
+        val dialogBuilder = MaterialAlertDialogBuilder(context).create()
         val inflater = LayoutInflater.from(context)
         val dialogView: View = inflater.inflate(R.layout.dialog_share_item, null)
 

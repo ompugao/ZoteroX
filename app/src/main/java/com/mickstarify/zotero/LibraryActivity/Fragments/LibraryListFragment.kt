@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mickstarify.zotero.LibraryActivity.LibraryActivity
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
@@ -157,7 +158,7 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
 
 
         viewModel.getItems().observe(viewLifecycleOwner) { entries ->
-            if (entries.isEmpty()) {
+            if (entries.isNullOrEmpty()) {
                 showEmptyList()
             } else {
                 hideEmptyList()
@@ -201,7 +202,7 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         fab.setOnClickListener {
             val array = arrayOf("Zotero Save", "Scan ISBN")
 
-            val dialog = AlertDialog.Builder(requireContext())
+            val dialog = MaterialAlertDialogBuilder(requireContext())
             dialog.setItems(array) { dialog, which ->
                 when (which) {
                     0 -> {
@@ -234,7 +235,7 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
     private fun showMoreOperateMenuDialog(item: Item) {
         val array = arrayOf("查看信息", "打开附件")
 
-        val dialog = AlertDialog.Builder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(requireContext())
         dialog.setItems(array) { dialog, which ->
             when (which) {
                 0 -> onItemOpen(item)

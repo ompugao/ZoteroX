@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import com.mickstarify.zotero.BuildConfig
 import com.mickstarify.zotero.LibraryActivity.LibraryActivity
+import com.mickstarify.zotero.R
 import com.mickstarify.zotero.ZoteroAPI.BASE_URL
 import com.mickstarify.zotero.ZoteroAPI.Model.KeyInfo
 import com.mickstarify.zotero.ZoteroAPI.ZoteroAPIService
@@ -18,6 +19,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class SyncSetupModel(val presenter: SyncSetupPresenter, val context: Context) :
     SyncSetupContract.Model {
+
+    var apiKey: String = ""
+
     override fun testAPIKey(apiKey: String) {
         if (apiKey.trim() == "") {
             return
@@ -36,13 +40,19 @@ class SyncSetupModel(val presenter: SyncSetupPresenter, val context: Context) :
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(ZoteroAPIService::class.java)
 
+        presenter.showLoadingAlertDialog(context.getString(R.string.varifying_your_apikey))
+
         val call: Call<KeyInfo> = service.getKeyInfo(apiKey)
         call.enqueue(object : Callback<KeyInfo> {
             override fun onFailure(call: Call<KeyInfo>, t: Throwable) {
+                presenter.hideLoadingAlertDialog()
+
                 presenter.createNetworkError("There was a network error Connecting to the Zotero API.")
             }
 
             override fun onResponse(call: Call<KeyInfo>, response: Response<KeyInfo>) {
+                presenter.hideLoadingAlertDialog()
+
                 if (response.code() == 200) {
                     val credStorage = AuthenticationStorage(context)
                     val keyInfo = response.body()

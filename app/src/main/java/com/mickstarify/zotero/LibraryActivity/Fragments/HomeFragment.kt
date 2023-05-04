@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.getbase.floatingactionbutton.FloatingActionButton
 import com.getbase.floatingactionbutton.FloatingActionsMenu
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
 import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.PreferenceManager
@@ -66,14 +68,15 @@ class HomeFragment : Fragment() , LibraryListInteractionListener, SwipeRefreshLa
 
         viewModel.getItems().observe(viewLifecycleOwner) { entries ->
             MyLog.d("zotero", "Loading new set of item (${entries.size} length)")
+
             adapter.items = entries
             adapter.notifyDataSetChanged()
 
-//            if (entries.size == 0) {
-//                showEmptyList()
-//            } else {
-//                hideEmptyList()
-//            }
+            if (entries.isNullOrEmpty()) {
+                showEmptyList()
+            } else {
+                hideEmptyList()
+            }
         }
 
         val swipeRefresh = mBinding.swipeRefreshLibrary
@@ -103,7 +106,7 @@ class HomeFragment : Fragment() , LibraryListInteractionListener, SwipeRefreshLa
     private fun showMoreOperateMenuDialog(item: Item) {
         val array = arrayOf("查看信息", "打开附件")
 
-        val dialog = AlertDialog.Builder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(requireContext())
         dialog.setItems(array) { dialog, which ->
            when (which) {
                0 -> onItemOpen(item)
@@ -159,6 +162,18 @@ class HomeFragment : Fragment() , LibraryListInteractionListener, SwipeRefreshLa
                 }
             }
         })
+    }
+
+    fun showEmptyList() {
+        val layout =
+            requireView().findViewById<LinearLayout>(R.id.list_empty_view)
+        layout.visibility = View.VISIBLE
+    }
+
+    fun hideEmptyList() {
+        val layout =
+            requireView().findViewById<LinearLayout>(R.id.list_empty_view)
+        layout.visibility = View.GONE
     }
 
 

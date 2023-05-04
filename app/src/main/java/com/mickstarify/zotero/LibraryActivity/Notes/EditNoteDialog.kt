@@ -8,6 +8,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mickstarify.zotero.R
 
 
@@ -23,7 +24,7 @@ class EditNoteDialog {
             return
         }
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        val dialogBuilder = AlertDialog.Builder(context).create()
+        val dialogBuilder = MaterialAlertDialogBuilder(context).create()
         val inflater = LayoutInflater.from(context)
         val dialogView: View = inflater.inflate(R.layout.dialog_add_note, null)
 

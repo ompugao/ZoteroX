@@ -5,6 +5,7 @@ import android.content.Context
 import android.text.Html
 import android.util.Log
 import android.widget.TextView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mickstarify.zotero.ZoteroAPI.Model.Note
 
 class NoteView(val context: Context, val note: Note, val listener: NoteInteractionListener) {
@@ -12,7 +13,7 @@ class NoteView(val context: Context, val note: Note, val listener: NoteInteracti
     }
 
     fun show() {
-        val dialog = AlertDialog.Builder(context)
+        val dialog = MaterialAlertDialogBuilder(context)
             .setTitle("Note")
             .setMessage(Html.fromHtml(note.note))
             .setPositiveButton("Dismiss", { _, _ -> })

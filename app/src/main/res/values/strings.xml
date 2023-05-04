@@ -19,6 +19,9 @@
     <string name="by_date">By Date</string>
     <string name="by_date_added">By Date Added</string>
 
+    <string name="external_cache">External Cache</string>
+    <string name="custom_path">Custom Path</string>
+
     <!-- Sync Preferences -->
     <string name="settings">Settings</string>
     <string name="sync_method">Sync Method</string>
@@ -83,4 +86,41 @@
     <string name="webdav_address">Webdav Address</string>
     <string name="custom_zotero_storage_path">Custom zotero storage path</string>
     <string name="downloading">downloading</string>
+
+    <string name="oK">OK</string>
+
+    <string name="varifying_your_apikey">Verifying your api key....</string>
+
+    <string name="please_input_zotero_apikey">Please input your zotero apikey</string>
+
+    <string name="press_back_again_to_exit">Please press BACK again to exit</string>
+
+    <string name="full_sync_title">Full sync</string>
+    <string name="full_sync_clue">It requires a full library resync if you want to access your items. Would you like to resync your library?</string>
+
+    <string name="description_login_with_zotero_account">You will need to login with your Zotero Account.          After your login in, make sure you scroll down and click \"Save Key\"           Once this is complete the web browser should close.</string>
+    <string name="input_your_zotero_api_key">Input your zotero api key</string>
+    <string name="zotero_login_description">Please select a way to login your zotero account. This application must rely on an existing zotero account, and all operations within the application are based on this account. \n\nIf you do not already have a Zotero account, please go to the official website to register yourself, or select "ZOTERO" to register in the pop-up web browser.</string>
+    <string name="connecting_to_the_zotero_api">Connecting to the Zotero API···</string>
+    <string name="tip_connect_to_zotero_account">If the app is stuck on this screen, it means that that there is some connection problem with Zotero\'s servers. Use the API Key method instead.Using the below url, generate an api key for Zoo to use.</string>
+    <string name="error_loading_library">error loading library</string>
+    <string name="got_error_message">got error message</string>
+    <string name="attachment_file_not_found">could not open attachment, file not found.</string>
+    <string name="error_getting_attachment">Error getting Attachment</string>
+    <string name="get_attachment_internet_error">\"There was an error downloading the attachment from the Zotero Servers.\nPlease check your internet connection.</string>
+    <string name="file_not_exist_on_zotero_server">The file does not exist on the Zotero server.</string>
+    <string name="downloading_file">Downloading File</string>
+    <string name="downloading_your_attachment">Downloading your Attachment</string>
+    <string name="description_login_with_apikey">Fill in the input box above to apply for an apikey from Zotero official website, and then submit it. \nNote: It does not require entering an account password in a web browser, but please make sure to save the API key to prevent others from stealing it!</string>
+    <string name="connecting_to_webdav">Connecting to WebDAV Server</string>
+    <string name="test_webdav_server">We are testing your connection to the WebDAV Server.</string>
+    <string name="webdav_already_configured">WebDAV is already configured.</string>
+    <string name="successfully_add_webdav">Successfully added WebDAV.</string>
+    <string name="error_connectint_webdav">Error connecting to webDAV server</string>
+    <string name="info_error_connect_webdav">There was an error connecting to the webDAV server. Please verify the address, username and password.</string>
+    <string name="unknown_collection">Unknown Collection</string>
+    <string name="loading_library">Loading your library...</string>
+    <string name="trash">Trash</string>
+    <string name="my_publication">My publication</string>
+    <string name="homepage">Home</string>
 </resources>

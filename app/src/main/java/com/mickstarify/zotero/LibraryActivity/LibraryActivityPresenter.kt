@@ -1,9 +1,7 @@
 package com.mickstarify.zotero.LibraryActivity
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import com.mickstarify.zotero.ConstValues
@@ -16,10 +14,10 @@ import com.mickstarify.zotero.ZoteroAPI.Model.Note
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
 import com.mickstarify.zotero.ZoteroStorage.Database.GroupInfo
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.Collator
 import java.util.LinkedList
 import java.util.Locale
@@ -202,14 +200,15 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 
     override fun attachmentDownloadError(message: String) {
         view.hideAttachmentDownloadProgress()
+
+        // Error getting Attachment
         if (message == "") {
             createErrorAlert(
-                "Error getting Attachment", "There was an error " +
-                        "downloading the attachment from the Zotero Servers.\n" +
-                        "Please check your internet connection."
+                view.getString(R.string.error_getting_attachment),
+                view.getString(R.string.get_attachment_internet_error)
             ) { }
         } else {
-            createErrorAlert("Error getting Attachment", message) { }
+            createErrorAlert(view.getString(R.string.error_getting_attachment), message) { }
         }
     }
 
@@ -307,7 +306,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
             return
         }
         model.usePersonalLibrary()
-        view.setTitle("我的出版物")
+        view.setTitle(view.getString(R.string.my_publication))
         val entries = model.getMyPublications().sort().map{ListEntry(it)}
         model.isDisplayingItems = entries.isNotEmpty()
         model.setCurrentCollection(ConstValues.MY_PUBLICATIONS)
@@ -323,7 +322,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
             return
         }
         model.usePersonalLibrary()
-        view.setTitle("回收站")
+        view.setTitle(view.getString(R.string.trash))
         val entries = model.getTrashedItems().sort().map{ListEntry(it)}
         model.isDisplayingItems = entries.isNotEmpty()
         model.setCurrentCollection(ConstValues.TRASH)
@@ -359,7 +358,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
         model.setCurrentCollection(collectionKey, usePersonalLibrary = fromNavigationDrawer)
 
         if (collectionKey == ConstValues.ALL_ITEMS && !model.isUsingGroups()) {
-            view.setTitle("我的文库")
+            view.setTitle(view.getString(R.string.my_library))
 
             thread {
                 val entries = model.getLibraryItems().sort().map { ListEntry(it) }
@@ -369,7 +368,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
                 libraryListViewModel.setItemsInBackgroundThread(entries)
             }
         } else if (collectionKey == ConstValues.UNFILED) {
-            view.setTitle("Unfiled Items")
+            view.setTitle(view.getString(R.string.unfiled_items))
 
             thread {
                 val entries = model.getUnfiledItems().sort().map { ListEntry(it) }
@@ -389,7 +388,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
                 entries.addAll(model.getCollections().filter {
                     !it.hasParent()
                 }.sortedBy {
-                    it.name.toLowerCase(Locale.ROOT)
+                    it.name.lowercase(Locale.ROOT)
                 }.map { ListEntry(it) })
                 entries.addAll(model.getLibraryItems().sort().map { ListEntry(it) })
                 model.isDisplayingItems = entries.size > 0
@@ -405,19 +404,21 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 
                 val entries = LinkedList<ListEntry>()
                 entries.addAll(model.getSubCollections(collectionKey).sortedBy {
-                    it.name.toLowerCase(Locale.ROOT)
+                    it.name.lowercase(Locale.ROOT)
                 }.map { ListEntry(it) })
 
                 entries.addAll(model.getItemsFromCollection(collectionKey).sort().map { ListEntry(it) })
                 model.isDisplayingItems = entries.size > 0
 
                 view.runOnUiThread {
-                    view.setTitle(collection?.name ?: "Unknown Collection")
+                    view.setTitle(collection?.name ?: view.getString(R.string.unknown_collection))
                     libraryListViewModel.setItems(entries)
                 }
             }
-
         }
+
+
+
     }
 
     override fun receiveCollections(collections: List<Collection>) {
@@ -464,7 +465,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
             // todo start loading screen.
             view.navController.navigate(R.id.libraryLoadingScreen)
 
-            libraryLoadingViewModel.setLoadingMessage("加载文库数据中...")
+            libraryLoadingViewModel.setLoadingMessage(view.getString(R.string.loading_library))
 
             // 打开应用时，默认加载本地zotero文库
             model.loadLibraryLocally()
@@ -483,8 +484,6 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
             // 显示侧边栏列表
             val collections = this.model.getCollections()
             receiveCollections(collections)
-
-            MyLog.d("ZoteroDebug", "set drawer menus!!!!!!")
         }
 
 
@@ -550,5 +549,33 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
         view.finish()
     }
 
+    fun showFullSyncRequirementDialog() {
+
+        // It requires a full library resync if you want to access your items. Would you like to resync your library?
+        createYesNoPrompt(view.getString(R.string.full_sync_title),
+            view.getString(R.string.full_sync_clue),
+            view.getString(R.string.oK),
+            view.getString(R.string.cancel),
+            {
+                CoroutineScope(Dispatchers.IO).launch {
+                    model.zoteroDatabase.deleteAllItemsForGroup(GroupInfo.NO_GROUP_ID)
+                    model.groups?.forEach {
+                        val zDb = model.zoteroGroupDB.getGroup(it.id)
+                        zDb.destroyItemsDatabase()
+                        model.zoteroDatabase.deleteAllItemsForGroup(it.id)
+                    }
+
+                    model.destroyLibrary()
+
+                    withContext(Dispatchers.Main) {
+                        model.refreshLibrary()
+                    }
+
+                }
+            },
+            {}
+        )
+
+    }
 
 }

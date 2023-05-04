@@ -8,6 +8,8 @@ interface SyncSetupContract {
         fun showHowToZoteroSyncDialog(onProceed: () -> Unit)
         fun createAPIKeyDialog(onKeySubmit: (String) -> Unit)
         fun createAlertDialog(title: String, message: String)
+        fun showLoadingAlertDialog(message: String)
+        fun hideLoadingAlertDialog()
     }
 
     interface Presenter {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -9,6 +10,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container_item_library_entry"
             android:layout_width="match_parent"
@@ -24,9 +26,9 @@
                 android:id="@+id/container_item_icon"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:layout_marginLeft="8dp"
-                android:gravity="center"
+                android:layout_marginLeft="4dp"
                 android:background="@drawable/shape_circle"
+                android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -35,8 +37,8 @@
                     android:id="@+id/imgEntryIcon"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:scaleType="fitCenter"
                     android:contentDescription="icon for the item type"
+                    android:scaleType="fitCenter"
                     app:srcCompat="@drawable/treesource_folder" />
             </LinearLayout>
 
@@ -44,7 +46,7 @@
                 android:id="@+id/txtEntryTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:maxLines="2"
                 android:text="@string/title"
@@ -65,7 +67,7 @@
 
             <TextView
                 android:id="@+id/txtEntryAuthor"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@+id/container_item_icon"
@@ -77,10 +79,7 @@
                 app:autoSizeStepGranularity="2dp"
                 app:autoSizeTextType="uniform"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/txtEntryTitle"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toRightOf="@+id/container_item_icon"
-                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/txtEntryTitle"
                 app:layout_constraintTop_toBottomOf="@+id/txtEntryTitle" />
 
@@ -88,16 +87,42 @@
                 android:id="@+id/imgOpenAttachment"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="3dp"
                 android:clickable="true"
                 android:focusable="true"
+                android:padding="3dp"
                 android:scaleType="fitCenter"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_more"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_pdf" />
+
+            <ImageButton
+                android:id="@+id/btn_more"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="3dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_pdf" />
+                app:srcCompat="@drawable/ic_operate_more" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/tagsContainer"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:chipSpacingHorizontal="1dp"
+                app:chipSpacingVertical="2dp"
+                app:layout_constraintBottom_toBottomOf="@+id/txtEntryAuthor"
+                app:layout_constraintEnd_toStartOf="@+id/imgOpenAttachment"
+                app:layout_constraintStart_toEndOf="@+id/txtEntryAuthor"
+                app:layout_constraintTop_toTopOf="@+id/txtEntryAuthor"
+                app:singleLine="true" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
