@@ -75,42 +75,33 @@ class ItemBasicInfoFragment : Fragment() {
     }
 
     private fun addCreators(creators: List<Creator>) {
-        val itemViewLayout =
-            requireView().findViewById<LinearLayout>(R.id.item_fragment_scrollview_ll_layout)
+//        val itemViewLayout =
+//            requireView().findViewById<LinearLayout>(R.id.item_fragment_scrollview_ll_layout)
+//
+//        val creatorLayout = LinearLayout(requireContext())
+//        creatorLayout.orientation = LinearLayout.VERTICAL
+//        creatorLayout.layoutParams =
+//            LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.MATCH_PARENT,
+//                LinearLayout.LayoutParams.WRAP_CONTENT
+//            )
+//
+//        itemViewLayout.addView(creatorLayout)
 
-        val inflator = LayoutInflater.from(requireContext())
-
-        val creatorLayout = LinearLayout(requireContext())
-        creatorLayout.orientation = LinearLayout.VERTICAL
-        creatorLayout.layoutParams =
-            LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-
-        itemViewLayout.addView(creatorLayout)
-
+        var authorInfo = ""
         creators.forEachIndexed { index, creator ->
-            val parent = inflator.inflate(R.layout.fragment_item_authors_entry, creatorLayout)
-            val view = (parent as ViewGroup).getChildAt(index)
-
-            val creatorType = view.findViewById<TextView>(R.id.textView_creator_type)
-
-            val txtAuthorName = view.findViewById<TextView>(R.id.txt_author)
-
-            creatorType.text = creator.creatorType + ":"
 
             val lastName = creator.lastName ?: ""
             val firstName = creator.firstName ?: ""
 
-            txtAuthorName.text = "$lastName'$firstName"
+            var authorName = "$lastName$firstName"
 
-            
-        
+            if (creator.creatorType == "author") authorName += "(作者)"
 
-//            edtLastName.setText(creator.lastName ?: "")
-//            edtFirstName.setText(creator.firstName ?: "")
+            authorInfo += "$authorName;"
         }
+
+        addTextEntry("作者", authorInfo)
     }
 
     private fun addAttachments(attachments: List<Item>) {
@@ -129,8 +120,7 @@ class ItemBasicInfoFragment : Fragment() {
         val layout =
             requireView().findViewById<LinearLayout>(R.id.item_fragment_scrollview_ll_layout)
 
-        val inflater = LayoutInflater.from(requireContext())
-        val view = inflater.inflate(R.layout.fragment_item_text_entry, layout)
+        val view = LayoutInflater.from(requireContext()).inflate(R.layout.fragment_item_text_entry, layout)
         val viewGroup = view as ViewGroup
         val textLayout = viewGroup.getChildAt(viewGroup.childCount - 1)
 

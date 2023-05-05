@@ -1,11 +1,14 @@
 package com.mickstarify.zotero.LibraryActivity.ItemView
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.view.ContextThemeWrapper
 import com.google.android.material.chip.Chip
 import com.mickstarify.zotero.LibraryActivity.Notes.NoteInteractionListener
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
@@ -13,6 +16,7 @@ import com.mickstarify.zotero.R
 import com.mickstarify.zotero.ZoteroAPI.Model.Note
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
+import com.mickstarify.zotero.ZoteroStorage.ZoteroUtils
 import com.mickstarify.zotero.databinding.FragmentItemTagsBinding
 
 class ItemTagsFragment : Fragment() {
@@ -43,8 +47,11 @@ class ItemTagsFragment : Fragment() {
         }
 
         for (tag in tags) {
-            val chip = Chip(context)
+            val chip = Chip(ContextThemeWrapper(requireContext(), R.style.TagAppearance))
+            chip.chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#F1F2FA"))
             chip.text = tag
+
+            chip.setTextColor(Color.parseColor(ZoteroUtils.getTagColor(tag)))
 
             chip.setOnClickListener {
                 Toast.makeText(context, "代码待写！！！", Toast.LENGTH_SHORT).show()

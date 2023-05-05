@@ -68,7 +68,11 @@ object ZoteroUtils {
             "dateModified" -> "修改日期"
             "libraryCatalog" -> "馆藏目录"
             "bookTitle" -> "图书标题"
+            "university" -> "大学"
+            "thesisType" -> "论文类型"
             "extra" -> "其他"
+            "author" -> "作者"
+            "contributor" -> "贡献者"
             else -> keyName
         }
     }
@@ -92,7 +96,7 @@ object ZoteroUtils {
             "★★★★★" -> "#FF6666"
             "★★★★" -> "#576DD9"
             "★★★" -> "#2EA8E5"
-            else -> return "#5F70C0"
+            else -> return "#4B5162"
 
         }
     }

@@ -17,7 +17,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="Author"
-        android:textColor="#8c919a"
+        android:textStyle="bold"
+        android:textColor="#353e54"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

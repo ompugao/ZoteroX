@@ -46,7 +46,7 @@
         <item name="chipBackgroundColor">#F1F2FA</item>
         <item name="android:textColor">#5F70C0</item>
 
-        <item name="android:textSize">12dp</item>
+        <item name="android:textSize">14dp</item>
         <item name="chipMinHeight">20dp</item>
         <item name="chipCornerRadius">3dp</item>
 
