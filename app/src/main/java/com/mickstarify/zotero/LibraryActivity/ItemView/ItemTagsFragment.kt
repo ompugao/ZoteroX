@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.google.android.material.chip.Chip
+import com.mickstarify.zotero.LibraryActivity.Notes.NoteInteractionListener
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
 import com.mickstarify.zotero.R
+import com.mickstarify.zotero.ZoteroAPI.Model.Note
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
 import com.mickstarify.zotero.databinding.FragmentItemTagsBinding
@@ -59,6 +61,5 @@ class ItemTagsFragment : Fragment() {
                 this.item = item
             }
     }
-
 
 }

@@ -146,6 +146,12 @@ class ItemBasicInfoFragment : Fragment() {
         navigateToView(binding.root)
 
         item?.let { showItemInfo(it) }
+
+        var info = ""
+        for (datum in item.data) {
+            info += "\n ${datum.key} : ${datum.value}"
+        }
+        MyLog.d("ZoteroDebug", info)
     }
 
     private fun navigateToThesisInfoPage(item: Item) {
@@ -160,9 +166,9 @@ class ItemBasicInfoFragment : Fragment() {
         // show creators of this paper
         var authorsInfo = ""
         item.creators.forEach {
-            authorsInfo += it.firstName + it.lastName + ";"
+            authorsInfo += it.lastName + it.firstName + ";"
         }
-        binding.txtAuthors.text = authorsInfo
+        binding.txtAuthors.text = authorsInfo.dropLast(1)
 
         var info = ""
         for (datum in item.data) {

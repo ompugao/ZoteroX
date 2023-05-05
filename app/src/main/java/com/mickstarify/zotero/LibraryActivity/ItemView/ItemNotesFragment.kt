@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.mickstarify.zotero.LibraryActivity.Notes.NoteInteractionListener
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.ZoteroAPI.Model.Note
@@ -13,7 +14,7 @@ import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
 import com.mickstarify.zotero.databinding.FragmentItemNotesBinding
 import com.mickstarify.zotero.databinding.FragmentItemTagsBinding
 
-class ItemNotesFragment : Fragment() {
+class ItemNotesFragment : Fragment(), NoteInteractionListener {
 
     private lateinit var mBinding: FragmentItemNotesBinding
 
@@ -54,6 +55,12 @@ class ItemNotesFragment : Fragment() {
             ItemNotesFragment().apply {
                 this.item = item
             }
+    }
+
+    override fun deleteNote(note: Note) {
+    }
+
+    override fun editNote(note: Note) {
     }
 
 
