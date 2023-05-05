@@ -659,6 +659,11 @@ class LibraryActivity : BaseActivity(),
         Log.d("zotero", "onResume called.")
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
+    }
+
     private fun onNoteCreate(note: Note) {
         presenter.createNote(note)
     }

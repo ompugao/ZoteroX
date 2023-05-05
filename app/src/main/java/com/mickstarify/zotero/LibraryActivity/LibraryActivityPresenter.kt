@@ -357,6 +357,11 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
         Log.d("zotero", "Got request to change collection to ${collectionKey}")
         model.setCurrentCollection(collectionKey, usePersonalLibrary = fromNavigationDrawer)
 
+        // 保存当前所在的位置，以供下次进入应用直接加载
+        if (model.isLoadLastViewedPosition()) {
+            model.saveCurrentLibraryState()
+        }
+
         if (collectionKey == ConstValues.ALL_ITEMS && !model.isUsingGroups()) {
             view.setTitle(view.getString(R.string.my_library))
 
@@ -547,6 +552,10 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 
     fun finish() {
         view.finish()
+    }
+
+    fun onDestroy() {
+        model.saveCurrentLibraryState()
     }
 
     fun showFullSyncRequirementDialog() {

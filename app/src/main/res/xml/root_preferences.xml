@@ -67,6 +67,12 @@
             android:summary="@string/description_verify_attachment_integrity"
             android:title="@string/verify_attachment_integrity" />
 
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="load_last_position"
+            android:summary="进入应用时，默认加载上次退出应用时的位置"
+            android:title="默认加载上次位置" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Web DAV">

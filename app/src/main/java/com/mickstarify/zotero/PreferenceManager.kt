@@ -78,6 +78,20 @@ class PreferenceManager @Inject constructor(context: Context) {
         editor.apply()
     }
 
+    fun isLoadLastLibraryState(): Boolean {
+        return sharedPreferences.getBoolean("load_last_position", true)
+    }
+
+    fun getLastViewedPosition(): String? {
+        return sharedPreferences.getString("last_viewed_position", "")
+    }
+
+    fun setLastViewedPosition(collectionKey: String) {
+        val editor = sharedPreferences.edit()
+        editor.putString("last_viewed_position", collectionKey)
+        editor.apply()
+    }
+
     fun getIsShowingOnlyPdfs(): Boolean {
         return sharedPreferences.getBoolean("is_showing_only_with_pdfs", false)
     }

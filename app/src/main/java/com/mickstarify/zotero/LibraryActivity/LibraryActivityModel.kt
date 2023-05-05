@@ -1018,7 +1018,16 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
                 if (db.groupID == GroupInfo.NO_GROUP_ID) {
                     presenter.receiveCollections(getCollections())
                     if (state.currentCollection == "unset") {
-                        presenter.setCollection("all")
+                        if (isLoadLastViewedPosition()) {
+                            val loadLastViewedPosition =getLoadLastViewedPosition()
+
+//                            MyLog.e("ZoteroDebug", "Saved:  " + loadLastViewedPosition)
+
+                            presenter.setCollection(loadLastViewedPosition)
+                        } else {
+                            presenter.setCollection("all")
+                        }
+
                     } else {
                         presenter.redisplayItems()
                     }
@@ -1160,5 +1169,16 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
 
     fun getResString(stringId: Int): String {
         return presenter.view.getString(stringId)
+    }
+
+
+    fun isLoadLastViewedPosition(): Boolean = PreferenceManager(presenter.view).isLoadLastLibraryState()
+
+    fun getLoadLastViewedPosition(): String = PreferenceManager(presenter.view).getLastViewedPosition() ?: "unset"
+
+    fun saveCurrentLibraryState() {
+        val currentCollection = state.currentCollection
+
+        PreferenceManager(presenter.view).setLastViewedPosition(currentCollection)
     }
 }
