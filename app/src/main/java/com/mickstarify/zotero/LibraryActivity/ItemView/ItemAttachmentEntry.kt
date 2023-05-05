@@ -29,7 +29,6 @@ class ItemAttachmentEntry(
 
     private var attachment: Item? = null
     var fileOpenListener: OnAttachmentFragmentInteractionListener? = null
-    lateinit var libraryViewModel: LibraryListViewModel
 
     val itemKey: String by lazy { arguments?.getString("itemKey") ?: "" }
 
@@ -43,103 +42,95 @@ class ItemAttachmentEntry(
         return view
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        if (itemKey == "") {
-            Log.e("Zotero", "error item key is null")
-            return
-        }
+        showAttachmentItemView(attachment)
+    }
 
-        libraryViewModel =
-            ViewModelProvider(requireActivity()).get(LibraryListViewModel::class.java)
-
+    private fun showAttachmentItemView(attachment: Item?) {
         val layout =
             requireView().findViewById<ConstraintLayout>(R.id.constraintLayout_attachments_entry)
         val filename = requireView().findViewById<TextView>(R.id.textView_filename)
         val icon = requireView().findViewById<ImageView>(R.id.imageView_attachment_icon)
 
-        libraryViewModel.getOnItemClicked().observe(viewLifecycleOwner) { item ->
-            attachment = item.attachments.filter { it.itemKey == itemKey }.firstOrNull()
-            if (attachment == null) {
-                Log.e("zotero", "Error attachments is null, please reload view.")
-                return@observe
-            }
+        if (attachment == null) {
+            Log.e("zotero", "Error attachments is null, please reload view.")
+            return
+        }
 
-            val linkMode = attachment?.getItemData("linkMode")
+        val linkMode = attachment?.getItemData("linkMode")
 
-            filename.text = attachment?.data?.get("filename") ?: "unknown"
-            if (linkMode == "linked_file") { // this variant uses title as a filename.
-                filename.text = "[Linked] ${attachment?.getItemData("title")}"
+        filename.text = attachment?.data?.get("filename") ?: "unknown"
+        if (linkMode == "linked_file") { // this variant uses title as a filename.
+            filename.text = "[Linked] ${attachment?.getItemData("title")}"
 
-            } else if (linkMode == "linked_url") {
-                filename.text = "[Linked Url] ${attachment?.getItemData("title")}"
-                layout.setOnClickListener {
-                    val url = attachment?.getItemData("url")
-                    MaterialAlertDialogBuilder(context!!)
-                        .setMessage("Would you like to open this URL: $url")
-                        .setPositiveButton("Yes") { dialog, which ->
-                            val intent = Intent(Intent.ACTION_VIEW)
-                            intent.setData(Uri.parse(url))
-                            startActivity(intent)
-                        }
-                        .setNegativeButton("No", { _, _ -> })
-                        .show()
-                }
-            }
-
-            val filetype = attachment?.data!!["contentType"] ?: ""
-
-            if (attachment?.isDownloadable() == true) {
-                if (filetype == "application/pdf") {
-                    icon.setImageResource(R.drawable.treeitem_attachment_pdf_2x)
-                } else if (filetype == "image/vnd.djvu") {
-                    icon.setImageResource(R.drawable.djvu_icon)
-                } else if (attachment?.getFileExtension() == "epub") {
-                    icon.setImageResource(R.drawable.epub_icon)
-                } else {
-                    // todo get default attachment icon.
-                }
-                layout.setOnClickListener {
-                    if (linkMode == "linked_file") {
-                        fileOpenListener?.openLinkedAttachmentListener(
-                            attachment ?: throw Exception("No Attachment given.")
-                        )
-                    } else {
-                        fileOpenListener?.openAttachmentFileListener(
-                            attachment ?: throw Exception("No Attachment given.")
-                        )
+        } else if (linkMode == "linked_url") {
+            filename.text = "[Linked Url] ${attachment?.getItemData("title")}"
+            layout.setOnClickListener {
+                val url = attachment?.getItemData("url")
+                MaterialAlertDialogBuilder(requireContext())
+                    .setMessage("Would you like to open this URL: $url")
+                    .setPositiveButton("Yes") { dialog, which ->
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.setData(Uri.parse(url))
+                        startActivity(intent)
                     }
-                }
+                    .setNegativeButton("No", { _, _ -> })
+                    .show()
+            }
+        }
 
-                layout.setOnLongClickListener {
-                    AlertDialog.Builder(context)
-                        .setTitle("Attachment")
-                        .setItems(
-                            arrayOf("Open", "Force Re-upload", "Delete local copy of attachment"),
-                            object : DialogInterface.OnClickListener {
-                                override fun onClick(dialog: DialogInterface?, item: Int) {
-                                    when (item) {
-                                        0 -> fileOpenListener?.openAttachmentFileListener(
-                                            attachment ?: throw Exception("No Attachment given.")
+        val filetype = attachment?.data!!["contentType"] ?: ""
+
+        if (attachment?.isDownloadable() == true) {
+            if (filetype == "application/pdf") {
+                icon.setImageResource(R.drawable.ic_pdf)
+            } else if (filetype == "image/vnd.djvu") {
+                icon.setImageResource(R.drawable.djvu_icon)
+            } else if (attachment?.getFileExtension() == "epub") {
+                icon.setImageResource(R.drawable.epub_icon)
+            } else {
+                // todo get default attachment icon.
+            }
+            layout.setOnClickListener {
+                if (linkMode == "linked_file") {
+                    fileOpenListener?.openLinkedAttachmentListener(
+                        attachment ?: throw Exception("No Attachment given.")
+                    )
+                } else {
+                    fileOpenListener?.openAttachmentFileListener(
+                        attachment ?: throw Exception("No Attachment given.")
+                    )
+                }
+            }
+
+            layout.setOnLongClickListener {
+                AlertDialog.Builder(context)
+                    .setTitle("Attachment")
+                    .setItems(
+                        arrayOf("Open", "Force Re-upload", "Delete local copy of attachment"),
+                        object : DialogInterface.OnClickListener {
+                            override fun onClick(dialog: DialogInterface?, item: Int) {
+                                when (item) {
+                                    0 -> fileOpenListener?.openAttachmentFileListener(
+                                        attachment ?: throw Exception("No Attachment given.")
+                                    )
+                                    1 -> fileOpenListener?.forceUploadAttachmentListener(
+                                        attachment ?: throw Exception("No Attachment given.")
+                                    )
+                                    2 -> {
+                                        fileOpenListener?.deleteLocalAttachment(
+                                            attachment
+                                                ?: throw Exception("No Attachment given.")
                                         )
-                                        1 -> fileOpenListener?.forceUploadAttachmentListener(
-                                            attachment ?: throw Exception("No Attachment given.")
-                                        )
-                                        2 -> {
-                                            fileOpenListener?.deleteLocalAttachment(
-                                                attachment
-                                                    ?: throw Exception("No Attachment given.")
-                                            )
-                                        }
                                     }
                                 }
+                            }
 
-                            }).show()
-                    true
-                }
+                        }).show()
+                true
             }
-
         }
 
     }
@@ -161,16 +152,20 @@ class ItemAttachmentEntry(
     }
 
     companion object {
-        @JvmStatic
-        fun newInstance(itemKey: String): ItemAttachmentEntry {
-            val fragment = ItemAttachmentEntry()
-            val args = Bundle().apply {
-                putString("itemKey", itemKey)
-            }
-            fragment.arguments = args
-            return fragment
-        }
+//        @JvmStatic
+//        fun newInstance(itemKey: String): ItemAttachmentEntry {
+//            val fragment = ItemAttachmentEntry()
+//            val args = Bundle().apply {
+//                putString("itemKey", itemKey)
+//            }
+//            fragment.arguments = args
+//            return fragment
+//        }
 
-        fun newInstance() = ItemAttachmentEntry()
+        @JvmStatic
+        fun newInstance(attachment: Item) =
+            ItemAttachmentEntry().apply {
+                this.attachment = attachment
+            }
     }
 }

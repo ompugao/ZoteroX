@@ -22,9 +22,9 @@ val ARG_NOTE = "note"
 class ItemNoteEntry() : Fragment() {
     private var note: Note? = null
     private var listener: NoteInteractionListener? = null
-    lateinit var libraryViewModel: LibraryListViewModel
+//    lateinit var libraryViewModel: LibraryListViewModel
 
-    val noteKey: String by lazy { arguments?.getString("noteKey") ?: "" }
+//    val noteKey: String by lazy { arguments?.getString("noteKey") ?: "" }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,47 +48,47 @@ class ItemNoteEntry() : Fragment() {
         return view
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        libraryViewModel =
-            ViewModelProvider(requireActivity()).get(LibraryListViewModel::class.java)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        showNoteItemView(note)
+    }
+
+    private fun showNoteItemView(note: Note?) {
         val noteText = requireView().findViewById<TextView>(R.id.textView_note)
 
-        if (noteKey == "") {
+        if (note == null) {
             return
         }
 
-        libraryViewModel.getOnItemClicked().observe(viewLifecycleOwner) { item ->
-            note = item?.notes?.filter { it.key == noteKey }?.firstOrNull()
 
-            val htmlText = stripHtml(note?.note ?: "")
-            noteText.text = htmlText
-            val noteView = NoteView(requireContext(), note!!, listener!!)
+        val htmlText = stripHtml(note.note ?: "")
+        noteText.text = htmlText
+        val noteView = NoteView(requireActivity(), note, listener!!)
 
-            requireView().setOnClickListener {
-                noteView.show()
-            }
-
-            requireView().setOnLongClickListener(object : View.OnLongClickListener {
-                override fun onLongClick(dialog: View?): Boolean {
-                    AlertDialog.Builder(this@ItemNoteEntry.context)
-                        .setTitle("Note")
-                        .setItems(
-                            arrayOf("View Note", "Edit Note", "Delete Note")
-                        ) { _dialog, item ->
-                            when (item) {
-                                0 -> noteView.show()
-                                1 -> editNote()
-                                2 -> deleteNote()
-                            }
-                        }.show()
-                    return true
-                }
-
-            })
+        requireView().setOnClickListener {
+            noteView.show()
         }
 
+        requireView().setOnLongClickListener(object : View.OnLongClickListener {
+            override fun onLongClick(dialog: View?): Boolean {
+                AlertDialog.Builder(this@ItemNoteEntry.context)
+                    .setTitle(getString(R.string.note))
+                    .setItems(
+                        arrayOf(getString(R.string.view_note),
+                            getString(R.string.edit_note),
+                            getString(R.string.delete_note))
+                    ) { _, item ->
+                        when (item) {
+                            0 -> noteView.show()
+                            1 -> editNote()
+                            2 -> deleteNote()
+                        }
+                    }.show()
+                return true
+            }
+
+        })
 
     }
 
@@ -118,16 +118,12 @@ class ItemNoteEntry() : Fragment() {
     }
 
     companion object {
-        @JvmStatic
-        fun newInstance(noteKey: String): ItemNoteEntry {
-            val fragment = ItemNoteEntry()
-            val args = Bundle().apply {
-                putString("noteKey", noteKey)
-            }
-            fragment.arguments = args
-            return fragment
-        }
 
-        fun newInstance() = ItemNoteEntry()
+        @JvmStatic
+        fun newInstance(note: Note): ItemNoteEntry {
+            return ItemNoteEntry().apply {
+                this.note = note
+            }
+        }
     }
 }

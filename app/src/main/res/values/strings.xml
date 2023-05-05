@@ -123,4 +123,10 @@
     <string name="trash">Trash</string>
     <string name="my_publication">My publication</string>
     <string name="homepage">Home</string>
+    <string name="note">Note</string>
+    <string name="edit">Edit</string>
+    <string name="save">Save</string>
+    <string name="view_note">View Note</string>
+    <string name="edit_note">Edit Note</string>
+    <string name="delete_note">Delete Note</string>
 </resources>

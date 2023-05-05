@@ -43,7 +43,7 @@ class ItemNotesFragment : Fragment(), NoteInteractionListener {
         for (note in notes) {
             fmt.add(
                 R.id.item_fragment_scrollview_ll_notes,
-                ItemNoteEntry.newInstance(note.key)
+                ItemNoteEntry.newInstance(note)
             )
         }
         fmt.commit()

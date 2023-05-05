@@ -110,7 +110,7 @@ class ItemBasicInfoFragment : Fragment() {
             Log.d("zotero", "adding ${attachment.getTitle()}")
             fmt.add(
                 R.id.item_fragment_scrollview_ll_attachments,
-                ItemAttachmentEntry.newInstance(attachment.itemKey)
+                ItemAttachmentEntry.newInstance(attachment)
             )
         }
         fmt.commit()

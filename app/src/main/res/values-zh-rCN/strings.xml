@@ -105,5 +105,11 @@
     <string name="homepage">主页</string>
     <string name="external_cache">内置缓存</string>
     <string name="custom_path">自定义路径</string>
+    <string name="note">笔记</string>
+    <string name="edit">编辑</string>
+    <string name="save">保存</string>
+    <string name="view_note">查看笔记</string>
+    <string name="edit_note">编辑笔记</string>
+    <string name="delete_note">删除笔记</string>
 
 </resources>

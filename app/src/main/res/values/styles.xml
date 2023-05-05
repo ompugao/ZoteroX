@@ -70,4 +70,13 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
+    <style name="EditText.EditState" parent="@style/Widget.Design.TextInputLayout">
+        <item name="android:focusableInTouchMode">true</item>
+    </style>
+
+    <style name="EditText.ReadOnly" parent="@style/Widget.Design.TextInputLayout">
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
 </resources>
