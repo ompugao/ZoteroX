@@ -383,7 +383,10 @@ class LibraryActivity : BaseActivity(),
     fun setTitle(title: String) {
 //        supportActionBar?.title = title
         supportActionBar?.title = ""
-        toolbar.findViewById<TextView>(R.id.txt_title).text = title
+
+        toolbar.findViewById<TextView>(R.id.txt_title)?.let {
+            it.text = title
+        }
     }
 
     fun showItemDialog(item: Item) {
