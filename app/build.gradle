@@ -143,6 +143,8 @@ dependencies {
     def dialogx_version = "0.0.47"
     implementation "com.kongzue.dialogx:DialogX:${dialogx_version}"
 
+    implementation 'com.yuan.library.dmanager:downloadmanager-okhttp-release:1.1.6'
+
     configurations {
         all*.exclude group: 'xpp3', module: 'xpp3'
     }

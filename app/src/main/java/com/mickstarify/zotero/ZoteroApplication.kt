@@ -10,6 +10,7 @@ import android.app.Application
 import com.mickstarify.zotero.di.component.ApplicationComponent
 import com.mickstarify.zotero.di.component.DaggerApplicationComponent
 import com.mickstarify.zotero.di.module.ApplicationModule
+import com.yuan.library.dmanager.download.DownloadManager
 
 class ZoteroApplication : Application() {
 
@@ -20,6 +21,9 @@ class ZoteroApplication : Application() {
 
         // 初始化全局日志类
         MyLog.init()
+
+        // 在Application初始化下载管理器
+        DownloadManager.getInstance().init(this, 3)
 
 //        SoLoader.init(this, false)
 //
