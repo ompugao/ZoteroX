@@ -1171,7 +1171,6 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
         return presenter.view.getString(stringId)
     }
 
-
     fun isLoadLastViewedPosition(): Boolean = PreferenceManager(presenter.view).isLoadLastLibraryState()
 
     fun getLoadLastViewedPosition(): String = PreferenceManager(presenter.view).getLastViewedPosition() ?: "all"
@@ -1179,6 +1178,11 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
     fun saveCurrentLibraryState() {
         val currentCollection = state.currentCollection
 
-        PreferenceManager(presenter.view).setLastViewedPosition(currentCollection)
+        var curPosition = "all"
+        if (currentCollection != "unset") {
+            curPosition = currentCollection
+        }
+
+        PreferenceManager(presenter.view).setLastViewedPosition(curPosition)
     }
 }
