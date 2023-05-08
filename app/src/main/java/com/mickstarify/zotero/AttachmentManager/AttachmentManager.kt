@@ -10,27 +10,39 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.R
+import com.mickstarify.zotero.databinding.ActivityAttachmentManagerBinding
+import com.mickstarify.zotero.views.MaterialProgressDialog
 
 class AttachmentManager : AppCompatActivity(), Contract.View {
     lateinit var presenter: Contract.Presenter
+    lateinit var mBinding: ActivityAttachmentManagerBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_attachment_manager)
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_attachment_manager)
+
+//        mBinding = ActivityAttachmentManagerBinding.inflate(layoutInflater)
+//        setContentView(R.layout.activity_attachment_manager)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         presenter = AttachmentManagerPresenter(this, this)
     }
 
     override fun initUI() {
-        findViewById<LinearLayout>(R.id.ll_meta_information).visibility = View.INVISIBLE
+//        findViewById<LinearLayout>(R.id.ll_meta_information).visibility = View.INVISIBLE
         findViewById<Button>(R.id.button_download).setOnClickListener {
             presenter.pressedDownloadAttachments()
         }
 
-        disableDownloadButton()
+        mBinding.btnBack.setOnClickListener {
+            finish()
+        }
+
+//        disableDownloadButton()
     }
 
     private fun disableDownloadButton() {
@@ -48,7 +60,7 @@ class AttachmentManager : AppCompatActivity(), Contract.View {
         alert.setIcon(R.drawable.ic_error_black_24dp)
         alert.setTitle(title)
         alert.setMessage(message)
-        alert.setPositiveButton("Ok") { _, _ -> onClick() }
+        alert.setPositiveButton(getString(R.string.oK)) { _, _ -> onClick() }
         try {
             alert.show()
         } catch (exception: WindowManager.BadTokenException) {
@@ -57,30 +69,27 @@ class AttachmentManager : AppCompatActivity(), Contract.View {
     }
 
     var progressBar: ProgressBar? = null
+
+    var progressDialog: AlertDialog? = null
+
     override fun showLibraryLoadingAnimation() {
         if (progressBar == null) {
             progressBar = findViewById(R.id.progressBar)
         }
 
-        progressBar?.isIndeterminate = true
-        progressBar?.visibility = View.VISIBLE
-        progressBar?.isActivated = true
-
-        val textView = findViewById<TextView>(R.id.txt_loading_library_text)
-        textView.text = resources.getString(R.string.loading_your_library)
-        textView.visibility = View.VISIBLE
+        if (progressDialog == null) {
+            progressDialog = MaterialProgressDialog.createProgressDialog(this, "", getString(R.string.calculating_attachments)).show()
+        }
     }
 
     override fun hideLibraryLoadingAnimation() {
-//        progressBar?.let {
-//            it.visibility = View.INVISIBLE
-//            it.isActivated = false
-//        }
-        val textView = findViewById<TextView>(R.id.txt_loading_library_text)
-//        textView.visibility = View.INVISIBLE
-        textView.visibility = View.VISIBLE
+        progressBar?.visibility = View.GONE
 
-        textView.text = "Downloading attachments"
+        val textView = findViewById<TextView>(R.id.txt_attachment_downloading)
+        textView.visibility = View.GONE
+
+        progressDialog?.dismiss()
+        progressDialog = null
     }
 
     override fun setDownloadButtonState(text: String, enabled: Boolean) {
@@ -88,6 +97,7 @@ class AttachmentManager : AppCompatActivity(), Contract.View {
         button.visibility = View.VISIBLE
         button.isEnabled = enabled
         button.text = text
+
         MyLog.d("zotero", "button state changed. ${button.text} ${button.isEnabled}")
     }
 
@@ -115,10 +125,8 @@ class AttachmentManager : AppCompatActivity(), Contract.View {
         nRemote: Int
     ) {
         findViewById<TextView>(R.id.txt_number_attachments).text =
-            "${nLocal} of ${nRemote} Downloaded"
-        findViewById<TextView>(R.id.txt_local_size).text = "${sizeLocal} used"
-
-        findViewById<LinearLayout>(R.id.ll_meta_information).visibility = View.VISIBLE
+            "${getString(R.string.downloaded)}: $nLocal/$nRemote" +
+                    "\n${getString(R.string.used)}: $sizeLocal"
 
         //todo add free disk space.
     }

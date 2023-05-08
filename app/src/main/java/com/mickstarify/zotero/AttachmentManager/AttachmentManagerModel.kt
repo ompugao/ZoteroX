@@ -236,7 +236,6 @@ class AttachmentManagerModel(val presenter: Contract.Presenter, val context: Con
         val size: Long
     )
 
-
     fun stopCalculateMetaInformation() {
         calculateMetadataDisposable?.dispose()
     }

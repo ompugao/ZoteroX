@@ -129,4 +129,9 @@
     <string name="view_note">View Note</string>
     <string name="edit_note">Edit Note</string>
     <string name="delete_note">Delete Note</string>
+    <string name="description_attachment_downloading">Here is the attachment downloading...</string>
+    <string name="downloaded">Downloaded</string>
+    <string name="used">used</string>
+    <string name="cancel_download">Cancel Download</string>
+    <string name="calculating_attachments">Calculating your downloaded attachments...</string>
 </resources>

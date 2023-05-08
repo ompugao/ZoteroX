@@ -1,9 +1,10 @@
 package com.mickstarify.zotero.AttachmentManager
 
 import android.content.Context
+import com.mickstarify.zotero.R
 import kotlin.math.round
 
-class AttachmentManagerPresenter(val view: Contract.View, context: Context) : Contract.Presenter {
+class AttachmentManagerPresenter(val view: AttachmentManager, context: Context) : Contract.Presenter {
     val model: Contract.Model
 
     init {
@@ -13,13 +14,13 @@ class AttachmentManagerPresenter(val view: Contract.View, context: Context) : Co
     }
 
     override fun pressedDownloadAttachments() {
-        if (model.isDownloading == true) {
+        if (model.isDownloading) {
             // this is a cancel request.
-            view.setDownloadButtonState("Download All Attachments", true)
+            view.setDownloadButtonState(view.getString(R.string.download_all_attachments), true)
             model.cancelDownload()
         } else {
             // download request.
-            view.setDownloadButtonState("Cancel Download", true)
+            view.setDownloadButtonState(view.getString(R.string.cancel_download), true)
             model.downloadAttachments()
         }
 
@@ -43,8 +44,8 @@ class AttachmentManagerPresenter(val view: Contract.View, context: Context) : Co
 
     override fun finishLoadingAnimation() {
         view.hideLibraryLoadingAnimation()
-        if (model.isDownloading == false) {
-            view.setDownloadButtonState("Download All Attachments", true)
+        if (!model.isDownloading) {
+            view.setDownloadButtonState(view.getString(R.string.download_all_attachments), true)
         }
     }
 

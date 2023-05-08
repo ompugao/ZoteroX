@@ -358,7 +358,7 @@ class AttachmentStorageManager @Inject constructor(
      * 默认路径为：Android/data/应用包名/file/zotero/storage
      */
     fun getDefaultStorage(): File {
-        Log.e("Zotero Storage", getZoteroDefaultWorkSpace().path)
+//        Log.e("Zotero Storage", getZoteroDefaultWorkSpace().path)
         return File(getZoteroDefaultWorkSpace(), ZOTERO_STORAGE)
     }
 
