@@ -18,7 +18,13 @@ import io.reactivex.CompletableObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
+import javax.inject.Scope
+import kotlin.coroutines.CoroutineContext
 
 class WebDAVSetup : AppCompatActivity() {
     lateinit var preferenceManager: PreferenceManager
@@ -42,6 +48,7 @@ class WebDAVSetup : AppCompatActivity() {
         allowInsecureSSLCheckbox.isChecked = preferenceManager.isInsecureSSLAllowed()
 
         val submitButton = findViewById<Button>(R.id.btn_submit)
+        val verifyButton = findViewById<Button>(R.id.btn_verify)
         val cancelButton = findViewById<Button>(R.id.btn_cancel)
 
         if (address_editText.text.toString() != "") {
@@ -63,6 +70,34 @@ class WebDAVSetup : AppCompatActivity() {
         cancelButton.setOnClickListener {
             finish()
         }
+
+        verifyButton.setOnClickListener {
+            val address = formatAddress(address_editText.text.toString())
+            address_editText.setText(address) // update the address box with https:// if user forgot.
+            val username = username_editText.text.toString()
+            val password = password_editText.text.toString()
+            if (address == "") {
+                toast("请输入服务器地址")
+            } else {
+                val webDav = Webdav(address, username, password, allowInsecureSSL())
+                try {
+                    CoroutineScope(Dispatchers.Default).launch {
+                        if(webDav.testConnection()) {
+                            withContext(Dispatchers.Main) {
+                                toast("验证成功")
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    toast(e.toString())
+                }
+            }
+        }
+
+    }
+
+    fun toast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
     fun formatAddress(address: String): String {
