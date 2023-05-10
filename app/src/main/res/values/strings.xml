@@ -134,4 +134,7 @@
     <string name="used">used</string>
     <string name="cancel_download">Cancel Download</string>
     <string name="calculating_attachments">Calculating your downloaded attachments...</string>
+    <string name="download_manager">Download Manager</string>
+    <string name="custom_storage_selected">Custom storage selected</string>
+    <string name="warning_use_custom_storage">Android has imposed limitations on how the filesystem can be accessed. This will mean much slower file access compared to using the external cache option.</string>
 </resources>

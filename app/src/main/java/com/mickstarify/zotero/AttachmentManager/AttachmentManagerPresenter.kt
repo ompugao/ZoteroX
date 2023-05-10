@@ -1,29 +1,51 @@
 package com.mickstarify.zotero.AttachmentManager
 
 import android.content.Context
-import com.mickstarify.zotero.R
+import android.content.Intent
+import com.mickstarify.zotero.PdfViewerActivity
+import com.mickstarify.zotero.ZoteroStorage.Database.Item
+import com.mickstarify.zotero.adapters.AttachmentListAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.round
 
-class AttachmentManagerPresenter(val view: AttachmentManager, context: Context) : Contract.Presenter {
-    val model: Contract.Model
+class AttachmentManagerPresenter(val view: AttachmentManager, context: Context, ) : Contract.Presenter, AttachmentListAdapter.AttachInteractionListener {
+    val model: AttachmentManagerModel
 
     init {
         model = AttachmentManagerModel(this, context)
-        view.initUI()
         model.loadLibrary()
+
+        model.getAttachmentItems().observe(view) {
+            it.let {
+                view.updateAttachments(it)
+            }
+        }
+
+        view.initUI()
     }
 
     override fun pressedDownloadAttachments() {
         if (model.isDownloading) {
             // this is a cancel request.
-            view.setDownloadButtonState(view.getString(R.string.download_all_attachments), true)
             model.cancelDownload()
         } else {
             // download request.
-            view.setDownloadButtonState(view.getString(R.string.cancel_download), true)
             model.downloadAttachments()
         }
 
+    }
+
+    fun updateDownloadProgress(progress: Long, total: Long) {
+        val progressKB = (progress / 1000).toInt()
+        val totalKB = (total / 1000).toInt()
+        view.updateDownloadProgress(progressKB, totalKB)
+    }
+
+    fun hideDownloadProgress() {
+        view.hideDownloadProgress()
     }
 
     override fun displayAttachmentInformation(nLocal: Int, sizeLocal: Long, nRemote: Int) {
@@ -44,9 +66,6 @@ class AttachmentManagerPresenter(val view: AttachmentManager, context: Context) 
 
     override fun finishLoadingAnimation() {
         view.hideLibraryLoadingAnimation()
-        if (!model.isDownloading) {
-            view.setDownloadButtonState(view.getString(R.string.download_all_attachments), true)
-        }
     }
 
     override fun makeToastAlert(message: String) {
@@ -66,5 +85,49 @@ class AttachmentManagerPresenter(val view: AttachmentManager, context: Context) 
 
     override fun updateProgress(filename: String, current: Int, total: Int) {
         view.updateLoadingProgress(filename, current, total)
+    }
+
+    override fun onAttachmentDownload(item: Item) {
+        model.downloadAttachment(item)
+    }
+
+    override fun onAttachmentOpen(item: Item) {
+        CoroutineScope(Dispatchers.Default).launch {
+            val attachmentType = model.attachmentStorageManager.getAttachmentType(item)
+
+            val isExist = model.attachmentStorageManager.simpleCheckIfAttachmentExists(item)
+
+            withContext(Dispatchers.Main) {
+                if (!isExist) {
+                    createErrorAlert("附件不存在", "${item.getTitle()}不存在或者尚未下载到本地") {}
+                    return@withContext
+                }
+
+                when (attachmentType) {
+                    "application/pdf" -> openPdf(item)
+                    else -> createErrorAlert("不支持的附件类型", "暂不支持打开${attachmentType}类型的附件") {}
+                }
+            }
+        }
+
+    }
+
+    private fun openPdf(item: Item) {
+        try {
+            if (!model.isUseExternalPdfReader()) {
+                val attachment_uri = model.attachmentStorageManager.getAttachmentUri(item)
+
+                val intent = Intent(view, PdfViewerActivity::class.java)
+                intent.data = attachment_uri
+                view.startActivity(intent)
+
+            } else {
+                val intent = model.attachmentStorageManager.openAttachment(item)
+                view.startActivity(intent)
+            }
+        } catch (e: Exception) {
+            createErrorAlert("Error", e.toString()) {}
+        }
+
     }
 }

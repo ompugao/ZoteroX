@@ -204,7 +204,7 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
             .doOnComplete {
             try {
                 // Use an external pdf reader to open this attachment.
-                if (!preferences.isUserExternalPdfReader()) {
+                if (!preferences.isUseExternalPdfReader()) {
                     // todo: implement this code to use in-app pdf reader to open pdf.
 
                     val attachment_uri = attachmentStorageManager.getAttachmentUri(attachment)

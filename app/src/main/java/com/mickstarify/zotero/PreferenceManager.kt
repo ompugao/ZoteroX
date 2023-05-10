@@ -237,7 +237,7 @@ class PreferenceManager @Inject constructor(context: Context) {
     /**
      * 打开pdf附件时，是否使用外部的pdf阅读器
      */
-    fun isUserExternalPdfReader(): Boolean {
+    fun isUseExternalPdfReader(): Boolean {
         return sharedPreferences.getBoolean("use_external_pdf_reader", false)
     }
 

@@ -2,8 +2,13 @@ package com.mickstarify.zotero.AttachmentManager
 
 import android.app.Activity
 import android.content.Context
+import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.PreferenceManager
+import com.mickstarify.zotero.R
 import com.mickstarify.zotero.SyncSetup.AuthenticationStorage
 import com.mickstarify.zotero.ZoteroApplication
 import com.mickstarify.zotero.ZoteroAPI.DownloadProgress
@@ -14,6 +19,7 @@ import com.mickstarify.zotero.ZoteroStorage.Database.GroupInfo
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.ZoteroStorage.Database.ZoteroDatabase
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
+import com.mickstarify.zotero.models.AttachmentEntry
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.Observable
@@ -22,10 +28,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.internal.operators.observable.ObservableFromIterable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.LinkedList
 import javax.inject.Inject
 
-class AttachmentManagerModel(val presenter: Contract.Presenter, val context: Context) :
+class AttachmentManagerModel(val presenter: AttachmentManagerPresenter, val context: Context) :
     Contract.Model {
 
     lateinit var zoteroAPI: ZoteroAPI
@@ -62,10 +71,10 @@ class AttachmentManagerModel(val presenter: Contract.Presenter, val context: Con
 
         if (!preferenceManager.hasShownCustomStorageWarning() && attachmentStorageManager.storageMode == AttachmentStorageManager.StorageMode.CUSTOM) {
             preferenceManager.setShownCustomStorageWarning(true)
+
             presenter.createErrorAlert(
-                "custom storage selected",
-                "Android has imposed limitations on how the filesystem can be accessed. This will mean much slower file access compared to using the " +
-                        "external cache option."
+                context.getString(R.string.custom_storage_selected),
+                context.getString(R.string.warning_use_custom_storage)
             ) {}
         }
     }
@@ -97,11 +106,13 @@ class AttachmentManagerModel(val presenter: Contract.Presenter, val context: Con
         val toDownload = LinkedList<Item>()
 
         Completable.fromAction {
-            for (attachment in zoteroDB.items!!.filter { it.itemType == "attachment" && it.data["linkMode"] != "linked_file" }) {
+            val attachmentItems = zoteroDB.items!!.filter { it.itemType == "attachment" && it.data["linkMode"] != "linked_file" }
+            for (attachment in attachmentItems) {
                 if (attachment.isDownloadable()) {
                     toDownload.add(attachment)
                 }
             }
+
         }.subscribeOn(Schedulers.io()).andThen(ObservableFromIterable(toDownload.withIndex()).map {
             val i = it.index
             val attachment = it.value
@@ -203,6 +214,44 @@ class AttachmentManagerModel(val presenter: Contract.Presenter, val context: Con
             })
     }
 
+    fun downloadAttachment(item: Item) {
+        if (isDownloading) {
+            Log.d("zotero", "not downloading ${item.getTitle()} because i am already downloading.")
+            return
+        }
+        isDownloading = true
+
+        val downloadItem = zoteroAPI.downloadItemRx(item, zoteroDB.groupID, context)
+
+        downloadItem
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<DownloadProgress> {
+                override fun onSubscribe(d: Disposable) {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    isDownloading = false
+                    presenter.hideDownloadProgress()
+
+                    presenter.createErrorAlert("Error Downloading", e.toString()) {}
+                }
+
+                override fun onComplete() {
+                    isDownloading = false
+//                    MyLog.d("ZoteroDebug", "Downloading attachment ${item.getTitle()} complete!")
+
+                    presenter.hideDownloadProgress()
+                }
+
+                override fun onNext(t: DownloadProgress) {
+//                    MyLog.d("ZoteroDebug", "Downloading attachment progress: ${t.progress} ")
+                    presenter.updateDownloadProgress(t.progress, t.total)
+                }
+            })
+    }
+
     override fun loadLibrary() {
         zoteroDB = ZoteroDB(context, groupID = GroupInfo.NO_GROUP_ID)
         zoteroDB.collections = LinkedList()
@@ -213,6 +262,8 @@ class AttachmentManagerModel(val presenter: Contract.Presenter, val context: Con
                 override fun onComplete() {
                     calculateMetaInformation()
                     presenter.finishLoadingAnimation()
+
+                    loadAttachments()
                 }
 
                 override fun onSubscribe(d: Disposable) {
@@ -232,6 +283,8 @@ class AttachmentManagerModel(val presenter: Contract.Presenter, val context: Con
     }
 
     data class FilesystemMetadataObject(
+        val fileName: String,
+        val uri: Uri?,
         val exists: Boolean,
         val size: Long
     )
@@ -248,18 +301,7 @@ class AttachmentManagerModel(val presenter: Contract.Presenter, val context: Con
             zoteroDB.items!!.filter { it.itemType == "attachment" && it.isDownloadable() }
 
         val observable = Observable.fromIterable(attachmentItems).map {
-            Log.d("zotero", "checking if ${it.data["filename"]} exists")
-            if (!it.isDownloadable() || it.data["linkMode"] == "linked_file") {
-                FilesystemMetadataObject(false, -1)
-            } else {
-                val exists = attachmentStorageManager.checkIfAttachmentExists(it, false)
-                val size = if (exists) {
-                    attachmentStorageManager.getFileSize(it)
-                } else {
-                    -1
-                }
-                FilesystemMetadataObject(exists, size)
-            }
+            return@map getAttachmentFileMeta(it) ?: FilesystemMetadataObject("", null, false, -1)
         }
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<FilesystemMetadataObject> {
@@ -295,6 +337,52 @@ class AttachmentManagerModel(val presenter: Contract.Presenter, val context: Con
 
             })
 
+    }
 
+     fun getAttachmentFileMeta(it: Item): FilesystemMetadataObject? {
+        if (it.itemType != "attachment") {
+            MyLog.e("zotero", "${it.itemKey} is not an attachment")
+            return null
+        }
+//        Log.d("zotero", "checking if ${it.data["filename"]} exists")
+
+        val fileName = attachmentStorageManager.getFilenameForItem(it)
+
+        if (!it.isDownloadable() || it.data["linkMode"] == "linked_file") {
+            return FilesystemMetadataObject("", null, false, -1)
+        } else {
+            val exists = attachmentStorageManager.checkIfAttachmentExists(it, false)
+            val size = if (exists) {
+                attachmentStorageManager.getFileSize(it)
+            } else {
+                -1
+            }
+            return FilesystemMetadataObject(fileName, null, exists, size)
+        }
+    }
+
+    private val attachmentEntries = MutableLiveData<List<AttachmentEntry>>()
+
+    fun getAttachmentItems(): LiveData<List<AttachmentEntry>> {
+        return attachmentEntries
+    }
+
+    fun getAllAttachments(): List<Item> {
+        return zoteroDB.items!!.filter { it.itemType == "attachment" }
+    }
+
+    fun loadAttachments() {
+        CoroutineScope(Dispatchers.Default).launch {
+            getAllAttachments().map {
+                AttachmentEntry(it.getTitle(), it.itemKey, it,
+                    attachmentStorageManager.getAttachmentType(it))
+            }.let {
+                attachmentEntries.postValue(it)
+            }
+        }
+    }
+
+    fun isUseExternalPdfReader(): Boolean {
+        return preferenceManager.isUseExternalPdfReader()
     }
 }

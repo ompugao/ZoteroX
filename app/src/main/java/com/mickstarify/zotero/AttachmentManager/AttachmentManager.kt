@@ -3,51 +3,104 @@ package com.mickstarify.zotero.AttachmentManager
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.LinearLayout
+import android.widget.PopupMenu
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.R
+import com.mickstarify.zotero.ZoteroApplication
+import com.mickstarify.zotero.ZoteroStorage.AttachmentStorageManager
+import com.mickstarify.zotero.ZoteroStorage.Database.Item
+import com.mickstarify.zotero.adapters.AttachmentListAdapter
 import com.mickstarify.zotero.databinding.ActivityAttachmentManagerBinding
+import com.mickstarify.zotero.databinding.ContentDialogProgressBinding
+import com.mickstarify.zotero.models.AttachmentEntry
 import com.mickstarify.zotero.views.MaterialProgressDialog
+import javax.inject.Inject
 
-class AttachmentManager : AppCompatActivity(), Contract.View {
-    lateinit var presenter: Contract.Presenter
+class AttachmentManager : AppCompatActivity(), Contract.View, AttachmentListAdapter.AttachInteractionListener {
+    lateinit var presenter: AttachmentManagerPresenter
     lateinit var mBinding: ActivityAttachmentManagerBinding
+
+    var  attachmentsListAdapter: AttachmentListAdapter? = null
+
+    @Inject
+    lateinit var attachmentStorageManager: AttachmentStorageManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (application as ZoteroApplication).component.inject(this)
+
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_attachment_manager)
 
-//        mBinding = ActivityAttachmentManagerBinding.inflate(layoutInflater)
-//        setContentView(R.layout.activity_attachment_manager)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         presenter = AttachmentManagerPresenter(this, this)
+
     }
 
     override fun initUI() {
-//        findViewById<LinearLayout>(R.id.ll_meta_information).visibility = View.INVISIBLE
-        findViewById<Button>(R.id.button_download).setOnClickListener {
-            presenter.pressedDownloadAttachments()
-        }
-
         mBinding.btnBack.setOnClickListener {
             finish()
         }
 
-//        disableDownloadButton()
+        mBinding.btnMore.setOnClickListener {
+            showMoreMenu(it)
+        }
+
+        val rvAttachments = mBinding.root.findViewById<RecyclerView>(R.id.rvAttachments)
+        rvAttachments.layoutManager = LinearLayoutManager(this)
+
+        attachmentsListAdapter = AttachmentListAdapter(this, attachmentStorageManager)
+        rvAttachments.adapter = attachmentsListAdapter
+
+        attachmentsListAdapter?.listener = this
+
+//        attachmentsListAdapter.setOnItemClickListener()
+//        attachmentsListAdapter?.setOnItemClickListener {
+//            _, view, position ->
+//
+//            MyLog.d("ZoteroDebug", "Open attachment: ${position}")
+//
+//        }
+
     }
 
-    private fun disableDownloadButton() {
-//        setDownloadButtonState("Loading Library", false)
-        findViewById<Button>(R.id.button_download).visibility = View.GONE
+    fun updateAttachments(entries: List<AttachmentEntry>) {
+//        attachmentsListAdapter?.data = entries.toMutableList()
+        attachmentsListAdapter?.setData(entries.toMutableList())
+        attachmentsListAdapter?.notifyDataSetChanged()
+
+    }
+
+    private fun showMoreMenu(view: View?) {
+        val popup = PopupMenu(applicationContext, view)
+        menuInflater.inflate(R.menu.activity_attachment_manager, popup.menu)
+
+        popup.menu.findItem(R.id.download_all).let {
+            if (presenter.isDownloading())
+                it.title = getString(R.string.cancel_download)
+            else
+                it.title = getString(R.string.download_all_attachments)
+        }
+
+        popup.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.download_all -> presenter.pressedDownloadAttachments()
+            }
+
+            false
+        }
+
+        popup.show()
+
     }
 
     override fun makeToastAlert(message: String) {
@@ -82,6 +135,49 @@ class AttachmentManager : AppCompatActivity(), Contract.View {
         }
     }
 
+    var progressBinding: ContentDialogProgressBinding? = null
+    fun updateDownloadProgress(progress: Int, total: Int) {
+        val progressString = if (progress == 0) {
+            ""
+        } else {
+            if (total > 0) {
+                "$progress/${total} KB"
+            } else {
+                "${progress} KB"
+            }
+        }
+
+        val progressMsg = "附件已下载：${progressString}"
+
+        if (progressDialog == null) {
+            val dialogBuilder = MaterialAlertDialogBuilder(this)
+
+            if (progressDialog == null) {
+                progressBinding = ContentDialogProgressBinding.inflate(layoutInflater)
+                progressBinding?.txtContent?.text = progressMsg
+
+            }
+
+            dialogBuilder.setTitle("下载中")
+                .setCancelable(false)
+                .setView(progressBinding?.root)
+                .setNegativeButton(getString(R.string.cancel)) {
+                    view, p2 ->
+                }
+
+            progressDialog = dialogBuilder.show()
+        } else {
+            progressBinding?.txtContent?.text = progressMsg
+        }
+    }
+
+    fun hideDownloadProgress() {
+        progressDialog?.dismiss()
+        progressDialog = null
+        progressBinding = null
+
+    }
+
     override fun hideLibraryLoadingAnimation() {
         progressBar?.visibility = View.GONE
 
@@ -93,12 +189,7 @@ class AttachmentManager : AppCompatActivity(), Contract.View {
     }
 
     override fun setDownloadButtonState(text: String, enabled: Boolean) {
-        val button = findViewById<Button>(R.id.button_download)
-        button.visibility = View.VISIBLE
-        button.isEnabled = enabled
-        button.text = text
 
-        MyLog.d("zotero", "button state changed. ${button.text} ${button.isEnabled}")
     }
 
     override fun updateLoadingProgress(message: String, current: Int, total: Int) {
@@ -113,10 +204,9 @@ class AttachmentManager : AppCompatActivity(), Contract.View {
             it.isActivated = true
         }
 
-//        val textView = findViewById<TextView>(R.id.txt_loading_library_text)
         val textView = findViewById<TextView>(R.id.txt_attachment_downloading)
         textView.visibility = View.VISIBLE
-        textView.text = message
+        textView.text = "正在下载: $message"
     }
 
     override fun displayAttachmentInformation(
@@ -139,6 +229,15 @@ class AttachmentManager : AppCompatActivity(), Contract.View {
         } else {
             super.onBackPressed()
         }
+    }
+
+    override fun onAttachmentDownload(item: Item) {
+        presenter.onAttachmentDownload(item)
+    }
+
+    override fun onAttachmentOpen(item: Item) {
+        presenter.onAttachmentOpen(item)
+
     }
 
 

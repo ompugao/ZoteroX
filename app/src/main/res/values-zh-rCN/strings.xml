@@ -116,5 +116,8 @@
     <string name="used">已使用</string>
     <string name="cancel_download">取消下载</string>
     <string name="calculating_attachments">正在统计已下载的附件...</string>
+    <string name="download_manager">下载管理</string>
+    <string name="custom_storage_selected">使用自定义储存路径</string>
+    <string name="warning_use_custom_storage">Android对文件系统的访问方式进行了限制。这意味着与使用外部缓存选项相比，文件访问速度要慢得多。</string>
 
 </resources>

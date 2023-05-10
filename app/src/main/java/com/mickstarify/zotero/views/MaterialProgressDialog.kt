@@ -34,6 +34,11 @@ class MaterialProgressDialog {
             return createProgressDialog(activity, activity.layoutInflater, title, msg)
         }
 
+//        @JvmStatic
+//        fun createProgressDialog(activity: AppCompatActivity, title: String, msg: String): MaterialAlertDialogBuilder {
+//            return createProgressDialog(activity.applicationContext, activity.layoutInflater, title, msg)
+//        }
+
         @JvmStatic
         fun createProgressDialog(fragment: Fragment, title: String, msg: String): MaterialAlertDialogBuilder {
             return createProgressDialog(fragment.requireContext(), fragment.layoutInflater, title, msg)

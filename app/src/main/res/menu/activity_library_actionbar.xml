@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/download_msg"
-        android:icon="@drawable/ic_cloud_download"
-        android:title="@string/downloading"
-        app:showAsAction="collapseActionView" />
-
-    <item
         android:id="@+id/search"
         android:icon="@drawable/baseline_search_white_24"
         android:title="@string/search_title"
@@ -22,15 +16,15 @@
         app:showAsAction="collapseActionView" />
 
     <item
-        android:id="@+id/settings"
-        android:icon="@drawable/baseline_settings_applications_white_24"
-        android:title="@string/settings"
-        app:showAsAction="collapseActionView" />
-
-    <item
         android:id="@+id/attachment_manager"
         android:icon="@drawable/baseline_settings_applications_white_24"
         android:title="@string/attachment_manager"
+        app:showAsAction="collapseActionView" />
+
+    <item
+        android:id="@+id/download_msg"
+        android:icon="@drawable/ic_cloud_download"
+        android:title="@string/download_manager"
         app:showAsAction="collapseActionView" />
 
     <item
@@ -38,5 +32,12 @@
         android:visible="false"
         android:title="@string/force_resync"
         app:showAsAction="collapseActionView"/>
+
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/baseline_settings_applications_white_24"
+        android:title="@string/settings"
+        app:showAsAction="collapseActionView" />
+
 
 </menu>

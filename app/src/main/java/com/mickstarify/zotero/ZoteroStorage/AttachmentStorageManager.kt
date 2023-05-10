@@ -85,6 +85,26 @@ class AttachmentStorageManager @Inject constructor(
         return (calculatedMd5Key == md5Key)
     }
 
+    fun simpleCheckIfAttachmentExists(item: Item): Boolean {
+        val filename = getFilenameForItem(item)
+
+        if (storageMode == StorageMode.EXTERNAL_CACHE) {
+            val outputDir = File(getDefaultStorage(), item.itemKey.uppercase(Locale.ROOT))
+            return File(outputDir, filename).exists()
+        } else if (storageMode == StorageMode.CUSTOM) {
+            val location = preferenceManager.getCustomAttachmentStorageLocation()
+            val rootDocFile = DocumentFile.fromTreeUri(context, Uri.parse(location))
+            var directory = rootDocFile?.findFile(item.itemKey.uppercase(Locale.ROOT))
+
+            if (directory == null || !directory.isDirectory) {
+                return false
+            }
+            return directory.findFile(filename)?.exists() == true
+        }
+
+        return false
+    }
+
     fun checkIfAttachmentExists(item: Item, checkMd5: Boolean = true): Boolean {
         val filename = getFilenameForItem(item)
         if (storageMode == StorageMode.EXTERNAL_CACHE) {
@@ -367,7 +387,6 @@ class AttachmentStorageManager @Inject constructor(
 
         val defaultStorage = getDefaultStorage()
 
-//        val directory = File(context.externalCacheDir, attachment.itemKey.uppercase(Locale.ROOT))
         val directory = File(defaultStorage, attachment.itemKey.uppercase(Locale.ROOT))
         if (!directory.exists()) {
             directory.mkdirs()
@@ -388,6 +407,14 @@ class AttachmentStorageManager @Inject constructor(
     fun getFileSize(attachmentUri: Uri): Long {
         val docFile = DocumentFile.fromSingleUri(context, attachmentUri)
         return docFile?.length() ?: throw FileNotFoundException()
+    }
+
+    fun getAttachmentType(item: Item): String? {
+        return item.data["contentType"]
+    }
+
+    fun getAttachmentParentKey(item: Item): String?{
+        return item.data["parentItem"]
     }
 
     fun readBytes(attachment: Item): ByteArray {
