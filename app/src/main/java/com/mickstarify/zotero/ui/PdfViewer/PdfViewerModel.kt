@@ -1,4 +1,4 @@
-package com.mickstarify.zotero.ui.main
+package com.mickstarify.zotero.ui.PdfViewer
 
 import androidx.lifecycle.ViewModel
 

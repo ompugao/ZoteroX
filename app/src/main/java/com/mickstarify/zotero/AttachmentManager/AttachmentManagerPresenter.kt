@@ -2,7 +2,7 @@ package com.mickstarify.zotero.AttachmentManager
 
 import android.content.Context
 import android.content.Intent
-import com.mickstarify.zotero.PdfViewerActivity
+import com.mickstarify.zotero.AttachmentViewerActivity
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.adapters.AttachmentListAdapter
 import kotlinx.coroutines.CoroutineScope
@@ -104,7 +104,8 @@ class AttachmentManagerPresenter(val view: AttachmentManager, context: Context, 
                 }
 
                 when (attachmentType) {
-                    "application/pdf" -> openPdf(item)
+                    "application/pdf" -> openPdf(item, attachmentType)
+                    "text/html" -> openWebPage(item, attachmentType)
                     else -> createErrorAlert("不支持的附件类型", "暂不支持打开${attachmentType}类型的附件") {}
                 }
             }
@@ -112,13 +113,23 @@ class AttachmentManagerPresenter(val view: AttachmentManager, context: Context, 
 
     }
 
-    private fun openPdf(item: Item) {
+    private fun openWebPage(item: Item, itemType: String) {
+        val attachment_uri = model.attachmentStorageManager.getAttachmentUri(item)
+        val intent = Intent(view, AttachmentViewerActivity::class.java)
+        intent.data = attachment_uri
+        intent.putExtra(AttachmentViewerActivity.ATTACHMENT_TYPE, itemType)
+        view.startActivity(intent)
+
+    }
+
+    private fun openPdf(item: Item, itemType: String) {
         try {
             if (!model.isUseExternalPdfReader()) {
                 val attachment_uri = model.attachmentStorageManager.getAttachmentUri(item)
 
-                val intent = Intent(view, PdfViewerActivity::class.java)
+                val intent = Intent(view, AttachmentViewerActivity::class.java)
                 intent.data = attachment_uri
+                intent.putExtra(AttachmentViewerActivity.ATTACHMENT_TYPE, itemType)
                 view.startActivity(intent)
 
             } else {

@@ -1,5 +1,5 @@
 <resources>
-<!--    <string name="app_name">Zotero</string>-->
+    <!--    <string name="app_name">Zotero</string>-->
     <string name="app_name_release">Zotero</string>
     <string name="app_name_debug">Zotero...</string>
     <string name="title_activity_sync_setup">Sync Setup</string>

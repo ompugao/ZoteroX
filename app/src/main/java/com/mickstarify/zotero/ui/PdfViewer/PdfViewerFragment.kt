@@ -1,4 +1,4 @@
-package com.mickstarify.zotero.ui.main
+package com.mickstarify.zotero.ui.PdfViewer
 
 import android.net.Uri
 import androidx.lifecycle.ViewModelProvider
@@ -7,10 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import com.github.barteksc.pdfviewer.PDFView
 import com.mickstarify.zotero.R
-import com.mickstarify.zotero.databinding.PdfViewerFragmentBinding
 
 class PdfViewerFragment : Fragment() {
 

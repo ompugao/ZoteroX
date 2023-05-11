@@ -209,8 +209,9 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
 
                     val attachment_uri = attachmentStorageManager.getAttachmentUri(attachment)
 
-                    val intent = presenter.requireIntent(PdfViewerActivity::class.java)
+                    val intent = presenter.requireIntent(AttachmentViewerActivity::class.java)
                     intent.data = attachment_uri
+                    intent.putExtra(AttachmentViewerActivity.ATTACHMENT_TYPE, attachment.data["contentType"])
                     presenter.startActivity(intent)
                 } else {
                     val intent = attachmentStorageManager.openAttachment(attachment)
