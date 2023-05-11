@@ -19,6 +19,7 @@ import com.mickstarify.zotero.ZoteroStorage.Database.GroupInfo
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.ZoteroStorage.Database.ZoteroDatabase
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
+import com.mickstarify.zotero.adapters.AttachmentListAdapter
 import com.mickstarify.zotero.models.AttachmentEntry
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
@@ -214,7 +215,7 @@ class AttachmentManagerModel(val presenter: AttachmentManagerPresenter, val cont
             })
     }
 
-    fun downloadAttachment(item: Item) {
+    fun downloadAttachment(item: Item, downloadListener: AttachmentListAdapter.DownloadListener?) {
         if (isDownloading) {
             Log.d("zotero", "not downloading ${item.getTitle()} because i am already downloading.")
             return
@@ -236,18 +237,24 @@ class AttachmentManagerModel(val presenter: AttachmentManagerPresenter, val cont
                     presenter.hideDownloadProgress()
 
                     presenter.createErrorAlert("Error Downloading", e.toString()) {}
+
+                    downloadListener?.onError(e.toString())
                 }
 
                 override fun onComplete() {
                     isDownloading = false
 //                    MyLog.d("ZoteroDebug", "Downloading attachment ${item.getTitle()} complete!")
 
-                    presenter.hideDownloadProgress()
+//                    presenter.hideDownloadProgress()
+
+                    downloadListener?.onSuccess()
                 }
 
                 override fun onNext(t: DownloadProgress) {
 //                    MyLog.d("ZoteroDebug", "Downloading attachment progress: ${t.progress} ")
-                    presenter.updateDownloadProgress(t.progress, t.total)
+//                    presenter.updateDownloadProgress(t.progress, t.total)
+
+                    downloadListener?.onProgress((t.progress/1000).toInt(), (t.total/1000).toInt())
                 }
             })
     }
@@ -374,7 +381,7 @@ class AttachmentManagerModel(val presenter: AttachmentManagerPresenter, val cont
     fun loadAttachments() {
         CoroutineScope(Dispatchers.Default).launch {
             getAllAttachments().map {
-                AttachmentEntry(it.getTitle(), it.itemKey, it,
+                AttachmentEntry(it.getTitle(), attachmentStorageManager.getFilenameForItem(it), it.itemKey, it,
                     attachmentStorageManager.getAttachmentType(it))
             }.let {
                 attachmentEntries.postValue(it)

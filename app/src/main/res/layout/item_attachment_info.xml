@@ -87,7 +87,7 @@
             android:padding="3dp"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/progressDownload"
+            app:layout_constraintEnd_toStartOf="@+id/progress_download"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_cloud_download" />
 
@@ -118,7 +118,7 @@
             app:singleLine="true" />
 
         <ProgressBar
-            android:id="@+id/progressDownload"
+            android:id="@+id/progress_download"
             style="?android:attr/progressBarStyle"
             android:layout_width="24dp"
             android:layout_height="24dp"
