@@ -5,6 +5,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -39,6 +41,10 @@ import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.adapters.LibraryItemLongClickListener
 import com.mickstarify.zotero.adapters.LibraryListInteractionListener
 import com.mickstarify.zotero.adapters.LibraryListRecyclerViewAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -66,6 +72,9 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
     fun hideKeyboard(activity: Activity) {
         val imm: InputMethodManager =
             activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+
+//        val imm: InputMethodManager =
+//            requireContext().getSystemService(InputMethodManager::class.java) as InputMethodManager
         //Find the currently focused view, so we can grab the correct window token from it.
         var view = activity.currentFocus
         //If no view currently has focus, create a new one, just so we can grab a window token from it
@@ -134,7 +143,7 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         viewModel = ViewModelProvider(requireActivity()).get(LibraryListViewModel::class.java)
         (requireActivity().application as ZoteroApplication).component.inject(this)
         val recyclerView = requireView().findViewById<RecyclerView>(R.id.recyclerView)
-        val adapter = LibraryListRecyclerViewAdapter(requireContext(), emptyList(), this)
+        val adapter = LibraryListRecyclerViewAdapter(requireContext(),  this)
 
         recyclerView.adapter = adapter
 
@@ -156,7 +165,6 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
 
         linearLayoutManager.scrollToPositionWithOffset(viewModel.getMutativePosition(), viewModel.getMutativeOffset())
 
-
         viewModel.getItems().observe(viewLifecycleOwner) { entries ->
             if (entries.isNullOrEmpty()) {
                 showEmptyList()
@@ -164,24 +172,8 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
                 hideEmptyList()
             }
 
-            val oldList = adapter.items ?: listOf()
-            val newList = entries
-            adapter.items = newList
-            DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-                override fun getOldListSize() = oldList.size
+            adapter.setData(entries)
 
-                override fun getNewListSize() = newList.size
-
-                override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    //不考虑大小写，如果equals就是同个元素
-                    return oldList[oldItemPosition] == newList[newItemPosition]
-                }
-
-                override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    //如果equals就内容相同
-                    return oldList[oldItemPosition] == newList[newItemPosition]
-                }
-            }, false).dispatchUpdatesTo(adapter)
 
             MyLog.d("zotero", "Loading new set of item (${entries.size} length)")
 //            adapter.items = entries

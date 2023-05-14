@@ -11,7 +11,7 @@ import com.mickstarify.zotero.global.SingleLiveEvent
 
 class LibraryListViewModel : ViewModel() {
 
-    private val items = MutableLiveData<List<ListEntry>>()
+    private val items = SingleLiveEvent<List<ListEntry>>()
 
     // view的位置
     private var mutativePosition: Int = 0

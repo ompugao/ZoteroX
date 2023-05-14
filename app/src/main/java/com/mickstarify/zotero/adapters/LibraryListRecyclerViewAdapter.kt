@@ -11,6 +11,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -22,16 +25,27 @@ import com.mickstarify.zotero.R
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
 import com.mickstarify.zotero.ZoteroStorage.Database.GroupInfo
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
-import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
-import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDBPicker
-import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroGroupDB
 import com.mickstarify.zotero.ZoteroStorage.ZoteroUtils
 import kotlinx.coroutines.*
 
 class LibraryListRecyclerViewAdapter(val context: Context,
-    var items: List<ListEntry>,
     val listener: LibraryListInteractionListener
 ) : RecyclerView.Adapter<LibraryListRecyclerViewAdapter.ListEntryViewHolder>() {
+
+//    val items = ArrayList<ListEntry>()
+
+    val diffCallback = object: ItemCallback<ListEntry>() {
+
+        override fun areItemsTheSame(oldItem: ListEntry, newItem: ListEntry): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItem: ListEntry, newItem: ListEntry): Boolean {
+            return oldItem.equals(newItem)
+        }
+    }
+
+    val mDiffer = AsyncListDiffer<ListEntry>(this, diffCallback)
 
     var model: LibraryActivityModel
     init {
@@ -72,7 +86,7 @@ class LibraryListRecyclerViewAdapter(val context: Context,
         position: Int
     ) {
 
-        val entry = items[position]
+        val entry = mDiffer.currentList[position]
         if (entry.isItem()) {
             val item = entry.getItem()
             holder.textView_title.text = item.getTitle()
@@ -150,6 +164,46 @@ class LibraryListRecyclerViewAdapter(val context: Context,
 
     fun setItemLongClick(onLongClick:LibraryItemLongClickListener) {
         this.onItemLongClickListener = onLongClick
+    }
+
+    fun setData(entries: List<ListEntry>) {
+
+        mDiffer.submitList(entries)
+
+//        val oldList = items ?: listOf()
+
+
+
+
+//        val calculateDiff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+//            override fun getOldListSize() = oldList.size
+//
+//            override fun getNewListSize() = entries.size
+//
+//            override fun areItemsTheSame(
+//                oldItemPosition: Int,
+//                newItemPosition: Int
+//            ): Boolean {
+//                //不考虑大小写，如果equals就是同个元素
+//                return oldList[oldItemPosition] == entries[newItemPosition]
+//            }
+//
+//            override fun areContentsTheSame(
+//                oldItemPosition: Int,
+//                newItemPosition: Int
+//            ): Boolean {
+//                //如果equals就内容相同
+//                return oldList[oldItemPosition] == entries[newItemPosition]
+//            }
+//        }, false)
+
+
+
+
+//        items.clear()
+//        items.addAll(entries)
+//        calculateDiff.dispatchUpdatesTo(this)
+
     }
 
     /**
@@ -274,8 +328,10 @@ class LibraryListRecyclerViewAdapter(val context: Context,
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        return mDiffer.currentList.size
     }
+
+
 }
 
 interface LibraryListInteractionListener {
@@ -288,3 +344,4 @@ interface LibraryItemLongClickListener {
     fun onItemLongClick(item: Item)
     fun onCollectionLongClick(collection: Collection)
 }
+

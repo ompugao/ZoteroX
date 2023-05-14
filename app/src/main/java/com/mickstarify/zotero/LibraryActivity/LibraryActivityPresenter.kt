@@ -198,25 +198,46 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
             return
         }
 
-        if (query.startsWith("tag:")) {
-            val tagName = query.substring(4) // remove tag:
-            val entries = model.getItemsForTag(tagName).map { ListEntry(it) }
-            libraryListViewModel.setItems(entries)
+        CoroutineScope(Dispatchers.Default).launch {
+            if (query.startsWith("tag:")) {
+                val tagName = query.substring(4) // remove tag:
+                val entries = model.getItemsForTag(tagName).map { ListEntry(it) }
+                libraryListViewModel.setItemsInBackgroundThread(entries)
+                return@launch
+            }
+
+            val collections = model.filterCollections(query)
+            val items = model.filterItems(query).sort()
+
+            val entries = LinkedList<ListEntry>()
+            entries.addAll(collections
+                .sortedBy { it.name.lowercase(Locale.ROOT) }
+                .map { ListEntry(it) })
+            entries.addAll(items
+                .map { ListEntry(it) })
+
+            Log.d("zotero", "setting items ${entries.size}")
+            libraryListViewModel.setItemsInBackgroundThread(entries)
+        }
+
+    }
+
+    fun filterEntriesInCurrentCollection(query: String) {
+        Log.d("zotero", "filtering $query")
+        if (query == "" || !model.isLoaded()) {
+            //not going to waste my time lol.
             return
         }
 
-        val collections = model.filterCollections(query)
-        val items = model.filterItems(query).sort()
+        CoroutineScope(Dispatchers.Default).launch {
+            val filtered = libraryListViewModel.getItems().value?.filter {
+                if (it.isCollection() && it.getCollection().name.contains(query.lowercase())) true
+                else it.isItem() && it.getItem().getTitle().contains(query.lowercase())
+            }
 
-        val entries = LinkedList<ListEntry>()
-        entries.addAll(collections.sortedBy { it.name.toLowerCase(Locale.ROOT) }
-            .map { ListEntry(it) })
-        entries.addAll(
-            items
-                .map { ListEntry(it) })
+            libraryListViewModel.setItemsInBackgroundThread(filtered ?: emptyList())
+        }
 
-        Log.d("zotero", "setting items ${entries.size}")
-        libraryListViewModel.setItems(entries)
     }
 
     override fun attachmentDownloadError(message: String) {
@@ -557,7 +578,9 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
         }
         libraryListViewModel.getLibraryFilterText().observe(view) {
             Log.d("zotero", "got filter text $it")
-            filterEntries(it)
+//            filterEntries(it)
+            // 只在当前所在的集合中搜索
+            filterEntriesInCurrentCollection(it)
         }
     }
 
