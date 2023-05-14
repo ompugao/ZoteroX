@@ -30,41 +30,44 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/img_entry_icon"
+                android:id="@+id/imgEntryIcon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:contentDescription="icon for the item type"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_pdf_outline" />
+                app:srcCompat="@drawable/treesource_folder" />
         </LinearLayout>
 
         <TextView
-            android:id="@+id/txt_title"
+            android:id="@+id/txtEntryTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:maxLines="2"
-            tools:text="@string/title"
+            android:text="@string/title"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="#011e3d"
             app:autoSizeMaxTextSize="16dp"
             app:autoSizeMinTextSize="14dp"
             app:autoSizeStepGranularity="1dp"
             app:autoSizeTextType="uniform"
-            app:layout_constraintBottom_toTopOf="@+id/txt_descpription"
-            app:layout_constraintEnd_toStartOf="@+id/img_download_state"
+            app:layout_constraintBottom_toTopOf="@+id/txtEntryAuthor"
+            app:layout_constraintEnd_toStartOf="@+id/imgOpenAttachment"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toEndOf="@+id/container_item_icon"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
-            android:id="@+id/txt_descpription"
+            android:id="@+id/txtEntryAuthor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@+id/container_item_icon"
-            tools:text="@string/author"
+            android:text="@string/author"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             android:textColor="#7E8E9D"
             app:autoSizeMaxTextSize="14dp"
@@ -73,11 +76,11 @@
             app:autoSizeTextType="uniform"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/container_item_icon"
-            app:layout_constraintStart_toStartOf="@+id/txt_title"
-            app:layout_constraintTop_toBottomOf="@+id/txt_title" />
+            app:layout_constraintStart_toStartOf="@+id/txtEntryTitle"
+            app:layout_constraintTop_toBottomOf="@+id/txtEntryTitle" />
 
         <ImageButton
-            android:id="@+id/img_download_state"
+            android:id="@+id/imgOpenAttachment"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="4dp"
@@ -87,15 +90,15 @@
             android:padding="3dp"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/progress_download"
+            app:layout_constraintEnd_toStartOf="@+id/btn_more"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_cloud_download" />
+            app:srcCompat="@drawable/ic_pdf" />
 
         <ImageButton
             android:id="@+id/btn_more"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginEnd="6dp"
+            android:layout_marginEnd="3dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -109,27 +112,16 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
+            android:clickable="false"
+            android:focusable="false"
             app:chipSpacingHorizontal="1dp"
             app:chipSpacingVertical="2dp"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_descpription"
-            app:layout_constraintEnd_toStartOf="@+id/img_download_state"
-            app:layout_constraintStart_toEndOf="@+id/txt_descpription"
-            app:layout_constraintTop_toTopOf="@+id/txt_descpription"
+            app:layout_constraintBottom_toBottomOf="@+id/txtEntryAuthor"
+            app:layout_constraintEnd_toStartOf="@+id/imgOpenAttachment"
+            app:layout_constraintStart_toEndOf="@+id/txtEntryAuthor"
+            app:layout_constraintTop_toTopOf="@+id/txtEntryAuthor"
             app:singleLine="true" />
 
-        <ProgressBar
-            android:id="@+id/progress_download"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="8dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_more"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

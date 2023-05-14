@@ -200,7 +200,8 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         fab = requireView().findViewById(R.id.fab_add_item)
 
         fab.setOnClickListener {
-            val array = arrayOf("Zotero Save", "Scan ISBN")
+//            val array = arrayOf("Zotero Save", "Scan ISBN")
+            val array = arrayOf("Zotero Save")
 
             val dialog = MaterialAlertDialogBuilder(requireContext())
             dialog.setItems(array) { dialog, which ->
@@ -211,15 +212,19 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
                         intent.data = Uri.parse(url)
                         startActivity(intent)
                     }
-                    1 -> findNavController().navigate(R.id.action_libraryListFragment_to_barcodeScanningScreen)
+//                    1 -> findNavController().navigate(R.id.action_libraryListFragment_to_barcodeScanningScreen)
                 }
             }
             dialog.show()
         }
 
         adapter.setItemLongClick(object : LibraryItemLongClickListener {
-            override fun onItemClick(item: Item) {
+            override fun onItemLongClick(item: Item) {
                 showMoreOperateMenuDialog(item)
+            }
+
+            override fun onCollectionLongClick(collection: Collection) {
+                showCollectionMoreOperateMenuDialog(collection)
             }
         })
 
@@ -233,21 +238,52 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
     }
 
     private fun showMoreOperateMenuDialog(item: Item) {
-        val array = arrayOf("查看信息", "打开附件")
+        val array = arrayOf("查看信息", "下载附件")
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
         dialog.setItems(array) { dialog, which ->
             when (which) {
-                0 -> onItemOpen(item)
-                1 -> onItemAttachmentOpen(item)
+                0 -> showItemInfo(item)
+                1 -> downloadItem(item)
 
             }
         }
         dialog.show()
     }
 
-    override fun onItemOpen(item: Item) {
+    private fun showCollectionMoreOperateMenuDialog(collection: Collection) {
+        val arrayFolder = arrayOf("添加到收藏", "小工具", "属性")
+
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+
+        dialog.setItems(arrayFolder) { dialog, which ->
+            when (which) {
+//                0 -> onItemOpen(item)
+                2 -> showCollectionInfo(collection)
+        }
+//
+        }
+
+        dialog.show()
+    }
+
+    private fun showCollectionInfo(collection: Collection) {
+        val msg = "分类名：${collection.name} \nkey: ${collection.key} " +
+                "\n父Key: ${collection.parentCollection} \n是否有子集合: ${collection.hasChildren()} " +
+                "\n版本: ${collection.version}"
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("集合信息")
+            .setMessage(msg).setPositiveButton("确定") {_,_ ->}
+            .show()
+
+    }
+
+    private fun showItemInfo(item: Item) {
         viewModel.onItemClicked(item)
+    }
+
+    override fun onItemOpen(item: Item) {
+//        viewModel.onItemClicked(item)
     }
 
     override fun onCollectionOpen(collection: Collection) {
@@ -308,4 +344,17 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
             }
         })
     }
+
+    /**
+     * download all attachments of this item
+     */
+    private fun downloadItem(item: Item) {
+        // todo: 实现下载item的所有附件
+        // download the first pdf attachment of this item
+        item.getPdfAttachment()?.let {
+            viewModel.onAttachmentToDownload(it)
+        }
+
+    }
+
 }

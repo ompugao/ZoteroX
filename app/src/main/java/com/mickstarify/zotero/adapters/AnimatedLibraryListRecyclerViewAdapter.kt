@@ -4,7 +4,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.mickstarify.zotero.LibraryActivity.ListEntry
 import com.mickstarify.zotero.R
-import com.mickstarify.zotero.ZoteroStorage.Database.Collection
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 
 class AnimatedLibraryListRecyclerViewAdapter : BaseQuickAdapter<ListEntry, BaseViewHolder> {
@@ -12,7 +11,7 @@ class AnimatedLibraryListRecyclerViewAdapter : BaseQuickAdapter<ListEntry, BaseV
     var items: MutableList<ListEntry>
     var listener: LibraryListInteractionListener
 
-    constructor(items: MutableList<ListEntry>, listener: LibraryListInteractionListener) : super(R.layout.library_screen_list_item) {
+    constructor(items: MutableList<ListEntry>, listener: LibraryListInteractionListener) : super(R.layout.item_library_list) {
         this.items = items
         this.listener = listener
     }

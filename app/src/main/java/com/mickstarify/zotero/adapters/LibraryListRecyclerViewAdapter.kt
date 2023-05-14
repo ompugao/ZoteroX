@@ -1,6 +1,5 @@
 package com.mickstarify.zotero.adapters
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
@@ -10,28 +9,39 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.view.ContextThemeWrapper
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.mickstarify.zotero.LibraryActivity.LibraryActivity
+import com.mickstarify.zotero.LibraryActivity.LibraryActivityModel
 import com.mickstarify.zotero.LibraryActivity.ListEntry
 import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
+import com.mickstarify.zotero.ZoteroStorage.Database.GroupInfo
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
+import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
+import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDBPicker
+import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroGroupDB
 import com.mickstarify.zotero.ZoteroStorage.ZoteroUtils
+import kotlinx.coroutines.*
 
 class LibraryListRecyclerViewAdapter(val context: Context,
     var items: List<ListEntry>,
     val listener: LibraryListInteractionListener
 ) : RecyclerView.Adapter<LibraryListRecyclerViewAdapter.ListEntryViewHolder>() {
+
+    var model: LibraryActivityModel
+    init {
+        model = ViewModelProvider(context as LibraryActivity).get(LibraryActivityModel::class.java)
+    }
+
     class ListEntryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView = view.findViewById<ImageView>(R.id.imgEntryIcon)
         val textView_title = view.findViewById<TextView>(R.id.txtEntryTitle)
-        val textView_author = view.findViewById<TextView>(R.id.txtEntryAuthor)
+        val txtDescription = view.findViewById<TextView>(R.id.txtEntryAuthor)
         val pdfImage = view.findViewById<ImageButton>(R.id.imgOpenAttachment)
         val layout = view.findViewById<ConstraintLayout>(R.id.container_item_library_entry)
 
@@ -50,7 +60,7 @@ class LibraryListRecyclerViewAdapter(val context: Context,
     ): ListEntryViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.library_screen_list_item, parent, false)
+            .inflate(R.layout.item_library_list, parent, false)
 
         layoutInflater = LayoutInflater.from(parent.context)
 
@@ -66,8 +76,8 @@ class LibraryListRecyclerViewAdapter(val context: Context,
         if (entry.isItem()) {
             val item = entry.getItem()
             holder.textView_title.text = item.getTitle()
-            holder.textView_author.visibility = View.VISIBLE
-            holder.textView_author.text = item.getAuthor().trimEnd()
+            holder.txtDescription.visibility = View.VISIBLE
+            holder.txtDescription.text = item.getAuthor().trimEnd()
             val pdfAttachment = item.getPdfAttachment()
             if (pdfAttachment != null) {
                 holder.pdfImage.visibility = View.VISIBLE
@@ -88,7 +98,7 @@ class LibraryListRecyclerViewAdapter(val context: Context,
             }
 
             holder.layout.setOnLongClickListener {
-                this.onItemLongClickListener?.onItemClick(item)
+                this.onItemLongClickListener?.onItemLongClick(item)
                 false
             }
 
@@ -111,17 +121,15 @@ class LibraryListRecyclerViewAdapter(val context: Context,
                 }
             }
 
-//            Glide.with(context)
-//                .load(iconResource)
-////                .placeholder(iconResource)
-////                .error(R.drawable.ic_item_known)
-//                .crossFade()//或者使用 dontAnimate() 关闭动画
-//                .into(holder.imageView)
-
         } else {
             val collection = entry.getCollection()
             holder.textView_title.text = collection.name
-            holder.textView_author.visibility = View.GONE
+
+            val childCollectionCount = collection.getSubCollections().size
+            val items = model.getItemsFromCollection(collection.key)
+
+            holder.txtDescription.text = "${childCollectionCount + items.size} 条子项"
+
             holder.pdfImage.visibility = View.GONE
             holder.imageView.setImageResource(R.drawable.treesource_folder)
             holder.layout.setOnClickListener {
@@ -133,10 +141,10 @@ class LibraryListRecyclerViewAdapter(val context: Context,
             holder.tagContainer.removeAllViews()
             holder.tagContainer.visibility = View.GONE
 
-//            Glide.with(context)
-//                .load(R.drawable.treesource_folder)
-//                .crossFade()//或者使用 dontAnimate() 关闭动画
-//                .into(holder.imageView);
+            holder.layout.setOnLongClickListener {
+                this.onItemLongClickListener?.onCollectionLongClick(collection)
+                false
+            }
         }
     }
 
@@ -277,5 +285,6 @@ interface LibraryListInteractionListener {
 }
 
 interface LibraryItemLongClickListener {
-    fun onItemClick(item: Item)
+    fun onItemLongClick(item: Item)
+    fun onCollectionLongClick(collection: Collection)
 }

@@ -1,34 +1,18 @@
 package com.mickstarify.zotero.LibraryActivity.Fragments
 
-import android.content.DialogInterface
-import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.getbase.floatingactionbutton.FloatingActionButton
-import com.getbase.floatingactionbutton.FloatingActionsMenu
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.tabs.TabLayoutMediator
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
-import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.PreferenceManager
-import com.mickstarify.zotero.R
-import com.mickstarify.zotero.ZoteroApplication
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
-import com.mickstarify.zotero.adapters.LibraryItemLongClickListener
+import com.mickstarify.zotero.adapters.ItemPageAdapter
 import com.mickstarify.zotero.adapters.LibraryListInteractionListener
-import com.mickstarify.zotero.adapters.LibraryListRecyclerViewAdapter
 import com.mickstarify.zotero.databinding.FragmentLibraryHomeBinding
 import javax.inject.Inject
 
@@ -38,7 +22,7 @@ import javax.inject.Inject
  * @Time : 2022/12/5 17:31
  * @Description : 主页文库列表
  */
-class HomeFragment : Fragment() , LibraryListInteractionListener, SwipeRefreshLayout.OnRefreshListener{
+class HomeFragment : Fragment() , LibraryListInteractionListener {
 
     private lateinit var viewModel: LibraryListViewModel
 
@@ -46,6 +30,12 @@ class HomeFragment : Fragment() , LibraryListInteractionListener, SwipeRefreshLa
 
     @Inject
     lateinit var preferenceManager: PreferenceManager
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(LibraryListViewModel::class.java)
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,34 +46,9 @@ class HomeFragment : Fragment() , LibraryListInteractionListener, SwipeRefreshLa
         return mBinding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(LibraryListViewModel::class.java)
-
-        val recyclerView = mBinding.recyclerView
-        val adapter = LibraryListRecyclerViewAdapter(requireContext(), emptyList(), this)
-
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        viewModel.getItems().observe(viewLifecycleOwner) { entries ->
-            MyLog.d("zotero", "Loading new set of item (${entries.size} length)")
-
-            adapter.items = entries
-            adapter.notifyDataSetChanged()
-
-            if (entries.isNullOrEmpty()) {
-                showEmptyList()
-            } else {
-                hideEmptyList()
-            }
-        }
-
-        val swipeRefresh = mBinding.swipeRefreshLibrary
-        swipeRefresh.setOnRefreshListener(this)
-        viewModel.getIsShowingLoadingAnimation().observe(viewLifecycleOwner) {
-            swipeRefresh.isRefreshing = it
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initTabView()
 
 //        val fabZoteroSave =
 //            requireView().findViewById<FloatingActionButton>(R.id.fab_action_zotero_save)
@@ -93,29 +58,25 @@ class HomeFragment : Fragment() , LibraryListInteractionListener, SwipeRefreshLa
 //            intent.data = Uri.parse(url)
 //            startActivity(intent)
 //        }
-
-        adapter.setItemLongClick(object : LibraryItemLongClickListener {
-            override fun onItemClick(item: Item) {
-                showMoreOperateMenuDialog(item)
-            }
-        })
-
-        hideFabButtonWhenScrolling()
     }
 
-    private fun showMoreOperateMenuDialog(item: Item) {
-        val array = arrayOf("查看信息", "打开附件")
+    private fun initTabView() {
+        val tabs = arrayListOf(
+            ItemPageAdapter.TabItem("全部", CustomizedLibraryListFragment()),
+//            ItemPageAdapter.TabItem("在读", CustomizedLibraryListFragment()),
+//            ItemPageAdapter.TabItem("待读", CustomizedLibraryListFragment())
+        )
 
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-        dialog.setItems(array) { dialog, which ->
-           when (which) {
-               0 -> onItemOpen(item)
-               1 -> onItemAttachmentOpen(item)
+        val itemPageAdapter = ItemPageAdapter(childFragmentManager, lifecycle, tabs)
+        mBinding.viewPager.adapter = itemPageAdapter
 
-           }
-        }
-        dialog.show()
+        TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager) { tab, position ->
+            tab.text = tabs[position].tabTitle
+        }.attach()
+
     }
+
+
 
     override fun onItemOpen(item: Item) {
         viewModel.onItemClicked(item)
@@ -129,52 +90,11 @@ class HomeFragment : Fragment() , LibraryListInteractionListener, SwipeRefreshLa
         viewModel.onAttachmentClicked(item)
     }
 
-    override fun onRefresh() {
-        Log.d("Zotero", "got request for refresh")
-        viewModel.onLibraryRefreshRequested()
-    }
+//    override fun onRefresh() {
+//        Log.d("Zotero", "got request for refresh")
+//        viewModel.onLibraryRefreshRequested()
+//    }
 
-    private fun hideFabButtonWhenScrolling() {
-        val recyclerView = mBinding.recyclerView
-        val fab = mBinding.fabMore
-
-        // now creating the scroll listener for the recycler view
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-
-                // if the recycler view is scrolled
-                // above hide the FAB
-                if (dy > 10 && fab.isShown) {
-                    fab.hide()
-                }
-
-                // if the recycler view is
-                // scrolled above show the FAB
-                if (dy < -10 && !fab.isShown) {
-                    fab.show()
-                }
-
-                // of the recycler view is at the first
-                // item always show the FAB
-                if (!recyclerView.canScrollVertically(-1)) {
-                    fab.show()
-                }
-            }
-        })
-    }
-
-    fun showEmptyList() {
-        val layout =
-            requireView().findViewById<LinearLayout>(R.id.list_empty_view)
-        layout.visibility = View.VISIBLE
-    }
-
-    fun hideEmptyList() {
-        val layout =
-            requireView().findViewById<LinearLayout>(R.id.list_empty_view)
-        layout.visibility = View.GONE
-    }
 
 
 }

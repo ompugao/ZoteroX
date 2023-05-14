@@ -2,7 +2,6 @@ package com.mickstarify.zotero.AttachmentManager
 
 import android.content.Context
 import android.content.Intent
-import android.telephony.mbms.DownloadProgressListener
 import com.mickstarify.zotero.AttachmentViewerActivity
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.adapters.AttachmentListAdapter
@@ -88,7 +87,7 @@ class AttachmentManagerPresenter(val view: AttachmentManager, context: Context, 
         view.updateLoadingProgress(filename, current, total)
     }
 
-    override fun onAttachmentDownload(item: Item, progressListener: AttachmentListAdapter.DownloadListener) {
+    override fun onAttachmentDownload(item: Item, progressListener: AttachmentDownloadListener) {
         model.downloadAttachment(item, progressListener)
     }
 

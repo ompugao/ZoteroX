@@ -7,13 +7,10 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.mickstarify.zotero.LibraryActivity.ItemView.ItemBasicInfoFragment
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
 
-class ItemPageAdapter(viewModel: LibraryListViewModel,
-                      fragmentManager: FragmentManager,
+class ItemPageAdapter(fragmentManager: FragmentManager,
                       lifecycle: Lifecycle,
                       tabItems: List<TabItem>
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
-
-    private val viewModel: LibraryListViewModel = viewModel
 
     private var tabItems: List<TabItem>? = tabItems
 

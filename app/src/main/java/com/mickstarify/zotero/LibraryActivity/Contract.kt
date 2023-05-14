@@ -1,5 +1,6 @@
 package com.mickstarify.zotero.LibraryActivity
 
+import com.mickstarify.zotero.AttachmentManager.AttachmentDownloadListener
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryLoadingScreenViewModel
 import com.mickstarify.zotero.ZoteroAPI.Model.Note
@@ -109,7 +110,7 @@ interface Contract {
         fun getCollections(): List<Collection>
         fun getAttachments(itemKey: String): List<Item>
         fun getMyPublications(): List<Item>
-        fun downloadAttachment(item: Item)
+        fun downloadAttachment(item: Item, downloadListener: AttachmentDownloadListener?)
         fun cancelAttachmentDownload()
         fun getSubCollections(collectionName: String): List<Collection>
         fun filterCollections(query: String): List<Collection>

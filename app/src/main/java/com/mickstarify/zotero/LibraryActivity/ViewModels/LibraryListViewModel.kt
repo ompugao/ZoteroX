@@ -10,8 +10,8 @@ import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.global.SingleLiveEvent
 
 class LibraryListViewModel : ViewModel() {
-    private val items = MutableLiveData<List<ListEntry>>()
 
+    private val items = MutableLiveData<List<ListEntry>>()
 
     // view的位置
     private var mutativePosition: Int = 0
@@ -37,6 +37,14 @@ class LibraryListViewModel : ViewModel() {
     fun getOnAttachmentClicked(): LiveData<Item> = attachmentClicked
     fun onAttachmentClicked(attachment: Item) {
         this.attachmentClicked.value = attachment
+    }
+
+    private val attachmentToDownload = SingleLiveEvent<Item>()
+
+    fun getAttachmentToDownload(): LiveData<Item> = attachmentToDownload
+
+    fun onAttachmentToDownload(item: Item) {
+        this.attachmentToDownload.value = item
     }
 
     private val collectionClicked = MutableLiveData<Collection>()
@@ -88,6 +96,21 @@ class LibraryListViewModel : ViewModel() {
         rvMutativeOffset = offset
     }
 
+
+
+
+
+//    fun onItemOpen(item: Item) {
+////        listViewModel.onItemClicked(item)
+//    }
+//
+//    fun onCollectionOpen(collection: Collection) {
+////        listViewModel.onCollectionClicked(collection)
+//    }
+//
+//    fun onItemAttachmentOpen(item: Item) {
+////        listViewModel.onAttachmentClicked(item)
+//    }
 
 
 }

@@ -215,12 +215,7 @@ class AttachmentManagerModel(val presenter: AttachmentManagerPresenter, val cont
             })
     }
 
-    fun downloadAttachment(item: Item, downloadListener: AttachmentListAdapter.DownloadListener?) {
-        if (isDownloading) {
-            Log.d("zotero", "not downloading ${item.getTitle()} because i am already downloading.")
-            return
-        }
-        isDownloading = true
+    fun downloadAttachment(item: Item, downloadListener: AttachmentDownloadListener?) {
 
         val downloadItem = zoteroAPI.downloadItemRx(item, zoteroDB.groupID, context)
 
@@ -233,28 +228,19 @@ class AttachmentManagerModel(val presenter: AttachmentManagerPresenter, val cont
                 }
 
                 override fun onError(e: Throwable) {
-                    isDownloading = false
                     presenter.hideDownloadProgress()
 
                     presenter.createErrorAlert("Error Downloading", e.toString()) {}
 
-                    downloadListener?.onError(e.toString())
+                    downloadListener?.onError(item, e.toString())
                 }
 
                 override fun onComplete() {
-                    isDownloading = false
-//                    MyLog.d("ZoteroDebug", "Downloading attachment ${item.getTitle()} complete!")
-
-//                    presenter.hideDownloadProgress()
-
-                    downloadListener?.onSuccess()
+                    downloadListener?.onSuccess(item)
                 }
 
                 override fun onNext(t: DownloadProgress) {
-//                    MyLog.d("ZoteroDebug", "Downloading attachment progress: ${t.progress} ")
-//                    presenter.updateDownloadProgress(t.progress, t.total)
-
-                    downloadListener?.onProgress((t.progress/1000).toInt(), (t.total/1000).toInt())
+                    downloadListener?.onProgress(t.progress/1000, t.total/1000)
                 }
             })
     }

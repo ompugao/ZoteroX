@@ -153,7 +153,9 @@ class LibraryActivity : BaseActivity(),
     fun initUI() {
         setupActionbar()
         val navigationView = findViewById<NavigationView>(R.id.nav_view_library)
-        navigationView.setCheckedItem(R.id.my_library)
+
+        //默认选中“主页"
+        navigationView.setCheckedItem(R.id.home)
         collectionsMenu = navigationView.menu.addSubMenu(
             R.id.group_collections,
             Menu.NONE,
@@ -312,8 +314,8 @@ class LibraryActivity : BaseActivity(),
         if (item.itemId == R.id.my_library) {
             presenter.setCollection("all", fromNavigationDrawer = true)
         } else if (item.itemId == R.id.nav_home) {
-            //todo: 打开首页页面
-            presenter.openHome()
+//            presenter.openHome()
+            presenter.setCollection("home", fromNavigationDrawer = true)
         } else if (item.itemId == MENU_ID_UNFILED_ITEMS) {
             presenter.setCollection("unfiled_items", fromNavigationDrawer = true)
         } else if (item.itemId == MENU_ID_MY_PUBLICATIONS) {
@@ -390,10 +392,6 @@ class LibraryActivity : BaseActivity(),
     }
 
     fun showItemDialog(item: Item) {
-//        itemView = ItemViewFragment()
-//        val fm = supportFragmentManager
-//        itemView?.show(fm, "ItemDialog")
-
         val binding = FragmentItemInfoBinding.inflate(layoutInflater)
 
         val libraryViewModel =
@@ -405,8 +403,7 @@ class LibraryActivity : BaseActivity(),
             ItemPageAdapter.TabItem("笔记", ItemNotesFragment.newInstance(item))
         )
 
-        val itemPageAdapter = ItemPageAdapter(libraryViewModel,
-            supportFragmentManager, lifecycle, tabs)
+        val itemPageAdapter = ItemPageAdapter(supportFragmentManager, lifecycle, tabs)
         binding.viewPager.adapter = itemPageAdapter
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
@@ -415,7 +412,6 @@ class LibraryActivity : BaseActivity(),
 
         libraryViewModel.getOnItemClicked().observe(this) { item ->
             binding.txtItemType.text = ZoteroUtils.getItemTypeHumanReadableString(item.itemType)
-//            binding.textViewItemToolbarTitle.text = item.getTitle()
 
             binding.btnAddNote.setOnClickListener {
                 showCreateNoteDialog(item)

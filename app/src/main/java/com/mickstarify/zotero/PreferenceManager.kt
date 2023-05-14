@@ -83,7 +83,7 @@ class PreferenceManager @Inject constructor(context: Context) {
     }
 
     fun getLastViewedPosition(): String? {
-        return sharedPreferences.getString("last_viewed_position", "all")
+        return sharedPreferences.getString("last_viewed_position", "home")
     }
 
     fun setLastViewedPosition(collectionKey: String) {

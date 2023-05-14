@@ -7,9 +7,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.webkit.DownloadListener
 import androidx.lifecycle.AndroidViewModel
 import com.google.gson.JsonObject
 import com.mickstarify.zotero.*
+import com.mickstarify.zotero.AttachmentManager.AttachmentDownloadListener
 import com.mickstarify.zotero.SyncSetup.AuthenticationStorage
 import com.mickstarify.zotero.ZoteroAPI.*
 import com.mickstarify.zotero.ZoteroAPI.Model.Note
@@ -20,6 +22,7 @@ import com.mickstarify.zotero.ZoteroStorage.Database.*
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDBPicker
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroGroupDB
+import com.mickstarify.zotero.adapters.AttachmentListAdapter
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.MaybeObserver
@@ -307,7 +310,7 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
                     "Yes", "No", {
                         presenter.updateAttachmentDownloadProgress(0, -1)
                         attachmentStorageManager.deleteAttachment(item)
-                        downloadAttachment(item)
+                        downloadAndOpenAttachment(item)
                     }, {
                         presenter.hideLoadingAlertDialog()
 
@@ -326,7 +329,7 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
         } else {
             presenter.hideLoadingAlertDialog()
             presenter.updateAttachmentDownloadProgress(0, -1)
-            downloadAttachment(item)
+            downloadAndOpenAttachment(item)
         }
 
     }
@@ -342,7 +345,7 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
 
     var downloadDisposable: Disposable? = null
 
-    override fun downloadAttachment(item: Item) {
+    override fun downloadAttachment(item: Item, downloadListener: AttachmentDownloadListener?) {
         if (isDownloading) {
             Log.d("zotero", "not downloading ${item.getTitle()} because i am already downloading.")
             return
@@ -359,29 +362,18 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
                     isDownloading = false
                     presenter.finishDownloadingAttachment()
 
-                    if (zoteroDB.hasMd5Key(item) && !attachmentStorageManager.validateMd5ForItem(
-                            item, zoteroDB.getMd5Key(item)
-                        )
-                    ) {
-                        Log.d("zotero", "md5 error on attachment ${zoteroDB.getMd5Key(item)}")
-                        presenter.createErrorAlert(
-                            "MD5 Verification Error",
-                            "The downloaded file does not match the accompanying md5 checksum.",
-                            {})
-                        attachmentStorageManager.deleteAttachment(item)
-                        return
-                    } else {
-                        openPDF(item)
-                    }
+                    downloadListener?.onSuccess(item)
                 }
 
                 override fun onSubscribe(d: Disposable) {
                     downloadDisposable = d
-
                 }
 
                 override fun onNext(t: DownloadProgress) {
                     presenter.updateAttachmentDownloadProgress(t.progress, t.total)
+
+                    downloadListener?.onProgress(t.progress, t.total)
+
                     if (!receivedMetadata && t.metadataHash != "") {
                         receivedMetadata = true
                         zoteroDB.updateAttachmentMetadata(
@@ -403,6 +395,8 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
 //                        return
 //                    }
 
+                    downloadListener?.onError(item, e.toString())
+
                     // The file does not exist on the Zotero server.
                     if (e is ZoteroNotFoundException) {
                         presenter.attachmentDownloadError(getResString(R.string.file_not_exist_on_zotero_server))
@@ -415,6 +409,35 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
                 }
 
             })
+    }
+
+    private fun downloadAndOpenAttachment(item: Item) {
+        downloadAttachment(item, object : AttachmentDownloadListener {
+            override fun onSuccess(item: Item) {
+                if (zoteroDB.hasMd5Key(item) && !attachmentStorageManager.validateMd5ForItem(
+                        item, zoteroDB.getMd5Key(item)
+                    )
+                ) {
+                    Log.d("zotero", "md5 error on attachment ${zoteroDB.getMd5Key(item)}")
+                    presenter.createErrorAlert(
+                        "MD5 Verification Error",
+                        "The downloaded file does not match the accompanying md5 checksum.",
+                        {})
+                    attachmentStorageManager.deleteAttachment(item)
+                    return
+                } else {
+                    openPDF(item)
+                }
+            }
+
+            override fun onError(item: Item, error: String) {
+
+            }
+
+            override fun onProgress(progress: Long, total: Long) {
+
+            }
+        })
     }
 
 
@@ -1020,7 +1043,7 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
                     presenter.receiveCollections(getCollections())
                     if (state.currentCollection == "unset") {
                         if (isLoadLastViewedPosition()) {
-                            val loadLastViewedPosition =getLoadLastViewedPosition()
+                            val loadLastViewedPosition = getLoadLastViewedPosition()
 
 //                            MyLog.e("ZoteroDebug", "Saved:  " + loadLastViewedPosition)
 
@@ -1174,12 +1197,12 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
 
     fun isLoadLastViewedPosition(): Boolean = PreferenceManager(presenter.view).isLoadLastLibraryState()
 
-    fun getLoadLastViewedPosition(): String = PreferenceManager(presenter.view).getLastViewedPosition() ?: "all"
+    fun getLoadLastViewedPosition(): String = PreferenceManager(presenter.view).getLastViewedPosition() ?: "home"
 
     fun saveCurrentLibraryState() {
         val currentCollection = state.currentCollection
 
-        var curPosition = "all"
+        var curPosition = "home"
         if (currentCollection != "unset") {
             curPosition = currentCollection
         }

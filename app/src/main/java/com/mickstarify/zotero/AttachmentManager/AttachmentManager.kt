@@ -231,7 +231,7 @@ class AttachmentManager : AppCompatActivity(), Contract.View, AttachmentListAdap
         }
     }
 
-    override fun onAttachmentDownload(item: Item, progressListener: AttachmentListAdapter.DownloadListener) {
+    override fun onAttachmentDownload(item: Item, progressListener: AttachmentDownloadListener) {
         presenter.onAttachmentDownload(item, progressListener)
     }
 

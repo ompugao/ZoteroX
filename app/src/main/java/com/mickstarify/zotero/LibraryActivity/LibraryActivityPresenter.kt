@@ -43,6 +43,27 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
             }
         }
     }.thenBy { it.getTitle().lowercase(Locale.ROOT) }
+
+    val sortMethodCollection = compareBy<ListEntry> {
+        if (it.isCollection()) return@compareBy it.getCollection().name
+
+        when (model.preferences.getSortMethod()) {
+            SortMethod.TITLE -> it.getItem().getTitle().lowercase(Locale.ROOT)
+            SortMethod.DATE -> it.getItem().getSortableDateString()
+            SortMethod.DATE_ADDED -> it.getItem().getSortableDateAddedString()
+            SortMethod.AUTHOR -> {
+                val authorText = it.getItem().getAuthor().lowercase(Locale.ROOT)
+                // force empty authors to the bottom. Just like the zotero desktop client.
+                if (authorText == "") {
+                    "zzz"
+                } else {
+                    authorText
+                }
+            }
+        }
+    }.thenBy { it.getItem().getTitle().lowercase(Locale.ROOT) }
+
+
 //        .then(PinyinComparator())
 //        .thenComparator { o1, o2 ->
 //        Collator.getInstance(Locale.CHINA).compare(o1.getTitle(), o2.getTitle())
@@ -366,17 +387,41 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
             view.setTitle(view.getString(R.string.my_library))
 
             thread {
-                val entries = model.getLibraryItems().sort().map { ListEntry(it) }
+                val entries = model.getLibraryItems().map { ListEntry(it) }.sortEntries()
                 model.isDisplayingItems = entries.size > 0
 
                 // 在子线程中设置数据的话需调用该方法，否为会报错
                 libraryListViewModel.setItemsInBackgroundThread(entries)
             }
+        } else if (collectionKey == ConstValues.HOME) {
+            view.setTitle(view.getString(R.string.homepage))
+
+            thread {
+                val entries = mutableListOf<ListEntry>()
+                val collections = model.getCollections().filter {
+                    !it.hasParent()
+                }.sortedWith { o1, o2 ->
+                    Collator.getInstance(Locale.CHINA).compare(o1?.name, o2?.name)
+                }.map { ListEntry(it) }
+
+                val unfiledItems = model.getUnfiledItems().sortedWith { o1, o2 ->
+                    Collator.getInstance(Locale.CHINA).compare(o1?.getTitle(), o2?.getTitle())
+                }.map { ListEntry(it) }
+
+                entries.addAll(collections)
+                entries.addAll(unfiledItems)
+
+                model.isDisplayingItems = entries.size > 0
+
+                // 在子线程中设置数据的话需调用该方法，否为会报错
+                libraryListViewModel.setItemsInBackgroundThread(entries)
+            }
+
         } else if (collectionKey == ConstValues.UNFILED) {
             view.setTitle(view.getString(R.string.unfiled_items))
 
             thread {
-                val entries = model.getUnfiledItems().sort().map { ListEntry(it) }
+                val entries = model.getUnfiledItems().map { ListEntry(it) }.sortEntries()
                 model.isDisplayingItems = entries.size > 0
 
                 libraryListViewModel.setItemsInBackgroundThread(entries)
@@ -395,15 +440,14 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
                 }.sortedBy {
                     it.name.lowercase(Locale.ROOT)
                 }.map { ListEntry(it) })
-                entries.addAll(model.getLibraryItems().sort().map { ListEntry(it) })
+                entries.addAll(model.getLibraryItems().map { ListEntry(it) }.sortEntries())
                 model.isDisplayingItems = entries.size > 0
 
                 libraryListViewModel.setItemsInBackgroundThread(entries)
             }
 
-        }
-        // It is an actual collection on the user's private.
-        else {
+        } else {
+            // It is an actual collection on the user's private.
             thread {
                 val collection = model.getCollectionFromKey(collectionKey)
 
@@ -412,7 +456,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
                     it.name.lowercase(Locale.ROOT)
                 }.map { ListEntry(it) })
 
-                entries.addAll(model.getItemsFromCollection(collectionKey).sort().map { ListEntry(it) })
+                entries.addAll(model.getItemsFromCollection(collectionKey).map { ListEntry(it) }.sortEntries())
                 model.isDisplayingItems = entries.size > 0
 
                 view.runOnUiThread {
@@ -421,16 +465,13 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
                 }
             }
         }
-
-
-
     }
 
     override fun receiveCollections(collections: List<Collection>) {
         view.clearSidebar()
         for (collection: Collection in collections.filter {
             !it.hasParent()
-        }.sortedBy { it.name.toLowerCase(Locale.ROOT) }) {
+        }.sortedBy { it.name.lowercase(Locale.ROOT) }) {
             Log.d("zotero", "Got collection ${collection.name}")
             view.addNavigationEntry(collection, "Catalog")
         }
@@ -500,6 +541,11 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
             this.openAttachment(it)
         }
 
+        // 监听要下载附件的item
+        libraryListViewModel.getAttachmentToDownload().observe(view) {
+            model.downloadAttachment(it, null)
+        }
+
         libraryListViewModel.getOnCollectionClicked().observe(view) {
             this.setCollection(it.key)
         }
@@ -528,11 +574,42 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
      * 列表按Item标题的中文拼音进行排序
      * 顺序如下：数字在前，然后是中文拼音，而后是英语字母
      */
+    private fun List<ListEntry>.sortEntries(): List<ListEntry> {
+        val sortedAscendingly = model.preferences.isSortedAscendingly()
+
+        return this.sortedWith(sortMethodCollection)
+
+
+//        if (sortedAscendingly) {
+//            return this.sortedWith(sortMethodCollection).sortByPinyin()
+//        }
+//
+//        return this.sortedWith(sortMethodCollection).sortByPinyin().reversed()
+    }
+
+//    private fun <T> List<T>.sortWithPreference(): List<T> {
+//        if (model.preferences.isSortedAscendingly()) {
+//            return this.sor
+//        }
+//
+//        return this.sortByPinyin().reversed()
+//    }
+
+    /**
+     * 列表按Item标题的中文拼音进行排序
+     * 顺序如下：数字在前，然后是中文拼音，而后是英语字母
+     */
     private fun List<Item>.sortByPinyin(): List<Item> {
         return this.sortedWith { o1, o2 ->
             Collator.getInstance(Locale.CHINA).compare(o1?.getTitle(), o2?.getTitle())
         }
     }
+
+//    private fun List<Collection>.sortByPinyin(): List<Collection> {
+//        return this.sortedWith { o1, o2 ->
+//            Collator.getInstance(Locale.CHINA).compare(o1?.name, o2?.name)
+//        }
+//    }
 
     fun deleteLocalAttachment(attachment: Item) {
         model.deleteLocalAttachment(attachment)

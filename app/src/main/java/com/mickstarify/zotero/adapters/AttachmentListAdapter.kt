@@ -1,8 +1,6 @@
 package com.mickstarify.zotero.adapters
 
 import android.content.Context
-import android.os.Handler
-import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.google.android.material.imageview.ShapeableImageView
+import com.mickstarify.zotero.AttachmentManager.AttachmentDownloadListener
 import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.ZoteroStorage.AttachmentStorageManager
@@ -77,18 +76,18 @@ class AttachmentListAdapter(val context: Context, private val attachmentManager:
             holder.btnDownload.visibility = View.GONE
             holder.pgDownload.visibility = View.VISIBLE
 
-            listener?.onAttachmentDownload(item, object : DownloadListener {
-                override fun onSuccess() {
+            listener?.onAttachmentDownload(item, object : AttachmentDownloadListener {
+                override fun onSuccess(item: Item) {
                     holder.btnDownload.visibility = View.GONE
                     holder.pgDownload.visibility = View.GONE
                 }
 
-                override fun onError(error: String) {
+                override fun onError(item: Item, error: String) {
                     holder.btnDownload.visibility = View.VISIBLE
                     holder.pgDownload.visibility = View.GONE
                 }
 
-                override fun onProgress(progress: Int, total: Int) {
+                override fun onProgress(progress: Long, total: Long) {
                     MyLog.d("ZoteroDebug", "下载附件: ${item.getTitle()}， 进度：${progress}")
 //                    holder.pgDownload.progress =
                 }
@@ -143,14 +142,8 @@ class AttachmentListAdapter(val context: Context, private val attachmentManager:
     }
 
     interface AttachInteractionListener {
-        fun onAttachmentDownload(item: Item, downloadListener: DownloadListener): Unit
+        fun onAttachmentDownload(item: Item, downloadListener: AttachmentDownloadListener): Unit
         fun onAttachmentOpen(item: Item): Unit
-    }
-
-    interface DownloadListener {
-        fun onSuccess()
-        fun onError(error: String)
-        fun onProgress(progress: Int, total: Int)
     }
 
 }
