@@ -16,7 +16,6 @@ class AnimatedLibraryListRecyclerViewAdapter : BaseQuickAdapter<ListEntry, BaseV
         this.listener = listener
     }
 
-
 //    class ListEntryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 //        val imageView = view.findViewById<ImageView>(R.id.imageView_library_list_image)
 //        val textView_title = view.findViewById<TextView>(R.id.TextView_library_list_title)

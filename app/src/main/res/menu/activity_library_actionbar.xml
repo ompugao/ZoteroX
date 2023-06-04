@@ -16,6 +16,12 @@
         app:showAsAction="collapseActionView" />
 
     <item
+        android:id="@+id/tag_manager"
+        android:icon="@drawable/baseline_settings_applications_white_24"
+        android:title="标签管理"
+        app:showAsAction="collapseActionView" />
+
+    <item
         android:id="@+id/attachment_manager"
         android:icon="@drawable/baseline_settings_applications_white_24"
         android:title="@string/attachment_manager"

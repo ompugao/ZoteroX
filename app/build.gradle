@@ -145,6 +145,12 @@ dependencies {
 
     implementation 'com.yuan.library.dmanager:downloadmanager-okhttp-release:1.1.6'
 
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+
+    implementation 'com.blankj:utilcode:1.28.4'
+
+    implementation "com.github.skydoves:colorpickerpreference:2.0.6"
+
     configurations {
         all*.exclude group: 'xpp3', module: 'xpp3'
     }

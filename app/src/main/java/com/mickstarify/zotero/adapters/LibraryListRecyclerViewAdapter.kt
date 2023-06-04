@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
@@ -125,10 +125,15 @@ class LibraryListRecyclerViewAdapter(val context: Context,
             // add tags
             item.tags.forEach {
                 if (ZoteroUtils.isImportantTag(it.tag)) {
-                    val chip: Chip = layoutInflater.inflate(R.layout.tag_chip, null, false) as Chip
+                    val chip: Chip = layoutInflater.inflate(R.layout.tag_chip, null, false).findViewById(R.id.chip) as Chip
 //                    val chip = Chip(ContextThemeWrapper(context, R.style.TagAppearance_Small))
+////                    chip.setTextColor(Color.parseColor("#FF5F70C0"))
+//                    chip.textSize = 12.0f
+//                    chip.minHeight = 18
+//                    chip.chipStartPadding = 1f
+//                    chip.chipEndPadding = 1f
+//                    chip.setChipBackgroundColorResource(R.color.chip_background_color)
                     chip.text = it.tag
-
                     chip.setTextColor(Color.parseColor(ZoteroUtils.getTagColor(it.tag)))
 
                     holder.tagContainer.addView(chip)

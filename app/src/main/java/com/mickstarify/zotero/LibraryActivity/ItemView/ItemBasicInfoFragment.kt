@@ -12,11 +12,12 @@ import android.widget.TextView
 import com.google.android.material.chip.Chip
 import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.R
-import com.mickstarify.zotero.ZoteroApplication
+import com.mickstarify.zotero.TagStyler
 import com.mickstarify.zotero.ZoteroStorage.Database.Creator
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
-import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
+import com.mickstarify.zotero.ZoteroStorage.Database.ItemTag
 import com.mickstarify.zotero.ZoteroStorage.ZoteroUtils
+import com.mickstarify.zotero.adapters.TagWrapper
 import com.mickstarify.zotero.databinding.FragmentItemBasicInfoBinding
 import com.mickstarify.zotero.databinding.LayoutItemBasicInfoEtcBinding
 import com.mickstarify.zotero.databinding.LayoutItemBasicInfoJournalPaperBinding
@@ -164,7 +165,7 @@ class ItemBasicInfoFragment : Fragment() {
         for (datum in item.data) {
             info += "\n ${datum.key} : ${datum.value}"
         }
-        MyLog.d("ZoteroDebug", info)
+//        MyLog.d("ZoteroDebug", info)
 
         // show extra info
         val extraInfo =  "修改日期：${item.data["dateModified"]} \n创建日期：${item.data["dateAdded"]}"
@@ -176,15 +177,25 @@ class ItemBasicInfoFragment : Fragment() {
                 "\nDOI：${item.data["DOI"]} \nUrl：${item.data["url"]}"
         binding.txtPaperInfo.text = journalInfo
 
-
-        item.tags.forEach {
-            val chip: Chip = layoutInflater.inflate(R.layout.tag_chip, null, false) as Chip
+        val arrangedTags = sortTags(item.tags)
+        arrangedTags.forEach {
+            val chip: Chip = layoutInflater.inflate(R.layout.tag_chip, null, false).findViewById(R.id.chip) as Chip
             chip.text = it.tag
-            chip.setTextColor(Color.parseColor(ZoteroUtils.getTagColor(it.tag)))
+
+            if (!it.color.isNullOrEmpty()) {
+                chip.setTextColor(Color.parseColor(it.color))
+            }
             binding.tagsContainer.addView(chip)
         }
 
         navigateToView(binding.root)
+    }
+
+    private fun sortTags(tags: List<ItemTag>): List<TagWrapper> {
+        val tagStyler = TagStyler.getInstance(requireContext())
+
+        return tags.sortedWith { p0, p1 -> tagStyler.indexOf(p1!!.tag) - tagStyler.indexOf(p0!!.tag) }
+            .map { TagWrapper(it.tag, tagStyler.getTagColor(it.tag), false) }
     }
 
     private fun navigateToView(view: View) {

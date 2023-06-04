@@ -10,10 +10,8 @@ import com.google.gson.reflect.TypeToken
 import com.mickstarify.zotero.ZoteroApplication
 import com.mickstarify.zotero.ZoteroAPI.Model.ItemPOJO
 import com.mickstarify.zotero.ZoteroAPI.Model.Note
-import com.mickstarify.zotero.ZoteroStorage.Database.AttachmentInfo
+import com.mickstarify.zotero.ZoteroStorage.Database.*
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
-import com.mickstarify.zotero.ZoteroStorage.Database.Item
-import com.mickstarify.zotero.ZoteroStorage.Database.ZoteroDatabase
 import io.reactivex.Completable
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
@@ -34,7 +32,6 @@ class ZoteroDB constructor(
     }
 
     init {
-//        ((context as Activity).application as ZoteroApplication).component.inject(this)
         (context.applicationContext as ZoteroApplication).component.inject(this)
     }
 
@@ -63,6 +60,8 @@ class ZoteroDB constructor(
 
     // list of items that are in the "my publications"
     var myPublications: MutableList<Item>? = null
+
+    var itemTags: List<ItemTag>? = null
 
     // map that stores attachmentItem classes by ItemKey
 //    var attachments: MutableMap<String, MutableList<Item>>? = null
@@ -157,6 +156,18 @@ class ZoteroDB constructor(
     fun destroyItemsDatabase(): Completable {
         this.clearItemsVersion()
         return zoteroDatabase.deleteAllItemsForGroup(groupID)
+    }
+
+    fun loadItemTagsFromDatabase(): Completable {
+        /* Load the items from Database as well as all the attachments. */
+        val completable =
+            Completable.fromMaybe(zoteroDatabase.getItemTags().doOnSuccess(
+                Consumer {
+                    Log.d("zotero", "loaded items from DB, setting now.")
+                    itemTags = it
+                }
+            ))
+        return completable
     }
 
     /* We used to store the library as a json file which was a pain in the arse for handling modifications.*/
@@ -521,5 +532,12 @@ class ZoteroDB constructor(
             }
         }
         return itemsWithTag
+    }
+
+    fun getUniqueItemTags(): List<ItemTag> {
+        if (!this.isPopulated()){
+            return LinkedList()
+        }
+        return itemTags!!.distinctBy { it.tag }
     }
 }

@@ -159,6 +159,13 @@ class ZoteroDatabase @Inject constructor(val context: Context) {
         return db.collectionDao().getCollectionsForGroup(groupID)
     }
 
+    /**
+     * 获取所有的标签（含重复的tag文本）
+     */
+    fun getItemTags(): Maybe<List<ItemTag>> {
+        return db.itemDao().getItemTags()
+    }
+
     fun writeCollections(collections: List<Collection>): Completable {
         return db.collectionDao().insertAllCollections(collections)
     }

@@ -7,8 +7,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.webkit.DownloadListener
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.JsonObject
 import com.mickstarify.zotero.*
 import com.mickstarify.zotero.AttachmentManager.AttachmentDownloadListener
@@ -22,7 +22,6 @@ import com.mickstarify.zotero.ZoteroStorage.Database.*
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDBPicker
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroGroupDB
-import com.mickstarify.zotero.adapters.AttachmentListAdapter
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.MaybeObserver
@@ -30,6 +29,10 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.util.LinkedList
 import java.util.Locale
@@ -47,8 +50,6 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
     // stores the current item being viewed by the user. (useful for refreshing the view)
     var selectedItem: Item? = null
     var isDisplayingItems = false
-
-//    private var firebaseAnalytics: FirebaseAnalytics
 
     private lateinit var zoteroAPI: ZoteroAPI
 
@@ -261,7 +262,6 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
             }
         }.subscribe()
     }
-
 
     /**
      *  This is the point of entry when a user clicks an attachment on the UI.
@@ -1035,6 +1035,7 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
             .subscribeOn(Schedulers.io())
             .andThen(loadItems)
             .andThen(db.loadTrashItemsFromDB())
+            .andThen(db.loadItemTagsFromDatabase())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnComplete {
                 presenter.hideBasicSyncAnimation()
@@ -1120,6 +1121,29 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
         } else {
             Log.e("zotero", "error unable to determine state differences!!")
         }
+    }
+//
+//    private var mutableTags = MutableLiveData<List<ItemTag>>()
+//
+//    fun getMutableTags(): MutableLiveData<List<ItemTag>> {
+//        return mutableTags
+//    }
+//
+//    fun fetchTags() {
+//        mutableTags.value = getUniqueItemTags()
+//
+////        CoroutineScope(Dispatchers.IO).launch {
+////
+////            val tags = getUniqueItemTags()
+////            withContext(Dispatchers.Main) {
+////                mutableTags.value = tags
+////            }
+////
+////        }
+//    }
+
+    fun getUniqueItemTags(): List<ItemTag> {
+        return zoteroDB.getUniqueItemTags()
     }
 
     override fun getItemsForTag(tagName: String): List<Item> {

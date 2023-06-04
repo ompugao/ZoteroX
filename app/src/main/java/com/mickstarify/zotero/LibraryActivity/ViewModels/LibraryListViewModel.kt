@@ -85,7 +85,6 @@ class LibraryListViewModel : ViewModel() {
         }
     }
 
-
     fun getMutativePosition(): Int = mutativePosition
     fun setMutativePosition(position: Int) {
         mutativePosition = position
@@ -96,8 +95,12 @@ class LibraryListViewModel : ViewModel() {
         rvMutativeOffset = offset
     }
 
-
-
+    val filteredTag = MutableLiveData<String>()
+    fun filterByTag(tag: String, items: List<ListEntry>): List<ListEntry> {
+        return items.filter {
+            return@filter it.isItem() && it.getItem().tags.map {it.tag}.contains(tag)
+        }
+    }
 
 
 //    fun onItemOpen(item: Item) {

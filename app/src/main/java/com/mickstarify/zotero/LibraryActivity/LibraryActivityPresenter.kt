@@ -230,10 +230,28 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
         }
 
         CoroutineScope(Dispatchers.Default).launch {
-            val filtered = libraryListViewModel.getItems().value?.filter {
-                if (it.isCollection() && it.getCollection().name.contains(query.lowercase())) true
-                else it.isItem() && it.getItem().getTitle().contains(query.lowercase())
-            }
+            val curCollectionKey = model.getCurrentCollection()
+
+            val items = model.getItemsFromCollection(curCollectionKey)
+                .filter { it.getTitle().lowercase().contains(query.lowercase()) }
+                .sort()
+                .map { ListEntry(it) }
+
+            val collections = model.getSubCollections(curCollectionKey)
+                .filter { it.name.lowercase().contains(query.lowercase()) }
+                .sortedBy { it.name }
+                .map { ListEntry(it) }
+
+            val filtered = ArrayList<ListEntry>()
+            filtered.addAll(collections)
+            filtered.addAll(items)
+
+            //todo: 完善搜索逻辑，实现便利搜索
+
+//            val filtered = libraryListViewModel.getItems().value?.filter {
+//                if (it.isCollection() && it.getCollection().name.contains(query.lowercase())) true
+//                else it.isItem() && it.getItem().getTitle().contains(query.lowercase())
+//            }
 
             libraryListViewModel.setItemsInBackgroundThread(filtered ?: emptyList())
         }

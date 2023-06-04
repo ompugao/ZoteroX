@@ -174,10 +174,27 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
 
             adapter.setData(entries)
 
-
             MyLog.d("zotero", "Loading new set of item (${entries.size} length)")
-//            adapter.items = entries
-//            adapter.notifyDataSetChanged()
+        }
+
+        viewModel.filteredTag.observe(viewLifecycleOwner) {
+            tag ->
+            tag?.let {
+                val filteredEntries = if (it == "") {
+                    viewModel.getItems().value
+                } else {
+                    viewModel.filterByTag(it, viewModel.getItems().value!!)
+                }
+
+                if (filteredEntries.isNullOrEmpty()) {
+                    showEmptyList()
+                } else {
+                    hideEmptyList()
+                }
+                adapter.setData(filteredEntries!!)
+
+                MyLog.d("Zotero", "filter items by tag: $tag")
+            }
         }
 
         val swipeRefresh =

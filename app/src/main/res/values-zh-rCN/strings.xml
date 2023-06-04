@@ -54,7 +54,7 @@
     <string name="default_pdf_reader">默认的外部pdf阅读器</string>
     <string name="use_external_pdf_reader">使用外部阅读器打开pdf附件</string>
     <string name="pref_key_use_external_pdf_reader">use_external_pdf_reader</string>
-    <string name="filter">过滤</string>
+    <string name="filter">筛选</string>
     <string name="pick_your_cloud_storage_provider">选择Zotero账户登录方式</string>
     <string name="zotero_account_sync">Zotero账号登录</string>
     <string name="proceed">下一步</string>

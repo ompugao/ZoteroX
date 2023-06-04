@@ -304,6 +304,9 @@ interface ItemDao {
     @Query("SELECT parent from ItemTags where `tag`=:tag")
     fun getItemKeysWithTag(tag: String): Maybe<List<String>>
 
+    @Query("SELECT * FROM ItemTags")
+    fun getItemTags(): Maybe<List<ItemTag>>
+
     @Transaction
     @Query("DELETE FROM ItemTags WHERE `parent`=:itemKey")
     fun deleteAllTagsForItemKey(itemKey: String): Completable

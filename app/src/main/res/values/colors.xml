@@ -3,4 +3,6 @@
     <color name="colorPrimary">#476482</color>
     <color name="colorPrimaryDark">#2d3c4f</color>
     <color name="colorAccent">#5B6CD8</color>
+
+    <color name="chip_background_color">#F1F2FA</color>
 </resources>

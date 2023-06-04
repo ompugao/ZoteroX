@@ -15,9 +15,13 @@ import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.ZoteroAPI.Model.Note
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
+import com.mickstarify.zotero.ZoteroStorage.Database.ItemTag
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
 import com.mickstarify.zotero.ZoteroStorage.ZoteroUtils
 import com.mickstarify.zotero.databinding.FragmentItemTagsBinding
+import java.text.Collator
+import java.util.*
+import kotlin.Comparator
 
 class ItemTagsFragment : Fragment() {
 
@@ -32,7 +36,7 @@ class ItemTagsFragment : Fragment() {
         mBinding = FragmentItemTagsBinding.inflate(inflater)
 
         item?.apply {
-            populateTags(this.tags.map { it.tag })
+            populateTags(this.tags)
         }
         return mBinding.root
     }
@@ -40,18 +44,31 @@ class ItemTagsFragment : Fragment() {
     /**
      * 显示item的标签
      */
-    private fun populateTags(tags: List<String>) {
+    private fun populateTags(tags: List<ItemTag>) {
         if (tags.isNullOrEmpty()) {
             mBinding.txtNoneTags.visibility = View.VISIBLE
             return
         }
 
-        for (tag in tags) {
+        // 对标签列表先进行排序，然后显示
+        val regulatedTags = ZoteroUtils.getImportantTag().reversed()
+
+        val arrangedTags = tags
+            .sortedWith { o1, o2 ->
+                Collator.getInstance(Locale.CHINA).compare(o1?.tag, o2?.tag)
+            }
+            .sortedWith(object : Comparator<ItemTag> {
+                override fun compare(p0: ItemTag?, p1: ItemTag?): Int {
+                    return regulatedTags.indexOf(p1!!.tag) - regulatedTags.indexOf(p0!!.tag)
+                }
+            })
+
+        for (tag in arrangedTags) {
             val chip = Chip(ContextThemeWrapper(requireContext(), R.style.TagAppearance))
             chip.chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#F1F2FA"))
-            chip.text = tag
+            chip.text = tag.tag
 
-            chip.setTextColor(Color.parseColor(ZoteroUtils.getTagColor(tag)))
+            chip.setTextColor(Color.parseColor(ZoteroUtils.getTagColor(tag.tag)))
 
             chip.setOnClickListener {
                 Toast.makeText(context, "代码待写！！！", Toast.LENGTH_SHORT).show()

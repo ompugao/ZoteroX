@@ -13,9 +13,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
-import com.mickstarify.zotero.databinding.FragmentItemInfoBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mickstarify.zotero.adapters.ItemPageAdapter
+import com.mickstarify.zotero.databinding.LayoutContentTabViewpagerBinding
 
 
 /**
@@ -26,7 +26,7 @@ import com.mickstarify.zotero.adapters.ItemPageAdapter
  */
 class ItemInfoFragment : BottomSheetDialogFragment() {
 
-    private lateinit var mBinding: FragmentItemInfoBinding
+    private lateinit var mBinding: LayoutContentTabViewpagerBinding
 
     lateinit var libraryViewModel: LibraryListViewModel
 
@@ -35,7 +35,7 @@ class ItemInfoFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mBinding = FragmentItemInfoBinding.inflate(inflater)
+        mBinding = LayoutContentTabViewpagerBinding.inflate(inflater)
 
         libraryViewModel =
             ViewModelProvider(requireActivity()).get(LibraryListViewModel::class.java)

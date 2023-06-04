@@ -78,11 +78,18 @@ object ZoteroUtils {
     }
 
     fun isImportantTag(tag: String): Boolean {
-        val importantTags = setOf("在读", "已读", "待读", "综述",
-            "参考", "实验方法",
-            "★★★★★", "★★★★", "★★★", )
-        if (importantTags.contains(tag)) return true
+//        val importantTags = setOf("在读", "已读", "待读", "综述",
+//            "参考", "实验方法",
+//            "★★★★★", "★★★★", "★★★", )
+        if (getImportantTag().contains(tag)) return true
         return false
+    }
+
+    fun getImportantTag(): List<String> {
+        return arrayListOf( "★★★★★", "★★★★", "★★★",
+            "在读", "已读", "待读", "综述",
+            "参考", "实验方法",
+           )
     }
 
     fun getTagColor(tag: String): String {
@@ -97,7 +104,6 @@ object ZoteroUtils {
             "★★★★" -> "#576DD9"
             "★★★" -> "#2EA8E5"
             else -> return "#4B5162"
-
         }
     }
 

@@ -3,7 +3,9 @@ package com.mickstarify.zotero.LibraryActivity
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -19,6 +21,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -27,13 +30,15 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import com.blankj.utilcode.util.BarUtils
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayoutMediator
-import com.kongzue.dialogx.dialogs.CustomDialog
 import com.mickstarify.zotero.*
 import com.mickstarify.zotero.AttachmentManager.AttachmentManager
+import com.mickstarify.zotero.LibraryActivity.Fragments.TagManagerFragment
 import com.mickstarify.zotero.LibraryActivity.ItemView.*
 import com.mickstarify.zotero.LibraryActivity.Notes.EditNoteDialog
 import com.mickstarify.zotero.LibraryActivity.Notes.NoteInteractionListener
@@ -47,8 +52,10 @@ import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.ZoteroStorage.ZoteroUtils
 import com.mickstarify.zotero.adapters.ItemPageAdapter
 import com.mickstarify.zotero.databinding.ContentDialogProgressBinding
-import com.mickstarify.zotero.databinding.FragmentItemInfoBinding
+import com.mickstarify.zotero.databinding.FragmentTagManagerBinding
+import com.mickstarify.zotero.databinding.LayoutContentTabViewpagerBinding
 import com.mickstarify.zotero.global.ScreenUtils
+import com.mickstarify.zotero.views.TabBottomSheetHelper
 
 
 class LibraryActivity : BaseActivity(),
@@ -73,9 +80,13 @@ class LibraryActivity : BaseActivity(),
     // used to "uncheck" the last pressed menu item if we change via code.
     private var currentPressedMenuItem: MenuItem? = null
 
+    private lateinit var model: LibraryActivityModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_library)
+
+        model = ViewModelProvider(this).get(LibraryActivityModel::class.java)
 
         toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
@@ -281,6 +292,11 @@ class LibraryActivity : BaseActivity(),
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
             }
+
+            R.id.tag_manager -> {
+                showTagManger()
+                
+            }
             R.id.attachment_manager -> {
                 val intent = Intent(this, AttachmentManager::class.java)
                 startActivity(intent)
@@ -294,6 +310,16 @@ class LibraryActivity : BaseActivity(),
 
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showTagManger() {
+        val tabs = arrayListOf(
+            ItemPageAdapter.TabItem("标签列表", TagManagerFragment.newInstance())
+        )
+
+        val dialog = createTabFragmentDialog("标签管理", tabs)
+
+        dialog.show()
     }
 
     lateinit var searchView: SearchView
@@ -392,7 +418,7 @@ class LibraryActivity : BaseActivity(),
     }
 
     fun showItemDialog(item: Item) {
-        val binding = FragmentItemInfoBinding.inflate(layoutInflater)
+        val binding = LayoutContentTabViewpagerBinding.inflate(layoutInflater)
 
         val libraryViewModel =
             ViewModelProvider(this).get(LibraryListViewModel::class.java)
@@ -438,7 +464,8 @@ class LibraryActivity : BaseActivity(),
             dialog = Dialog(this)
         } else {
             dialog = BottomSheetDialog(this)
-            dialog.behavior.peekHeight = 800
+
+            dialog.behavior.peekHeight = (windowManager.defaultDisplay.height * 0.8).toInt()
         }
 
         dialog.setContentView(binding.root)
@@ -448,6 +475,46 @@ class LibraryActivity : BaseActivity(),
             dialog?.dismiss()
         }
 
+    }
+
+    fun createTabFragmentDialog(title: String, tabs: List<ItemPageAdapter.TabItem>): Dialog {
+
+        var dialog: Dialog? = null
+
+        val binding = LayoutContentTabViewpagerBinding.inflate(layoutInflater)
+        binding.txtItemType.text = title
+
+        val itemPageAdapter = ItemPageAdapter(supportFragmentManager, lifecycle, tabs)
+        binding.viewPager.adapter = itemPageAdapter
+
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = tabs[position].tabTitle
+        }.attach()
+
+        if (ScreenUtils.isTabletWindow(this)) {
+            dialog = Dialog(this)
+        } else {
+
+//            val dialogHelper = TabBottomSheetHelper.get(this, tabs)
+//            dialog = dialogHelper.create()
+
+            dialog = BottomSheetDialog(this)
+            dialog.behavior.peekHeight = 800
+            val heightPixels = resources.displayMetrics.heightPixels
+            dialog.behavior.peekHeight = (heightPixels * 0.8).toInt()
+
+            val layoutParams = binding.viewPager.layoutParams
+            layoutParams.height = heightPixels - binding.toolbarSheet.height - binding.tabLayout.height - BarUtils.getStatusBarHeight()
+            binding.viewPager.layoutParams = layoutParams
+        }
+
+        dialog.setContentView(binding.root)
+
+        binding.btnClose.setOnClickListener {
+            dialog?.dismiss()
+        }
+
+        return dialog
     }
 
     /**
