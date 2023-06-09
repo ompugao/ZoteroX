@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -30,33 +31,27 @@
                     android:layout_alignParentStart="true"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="3dp"
-                    app:tint="#474B5C"
-                    app:srcCompat="@drawable/ic_close" />
+                    app:srcCompat="@drawable/ic_close"
+                    app:tint="#474B5C" />
 
                 <TextView
-                    android:id="@+id/txt_item_type"
+                    android:id="@+id/txt_dialog_title"
                     style="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="8dp"
                     android:layout_toEndOf="@+id/btn_close"
-                    android:text="条目类型"
+                    android:text="Title"
                     android:textColor="#2e3a56" />
 
-                <ImageButton
-                    android:id="@+id/btn_add_note"
+                <LinearLayout
+                    android:id="@+id/lv_buttons"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:layout_marginEnd="12dp"
-                    android:layout_toStartOf="@id/btn_more"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="5dp"
-                    android:scaleType="fitCenter"
-                    app:tint="#474B5C"
-                    app:srcCompat="@drawable/ic_toolbar_note_add" />
+                    android:layout_toStartOf="@id/btn_more" />
 
                 <ImageButton
                     android:id="@+id/btn_more"
@@ -68,8 +63,10 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="3dp"
                     android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_more_vert"
                     app:tint="#474B5C"
-                    app:srcCompat="@drawable/ic_more_vert" />
+                    android:visibility="gone"
+                    tools:visibility="visible"/>
 
             </RelativeLayout>
 

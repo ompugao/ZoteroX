@@ -120,13 +120,7 @@ class TagManagerFragment : Fragment {
             }
 
             MyLog.e("ZoteroDebug", "从数据库中获取")
-        } else {
-//            viewModel.fetchTags()
-
-            MyLog.e("ZoteroDebug", "已经存在，直接获取")
         }
-//
-
     }
 
     private fun showTagOperate(tag: String) {

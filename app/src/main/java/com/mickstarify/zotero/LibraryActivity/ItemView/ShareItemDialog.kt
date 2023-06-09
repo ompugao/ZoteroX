@@ -17,7 +17,6 @@ import java.util.LinkedList
 
 class ShareItemDialog(item: Item) {
 
-
     // maps name to a isChecked flag
     val isChecked = HashMap<String, Boolean>()
     val pairs = getShareableParameters(item)
@@ -26,10 +25,10 @@ class ShareItemDialog(item: Item) {
         var string = ""
         for ((name, value) in pairs) {
             if (isChecked[name] == true) {
-                if (string != "") {
-                    string += ", "
-                }
                 string += "$name: ${value.trim()}"
+                if (string != "") {
+                    string += "; \n"
+                }
             }
         }
         Log.d("zotero", "built $string")
@@ -57,25 +56,27 @@ class ShareItemDialog(item: Item) {
                 this.isChecked[name] = true
                 checkbox.isChecked = true
             }
-            checkbox.setOnClickListener(View.OnClickListener { v ->
+            checkbox.setOnClickListener { v ->
                 Log.d("zotero", "pressed $name - $value")
                 this.isChecked[name] = !this.isChecked[name]!!
                 previewTextView.setText(buildShareText())
-            })
+            }
             checkboxLayout.addView(checkbox)
         }
 
-        val cancelButton = dialogView.findViewById<Button>(R.id.button_cancel)
-        cancelButton.setOnClickListener {
-            dialogBuilder.dismiss()
+        dialogBuilder.setButton(AlertDialog.BUTTON_POSITIVE, "分享") {
+            _, _ ->
+            shareItemListener?.shareItem(previewTextView.text.toString())
+
         }
 
-        val submitButton = dialogView.findViewById<Button>(R.id.button_share)
-        submitButton.setOnClickListener {
-            shareItemListener?.shareItem(previewTextView.text.toString())
+        dialogBuilder.setButton(AlertDialog.BUTTON_NEGATIVE, "取消") {
+                _, _ ->
+            dialogBuilder.dismiss()
         }
         
         previewTextView.setText(buildShareText())
+//        dialogBuilder.setTitle("Create Shareable Text")
         dialogBuilder.setView(dialogView)
         dialogBuilder.show()
     }

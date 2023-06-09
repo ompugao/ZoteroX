@@ -409,7 +409,6 @@ class LibraryActivity : BaseActivity(),
     }
 
     fun setTitle(title: String) {
-//        supportActionBar?.title = title
         supportActionBar?.title = ""
 
         toolbar.findViewById<TextView>(R.id.txt_title)?.let {
@@ -418,16 +417,33 @@ class LibraryActivity : BaseActivity(),
     }
 
     fun showItemDialog(item: Item) {
-        val binding = LayoutContentTabViewpagerBinding.inflate(layoutInflater)
-
-        val libraryViewModel =
-            ViewModelProvider(this).get(LibraryListViewModel::class.java)
-
         val tabs = arrayListOf(
             ItemPageAdapter.TabItem("基本", ItemBasicInfoFragment.newInstance(item)),
             ItemPageAdapter.TabItem("标签", ItemTagsFragment.newInstance(item)),
             ItemPageAdapter.TabItem("笔记", ItemNotesFragment.newInstance(item))
         )
+
+        if (!ScreenUtils.isTabletWindow(this)) {
+            val dialogHelper = TabBottomSheetHelper.get(this, tabs)
+            dialogHelper.setTitle(ZoteroUtils.getItemTypeHumanReadableString(item.itemType).toString())
+
+            dialogHelper.setMenu(R.menu.menu_item_info_dialog) {
+                when (it.itemId) {
+                    R.id.add_note -> showCreateNoteDialog(item)
+                    R.id.share_item -> showShareItemDialog(item)
+                }
+                false
+            }
+
+            val dialog = dialogHelper.create()
+            dialog.show()
+            return
+        }
+
+        val binding = LayoutContentTabViewpagerBinding.inflate(layoutInflater)
+
+        val libraryViewModel =
+            ViewModelProvider(this).get(LibraryListViewModel::class.java)
 
         val itemPageAdapter = ItemPageAdapter(supportFragmentManager, lifecycle, tabs)
         binding.viewPager.adapter = itemPageAdapter
@@ -437,11 +453,7 @@ class LibraryActivity : BaseActivity(),
         }.attach()
 
         libraryViewModel.getOnItemClicked().observe(this) { item ->
-            binding.txtItemType.text = ZoteroUtils.getItemTypeHumanReadableString(item.itemType)
-
-            binding.btnAddNote.setOnClickListener {
-                showCreateNoteDialog(item)
-            }
+            binding.txtDialogTitle.text = ZoteroUtils.getItemTypeHumanReadableString(item.itemType)
 
             binding.btnMore.setOnClickListener {
                 val popupMenu = PopupMenu(this, it)
@@ -458,16 +470,7 @@ class LibraryActivity : BaseActivity(),
             }
         }
 
-        var dialog: Dialog? = null
-
-        if (ScreenUtils.isTabletWindow(this)) {
-            dialog = Dialog(this)
-        } else {
-            dialog = BottomSheetDialog(this)
-
-            dialog.behavior.peekHeight = (windowManager.defaultDisplay.height * 0.8).toInt()
-        }
-
+        var dialog = Dialog(this)
         dialog.setContentView(binding.root)
         dialog.show()
 
@@ -478,43 +481,9 @@ class LibraryActivity : BaseActivity(),
     }
 
     fun createTabFragmentDialog(title: String, tabs: List<ItemPageAdapter.TabItem>): Dialog {
-
-        var dialog: Dialog? = null
-
-        val binding = LayoutContentTabViewpagerBinding.inflate(layoutInflater)
-        binding.txtItemType.text = title
-
-        val itemPageAdapter = ItemPageAdapter(supportFragmentManager, lifecycle, tabs)
-        binding.viewPager.adapter = itemPageAdapter
-
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            tab.text = tabs[position].tabTitle
-        }.attach()
-
-        if (ScreenUtils.isTabletWindow(this)) {
-            dialog = Dialog(this)
-        } else {
-
-//            val dialogHelper = TabBottomSheetHelper.get(this, tabs)
-//            dialog = dialogHelper.create()
-
-            dialog = BottomSheetDialog(this)
-            dialog.behavior.peekHeight = 800
-            val heightPixels = resources.displayMetrics.heightPixels
-            dialog.behavior.peekHeight = (heightPixels * 0.8).toInt()
-
-            val layoutParams = binding.viewPager.layoutParams
-            layoutParams.height = heightPixels - binding.toolbarSheet.height - binding.tabLayout.height - BarUtils.getStatusBarHeight()
-            binding.viewPager.layoutParams = layoutParams
-        }
-
-        dialog.setContentView(binding.root)
-
-        binding.btnClose.setOnClickListener {
-            dialog?.dismiss()
-        }
-
-        return dialog
+        val dialogHelper = TabBottomSheetHelper.get(this, tabs)
+        dialogHelper.setTitle(title)
+        return dialogHelper.create()
     }
 
     /**
