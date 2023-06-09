@@ -151,6 +151,8 @@ dependencies {
 
     implementation "com.github.skydoves:colorpickerpreference:2.0.6"
 
+    implementation 'com.github.devendroid:ReadMoreOption:1.0.2'
+
     configurations {
         all*.exclude group: 'xpp3', module: 'xpp3'
     }

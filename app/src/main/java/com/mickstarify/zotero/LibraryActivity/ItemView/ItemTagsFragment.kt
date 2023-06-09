@@ -2,6 +2,7 @@ package com.mickstarify.zotero.LibraryActivity.ItemView
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,7 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.chip.Chip
+import com.mickstarify.zotero.LibraryActivity.LibraryActivityModel
 import com.mickstarify.zotero.LibraryActivity.Notes.NoteInteractionListener
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
 import com.mickstarify.zotero.R
@@ -29,11 +32,15 @@ class ItemTagsFragment : Fragment() {
 
     private lateinit var mBinding: FragmentItemTagsBinding
 
+    private lateinit var libraryListModel: LibraryListViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         mBinding = FragmentItemTagsBinding.inflate(inflater)
+
+        libraryListModel = ViewModelProvider(requireActivity()).get(LibraryListViewModel::class.java)
 
         item?.apply {
             populateTags(this.tags)
@@ -57,25 +64,51 @@ class ItemTagsFragment : Fragment() {
             .sortedWith { o1, o2 ->
                 Collator.getInstance(Locale.CHINA).compare(o1?.tag, o2?.tag)
             }
-            .sortedWith(object : Comparator<ItemTag> {
-                override fun compare(p0: ItemTag?, p1: ItemTag?): Int {
-                    return regulatedTags.indexOf(p1!!.tag) - regulatedTags.indexOf(p0!!.tag)
-                }
-            })
+            .sortedWith { p0, p1 -> regulatedTags.indexOf(p1!!.tag) - regulatedTags.indexOf(p0!!.tag) }
 
-        for (tag in arrangedTags) {
+        updateTags(arrangedTags)
+
+    }
+
+    private fun updateTags(tags: List<ItemTag>) {
+        for (tag in tags) {
             val chip = Chip(ContextThemeWrapper(requireContext(), R.style.TagAppearance))
             chip.chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#F1F2FA"))
             chip.text = tag.tag
-
             chip.setTextColor(Color.parseColor(ZoteroUtils.getTagColor(tag.tag)))
 
+            if (libraryListModel.filteredTag.value == tag.tag) {
+                checkTagChip(chip, true)
+            }
+
             chip.setOnClickListener {
-                Toast.makeText(context, "代码待写！！！", Toast.LENGTH_SHORT).show()
+                if (libraryListModel.filteredTag.value == tag.tag) {
+                    libraryListModel.filteredTag.value = ""
+
+                    chip.setTextColor(Color.parseColor(ZoteroUtils.getTagColor(tag.tag)))
+
+                    checkTagChip(chip, false)
+                } else {
+                    libraryListModel.filteredTag.value = tag.tag
+
+                    checkTagChip(chip, true)
+                }
             }
 
             mBinding.ChipsItemTags.addView(chip)
         }
+
+    }
+
+
+    private fun checkTagChip(chip: Chip, isCheck: Boolean) {
+        if (!isCheck) {
+            chip.chipBackgroundColor = ColorStateList.valueOf(requireContext().resources.getColor(R.color.chip_background_color))
+        } else {
+            chip.setTextColor(Color.WHITE)
+            chip.chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#576DD9"))
+        }
+
     }
 
     companion object {

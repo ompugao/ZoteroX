@@ -11,7 +11,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.google.android.material.chip.Chip
 import com.mickstarify.zotero.MyLog
-import com.mickstarify.zotero.R
 import com.mickstarify.zotero.TagStyler
 import com.mickstarify.zotero.ZoteroStorage.Database.Creator
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
@@ -21,6 +20,9 @@ import com.mickstarify.zotero.adapters.TagWrapper
 import com.mickstarify.zotero.databinding.FragmentItemBasicInfoBinding
 import com.mickstarify.zotero.databinding.LayoutItemBasicInfoEtcBinding
 import com.mickstarify.zotero.databinding.LayoutItemBasicInfoJournalPaperBinding
+
+import com.devs.readmoreoption.ReadMoreOption
+import com.mickstarify.zotero.R
 
 class ItemBasicInfoFragment : Fragment() {
 
@@ -149,7 +151,20 @@ class ItemBasicInfoFragment : Fragment() {
         val binding = LayoutItemBasicInfoJournalPaperBinding.inflate(layoutInflater)
         binding.txtThesisTitle.text = item.getTitle()
 
-        binding.txtAbstract.text = item.data["abstractNote"]
+        // OR using options to customize
+        val readMoreOption = ReadMoreOption.Builder(requireContext())
+            .textLength(8, ReadMoreOption.TYPE_LINE) // OR
+            //.textLength(300, ReadMoreOption.TYPE_CHARACTER)
+            .moreLabel("展开")
+            .lessLabel("折叠")
+            .moreLabelColor(Color.RED)
+            .lessLabelColor(Color.BLUE)
+            .labelUnderLine(true)
+            .expandAnimation(true)
+            .build()
+
+        readMoreOption.addReadMoreTo(binding.txtAbstract, item.data["abstractNote"])
+
 
         binding.txtDate.text = item.data["date"]
         binding.txtJournalName.text = item.data["publicationTitle"]

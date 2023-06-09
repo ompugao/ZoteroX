@@ -47,6 +47,21 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="Web DAV">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:enabled="true"
+            app:enabled="true"
+            android:key="use_webdav"
+            android:title="@string/description_use_webdav" />
+
+        <Preference
+            android:enabled="true"
+            android:key="configure_webdav"
+            android:dependency="use_webdav"
+            android:title="@string/config_webdav" />
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/library_header">
         <ListPreference
             app:defaultValue="TITLE"
@@ -75,20 +90,7 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Web DAV">
-        <SwitchPreference
-            android:defaultValue="false"
-            android:enabled="true"
-            app:enabled="true"
-            android:key="use_webdav"
-            android:title="@string/description_use_webdav" />
 
-        <Preference
-            android:enabled="true"
-            android:key="configure_webdav"
-            android:dependency="use_webdav"
-            android:title="@string/config_webdav" />
-    </PreferenceCategory>
 
     <PreferenceCategory app:title="Attachments">
         <SwitchPreference

@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import com.blankj.utilcode.util.BarUtils
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
+import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.adapters.ItemPageAdapter
 import com.mickstarify.zotero.databinding.LayoutContentTabViewpagerBinding
@@ -66,10 +67,6 @@ class TabBottomSheetHelper private constructor(val context: Context,
         val heightPixels = context.resources.displayMetrics.heightPixels
         dialog.behavior.peekHeight = (heightPixels * 0.8).toInt()
 
-        val layoutParams = binding.viewPager.layoutParams
-        layoutParams.height = heightPixels - binding.toolbarSheet.height - binding.tabLayout.height - BarUtils.getStatusBarHeight()
-        binding.viewPager.layoutParams = layoutParams
-
         dialog.setContentView(binding.root)
 
         binding.btnClose.setOnClickListener {
@@ -79,6 +76,14 @@ class TabBottomSheetHelper private constructor(val context: Context,
         binding.btnMore.setOnClickListener {
             showMenu()
         }
+
+        dialog.setOnShowListener {
+            val viewPagerHeight = heightPixels - BarUtils.getStatusBarHeight()
+            val containerLayoutParam = binding.lvContainer.layoutParams
+            containerLayoutParam.height = viewPagerHeight
+            binding.lvContainer.layoutParams = containerLayoutParam
+        }
+
         return dialog
     }
 

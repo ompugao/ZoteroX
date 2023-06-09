@@ -30,12 +30,9 @@ import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.mickstarify.zotero.*
 import com.mickstarify.zotero.LibraryActivity.LibraryActivity
 import com.mickstarify.zotero.LibraryActivity.ViewModels.LibraryListViewModel
-import com.mickstarify.zotero.MyLog
-import com.mickstarify.zotero.PreferenceManager
-import com.mickstarify.zotero.R
-import com.mickstarify.zotero.ZoteroApplication
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.adapters.LibraryItemLongClickListener
@@ -247,17 +244,29 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
     }
 
     private fun showMoreOperateMenuDialog(item: Item) {
-        val array = arrayOf("查看信息", "下载附件")
+        val array = arrayOf("查看信息", "在线查看", "下载附件")
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
         dialog.setItems(array) { dialog, which ->
             when (which) {
                 0 -> showItemInfo(item)
-                1 -> downloadItem(item)
+                1 -> viewItOnline(item)
+                2 -> downloadItem(item)
 
             }
         }
         dialog.show()
+    }
+
+    private fun viewItOnline(item: Item) {
+        val urlString = item.data.get("url")
+        val uri = Uri.parse(urlString)
+
+        val intent = Intent()
+        intent.action = "android.intent.action.VIEW"
+        intent.data = uri
+        startActivity(intent)
+
     }
 
     private fun showCollectionMoreOperateMenuDialog(collection: Collection) {

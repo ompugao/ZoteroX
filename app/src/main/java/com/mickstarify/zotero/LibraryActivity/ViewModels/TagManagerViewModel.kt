@@ -166,11 +166,11 @@ class TagManagerViewModel(application: Application) : AndroidViewModel(applicati
         val old = tagItems.value
 
         if (tag.isNullOrEmpty()) {
-            tagItems.value = old!!.map { TagWrapper(it.tag, it.color, false) }
+            tagItems.value = old?.map { TagWrapper(it.tag, it.color, false) }
             return
         }
 
-        tagItems.value = old!!.map {
+        tagItems.value = old?.map {
             TagWrapper(it.tag, it.color, it.tag == tag)
         }
 

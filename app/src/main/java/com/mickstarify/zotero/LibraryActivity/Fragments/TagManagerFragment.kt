@@ -70,6 +70,7 @@ class TagManagerFragment : Fragment {
         }
 
         viewModel.tagItems.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
             // 对标签先按照指定得偏好排序后显示
             adapter.updateData(it)
         }
@@ -93,7 +94,6 @@ class TagManagerFragment : Fragment {
 
         adapter.clickListener = object : TagListAdapter.OnTagClickListener {
             override fun onClick(tag: String) {
-
                 if (libraryListModel.filteredTag.value == tag) {
                     libraryListModel.filteredTag.value = ""
                 } else {
