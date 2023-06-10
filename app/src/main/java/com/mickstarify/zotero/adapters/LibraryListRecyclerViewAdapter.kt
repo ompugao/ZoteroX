@@ -126,13 +126,6 @@ class LibraryListRecyclerViewAdapter(val context: Context,
             item.tags.forEach {
                 if (ZoteroUtils.isImportantTag(it.tag)) {
                     val chip: Chip = layoutInflater.inflate(R.layout.tag_chip, null, false).findViewById(R.id.chip) as Chip
-//                    val chip = Chip(ContextThemeWrapper(context, R.style.TagAppearance_Small))
-////                    chip.setTextColor(Color.parseColor("#FF5F70C0"))
-//                    chip.textSize = 12.0f
-//                    chip.minHeight = 18
-//                    chip.chipStartPadding = 1f
-//                    chip.chipEndPadding = 1f
-//                    chip.setChipBackgroundColorResource(R.color.chip_background_color)
                     chip.text = it.tag
                     chip.setTextColor(Color.parseColor(ZoteroUtils.getTagColor(it.tag)))
 
@@ -172,43 +165,7 @@ class LibraryListRecyclerViewAdapter(val context: Context,
     }
 
     fun setData(entries: List<ListEntry>) {
-
         mDiffer.submitList(entries)
-
-//        val oldList = items ?: listOf()
-
-
-
-
-//        val calculateDiff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-//            override fun getOldListSize() = oldList.size
-//
-//            override fun getNewListSize() = entries.size
-//
-//            override fun areItemsTheSame(
-//                oldItemPosition: Int,
-//                newItemPosition: Int
-//            ): Boolean {
-//                //不考虑大小写，如果equals就是同个元素
-//                return oldList[oldItemPosition] == entries[newItemPosition]
-//            }
-//
-//            override fun areContentsTheSame(
-//                oldItemPosition: Int,
-//                newItemPosition: Int
-//            ): Boolean {
-//                //如果equals就内容相同
-//                return oldList[oldItemPosition] == entries[newItemPosition]
-//            }
-//        }, false)
-
-
-
-
-//        items.clear()
-//        items.addAll(entries)
-//        calculateDiff.dispatchUpdatesTo(this)
-
     }
 
     /**

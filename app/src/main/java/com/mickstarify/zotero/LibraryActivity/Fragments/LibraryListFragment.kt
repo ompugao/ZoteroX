@@ -5,25 +5,14 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
@@ -38,10 +27,6 @@ import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.adapters.LibraryItemLongClickListener
 import com.mickstarify.zotero.adapters.LibraryListInteractionListener
 import com.mickstarify.zotero.adapters.LibraryListRecyclerViewAdapter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -237,22 +222,20 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         hideFabButtonWhenScrolling()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-//        fab.collapse()
-    }
-
     private fun showMoreOperateMenuDialog(item: Item) {
-        val array = arrayOf("查看信息", "在线查看", "下载附件")
+        val array = arrayOf("查看信息", "在线查看", "添加到收藏", "下载附件")
+
+        if (viewModel.isStared(item)) {
+            array[2] = "取消收藏"
+        }
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
         dialog.setItems(array) { dialog, which ->
             when (which) {
                 0 -> showItemInfo(item)
                 1 -> viewItOnline(item)
-                2 -> downloadItem(item)
-
+                2 -> starOrRemoveStar(item)
+                3 -> downloadItem(item)
             }
         }
         dialog.show()
@@ -270,19 +253,38 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
     }
 
     private fun showCollectionMoreOperateMenuDialog(collection: Collection) {
-        val arrayFolder = arrayOf("添加到收藏", "小工具", "属性")
+        val arrayFolder = arrayOf("添加到收藏", "属性")
+
+        if (viewModel.isStared(collection)) {
+            arrayFolder[0] = "取消收藏"
+        }
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
 
         dialog.setItems(arrayFolder) { dialog, which ->
             when (which) {
-//                0 -> onItemOpen(item)
-                2 -> showCollectionInfo(collection)
-        }
-//
+                0 -> starOrRemoveStar(collection)
+                1 -> showCollectionInfo(collection)
+            }
         }
 
         dialog.show()
+    }
+
+    private fun starOrRemoveStar(collection: Collection) {
+        if (viewModel.isStared(collection)) {
+            viewModel.removeStar(collection)
+        } else {
+            viewModel.addToStar(collection)
+        }
+    }
+
+    private fun starOrRemoveStar(item: Item) {
+        if (viewModel.isStared(item)) {
+            viewModel.removeStar(item)
+        } else {
+            viewModel.addToStar(item)
+        }
     }
 
     private fun showCollectionInfo(collection: Collection) {

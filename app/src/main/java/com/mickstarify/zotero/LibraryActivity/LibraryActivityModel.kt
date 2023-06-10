@@ -988,6 +988,10 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
         return zoteroDB.getCollectionById(collectionKey)
     }
 
+    fun getItemFromItemKey(itemKey: String): Item? {
+        return zoteroDB.getItemWithKey(itemKey)
+    }
+
     fun destroyLibrary() {
         zoteroDB.clearItemsVersion()
         zoteroDatabase.deleteEverything()
@@ -1122,7 +1126,7 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
             Log.e("zotero", "error unable to determine state differences!!")
         }
     }
-//
+
 //    private var mutableTags = MutableLiveData<List<ItemTag>>()
 //
 //    fun getMutableTags(): MutableLiveData<List<ItemTag>> {
@@ -1141,6 +1145,16 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
 ////
 ////        }
 //    }
+
+    fun getMyStars(): List<ListEntry> {
+        return MyItemFilter.get(getApplication()).getMyStars().map {
+            if (it.isCollection) {
+                ListEntry(getCollectionFromKey(it.itemKey)!!)
+            } else {
+                ListEntry(getItemFromItemKey(it.itemKey)!!)
+            }
+        }
+    }
 
     fun getUniqueItemTags(): List<ItemTag> {
         return zoteroDB.getUniqueItemTags()

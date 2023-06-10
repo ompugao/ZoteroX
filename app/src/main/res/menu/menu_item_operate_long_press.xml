@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/show_item_info"
+        android:title="查看信息" />
+    <item
+        android:id="@+id/view_it_online"
+        android:title="在线查看" />
+    <item
+        android:id="@+id/star_item"
+        android:title="添加到收藏" />
+    <item
+        android:id="@+id/download_attachment"
+        android:title="下载附件" />
+</menu>

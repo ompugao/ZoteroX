@@ -1,7 +1,5 @@
 package com.mickstarify.zotero.LibraryActivity.Fragments
 
-import android.content.DialogInterface
-import android.content.DialogInterface.OnClickListener
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater

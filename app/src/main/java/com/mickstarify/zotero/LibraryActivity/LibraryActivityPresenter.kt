@@ -425,7 +425,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
         if (collectionKey == ConstValues.ALL_ITEMS && !model.isUsingGroups()) {
             view.setTitle(view.getString(R.string.my_library))
 
-            thread {
+            CoroutineScope(Dispatchers.IO).launch {
                 val entries = model.getLibraryItems().map { ListEntry(it) }.sortEntries()
                 model.isDisplayingItems = entries.size > 0
 
@@ -435,7 +435,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
         } else if (collectionKey == ConstValues.HOME) {
             view.setTitle(view.getString(R.string.homepage))
 
-            thread {
+            CoroutineScope(Dispatchers.IO).launch {
                 val entries = mutableListOf<ListEntry>()
                 val collections = model.getCollections().filter {
                     !it.hasParent()
@@ -456,10 +456,31 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
                 libraryListViewModel.setItemsInBackgroundThread(entries)
             }
 
+        } else if (collectionKey == ConstValues.STAR) {
+            view.setTitle("收藏")
+            CoroutineScope(Dispatchers.IO).launch {
+                val entries = model.getMyStars().sortedWith(object : Comparator<ListEntry>{
+                    override fun compare(o1: ListEntry?, o2: ListEntry?): Int {
+                        if (o1!!.isCollection() && o2!!.isItem()) {
+                            return -1
+                        } else if (o1.isItem() && o2!!.isCollection())
+                            return 1
+                        else {
+                            val title1 = if (o1.isCollection()) o1.getCollection().name else o1.getItem().getTitle()
+                            val title2 = if (o2!!.isCollection()) o2.getCollection().name else o2.getItem().getTitle()
+
+                            return Collator.getInstance(Locale.CHINA).compare(title1, title2)
+                        }
+                    }
+                })
+
+                libraryListViewModel.setItemsInBackgroundThread(entries)
+            }
+
         } else if (collectionKey == ConstValues.UNFILED) {
             view.setTitle(view.getString(R.string.unfiled_items))
 
-            thread {
+            CoroutineScope(Dispatchers.IO).launch {
                 val entries = model.getUnfiledItems().map { ListEntry(it) }.sortEntries()
                 model.isDisplayingItems = entries.size > 0
 
@@ -472,7 +493,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
         }else if (collectionKey == ConstValues.GROUP_ALL && model.isUsingGroups()) {
             view.setTitle(model.getCurrentGroup()?.name ?: "ERROR")
 
-            thread {
+            CoroutineScope(Dispatchers.IO).launch {
                 val entries = LinkedList<ListEntry>()
                 entries.addAll(model.getCollections().filter {
                     !it.hasParent()
@@ -487,7 +508,7 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 
         } else {
             // It is an actual collection on the user's private.
-            thread {
+            CoroutineScope(Dispatchers.IO).launch {
                 val collection = model.getCollectionFromKey(collectionKey)
 
                 val entries = LinkedList<ListEntry>()
@@ -534,7 +555,6 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 //    private var model: LibraryActivityModel = ViewModelProvider(view as LibraryActivity).get(LibraryActivityModel::class.java)
 
     init {
-
         model = ViewModelProvider(view as LibraryActivity).get(LibraryActivityModel::class.java)
         model.setLibraryActivityPresenter(this)
 

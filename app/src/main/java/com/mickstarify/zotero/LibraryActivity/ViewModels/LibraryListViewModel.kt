@@ -1,15 +1,18 @@
 package com.mickstarify.zotero.LibraryActivity.ViewModels
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mickstarify.zotero.LibraryActivity.ListEntry
+import com.mickstarify.zotero.MyItemFilter
 import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.global.SingleLiveEvent
 
-class LibraryListViewModel : ViewModel() {
+class LibraryListViewModel(application: Application) : AndroidViewModel(application) {
 
     private val items = SingleLiveEvent<List<ListEntry>>()
 
@@ -100,6 +103,33 @@ class LibraryListViewModel : ViewModel() {
         return items.filter {
             return@filter it.isItem() && it.getItem().tags.map {it.tag}.contains(tag)
         }
+    }
+
+    private var isInMyStarPage = false
+
+
+    fun isStared(item: Item): Boolean {
+        return MyItemFilter.get(getApplication()).isStared(item)
+    }
+
+    fun isStared(collection: Collection): Boolean {
+        return MyItemFilter.get(getApplication()).isStared(collection)
+    }
+
+    fun addToStar(collection: Collection) {
+        MyItemFilter.get(getApplication()).addToStar(collection)
+    }
+
+    fun addToStar(item: Item) {
+        MyItemFilter.get(getApplication()).addToStar(item)
+    }
+
+    fun removeStar(item: Item) {
+        MyItemFilter.get(getApplication()).removeStar(item)
+    }
+
+    fun removeStar(collection: Collection) {
+        MyItemFilter.get(getApplication()).removeStar(collection)
     }
 
 

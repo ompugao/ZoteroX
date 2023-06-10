@@ -342,6 +342,8 @@ class LibraryActivity : BaseActivity(),
         } else if (item.itemId == R.id.nav_home) {
 //            presenter.openHome()
             presenter.setCollection("home", fromNavigationDrawer = true)
+        } else if (item.itemId == R.id.my_stars) {
+            presenter.setCollection("star", fromNavigationDrawer = true)
         } else if (item.itemId == MENU_ID_UNFILED_ITEMS) {
             presenter.setCollection("unfiled_items", fromNavigationDrawer = true)
         } else if (item.itemId == MENU_ID_MY_PUBLICATIONS) {

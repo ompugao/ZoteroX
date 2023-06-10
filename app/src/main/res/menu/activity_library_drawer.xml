@@ -9,6 +9,10 @@
             android:icon="@drawable/ic_outline_home"
             android:title="主页" />
         <item
+            android:id="@+id/my_stars"
+            android:icon="@drawable/ic_star"
+            android:title="收藏" />
+        <item
             android:id="@+id/my_library"
             android:icon="@drawable/ic_menu_library"
             android:title="@string/my_library" />
