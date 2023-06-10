@@ -1232,5 +1232,7 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
         }
 
         PreferenceManager(presenter.view).setLastViewedPosition(curPosition)
+
+        MyLog.d("Zotero", "Save current collection position: $curPosition")
     }
 }
