@@ -8,6 +8,7 @@ import android.widget.PopupMenu
 import androidx.annotation.DrawableRes
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import com.blankj.utilcode.util.BarUtils
@@ -37,11 +38,15 @@ class TabBottomSheetHelper private constructor(val context: Context,
 
     companion object {
 
-        private lateinit var INSTANCE: TabBottomSheetHelper
+//        private lateinit var INSTANCE: TabBottomSheetHelper
 
         fun get(activity: AppCompatActivity, tabs: List<ItemPageAdapter.TabItem>): TabBottomSheetHelper {
-            INSTANCE = TabBottomSheetHelper(activity, activity.supportFragmentManager, activity.layoutInflater, activity.lifecycle, tabs)
+            val INSTANCE = TabBottomSheetHelper(activity, activity.supportFragmentManager, activity.layoutInflater, activity.lifecycle, tabs)
+            return INSTANCE
+        }
 
+        fun get(fragment: Fragment, tabs: List<ItemPageAdapter.TabItem>): TabBottomSheetHelper {
+            val INSTANCE = TabBottomSheetHelper(fragment.requireActivity(), fragment.childFragmentManager, fragment.layoutInflater, fragment.lifecycle, tabs)
             return INSTANCE
         }
 

@@ -32,9 +32,7 @@ class LibraryListRecyclerViewAdapter(val context: Context,
     val listener: LibraryListInteractionListener
 ) : RecyclerView.Adapter<LibraryListRecyclerViewAdapter.ListEntryViewHolder>() {
 
-//    val items = ArrayList<ListEntry>()
-
-    val diffCallback = object: ItemCallback<ListEntry>() {
+    private val diffCallback = object: ItemCallback<ListEntry>() {
 
         override fun areItemsTheSame(oldItem: ListEntry, newItem: ListEntry): Boolean {
             return oldItem == newItem
@@ -45,12 +43,9 @@ class LibraryListRecyclerViewAdapter(val context: Context,
         }
     }
 
-    val mDiffer = AsyncListDiffer<ListEntry>(this, diffCallback)
+    private val mDiffer = AsyncListDiffer(this, diffCallback)
 
-    var model: LibraryActivityModel
-    init {
-        model = ViewModelProvider(context as LibraryActivity).get(LibraryActivityModel::class.java)
-    }
+    var model: LibraryActivityModel = ViewModelProvider(context as LibraryActivity).get(LibraryActivityModel::class.java)
 
     class ListEntryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView = view.findViewById<ImageView>(R.id.imgEntryIcon)

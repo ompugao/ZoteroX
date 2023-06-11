@@ -1,12 +1,8 @@
 package com.mickstarify.zotero
 
 import android.app.Application
-//import com.facebook.flipper.android.AndroidFlipperClient
-//import com.facebook.flipper.android.utils.FlipperUtils
-//import com.facebook.flipper.plugins.databases.DatabasesFlipperPlugin
-//import com.facebook.flipper.plugins.inspector.DescriptorMapping
-//import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin
-//import com.facebook.soloader.SoLoader
+import com.mickstarify.zotero.ZoteroStorage.AttachmentStorageManager
+import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
 import com.mickstarify.zotero.di.component.ApplicationComponent
 import com.mickstarify.zotero.di.component.DaggerApplicationComponent
 import com.mickstarify.zotero.di.module.ApplicationModule
@@ -15,6 +11,10 @@ import com.yuan.library.dmanager.download.DownloadManager
 class ZoteroApplication : Application() {
 
     lateinit var component: ApplicationComponent
+
+    var zoteroDB: ZoteroDB? = null
+
+//    var attachmentStorageManager: AttachmentStorageManager? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -33,7 +33,6 @@ class ZoteroApplication : Application() {
 //            client.addPlugin(DatabasesFlipperPlugin(this));
 //            client.start()
 //        }
-
 
         component = DaggerApplicationComponent.builder().applicationModule(
             ApplicationModule(this)

@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme.Light"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".AttachmentViewerActivity"
+            android:name=".ui.AttachmentViewerActivity"
             android:exported="false" />
         <activity
             android:name=".AttachmentManager.AttachmentManager"

@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import com.google.gson.JsonObject
 import com.mickstarify.zotero.*
 import com.mickstarify.zotero.AttachmentManager.AttachmentDownloadListener
@@ -22,6 +21,7 @@ import com.mickstarify.zotero.ZoteroStorage.Database.*
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDBPicker
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroGroupDB
+import com.mickstarify.zotero.ui.AttachmentViewerActivity
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.MaybeObserver
@@ -29,10 +29,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.util.LinkedList
 import java.util.Locale
@@ -216,6 +212,7 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
                     val intent = presenter.requireIntent(AttachmentViewerActivity::class.java)
                     intent.data = attachment_uri
                     intent.putExtra(AttachmentViewerActivity.ATTACHMENT_TYPE, attachment.data["contentType"])
+                    intent.putExtra(AttachmentViewerActivity.ATTACHMENT_KEY, attachment.itemKey)
                     presenter.startActivity(intent)
                 } else {
                     val intent = attachmentStorageManager.openAttachment(attachment)
@@ -1200,6 +1197,8 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
         (application as ZoteroApplication).component.inject(syncManager)
 
         checkAttachmentStorageAccess()
+
+        (application as ZoteroApplication).zoteroDB = zoteroDB
     }
 
     /**

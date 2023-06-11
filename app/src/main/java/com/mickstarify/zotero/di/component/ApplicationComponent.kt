@@ -11,6 +11,8 @@ import com.mickstarify.zotero.ZoteroStorage.AttachmentStorageManager
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
 import com.mickstarify.zotero.di.module.ApplicationModule
 import com.mickstarify.zotero.di.module.DatabaseModule
+import com.mickstarify.zotero.ui.AttachmentViewerActivity
+import com.mickstarify.zotero.ui.PdfViewer.PdfViewerModel
 import dagger.Component
 import javax.inject.Singleton
 
@@ -27,4 +29,6 @@ interface ApplicationComponent {
     fun inject(libraryListFragment: LibraryListFragment)
 
     fun inject(attachmentManager: AttachmentManager)
+    fun inject(pdfViewerModel: PdfViewerModel)
+//    fun inject(attachmentViewerActivity: AttachmentViewerActivity)
 }

@@ -124,7 +124,7 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         setHasOptionsMenu(true)
         viewModel = ViewModelProvider(requireActivity()).get(LibraryListViewModel::class.java)
         (requireActivity().application as ZoteroApplication).component.inject(this)
-        val recyclerView = requireView().findViewById<RecyclerView>(R.id.recyclerView)
+        val recyclerView = requireView().findViewById<RecyclerView>(R.id.recycler_view)
         val adapter = LibraryListRecyclerViewAdapter(requireContext(),  this)
 
         recyclerView.adapter = adapter
@@ -333,7 +333,7 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
     }
 
     fun hideFabButtonWhenScrolling() {
-        val recyclerView = requireView().findViewById<RecyclerView>(R.id.recyclerView)
+        val recyclerView = requireView().findViewById<RecyclerView>(R.id.recycler_view)
         val fab = requireView().findViewById<FloatingActionButton>(R.id.fab_add_item)
 
         // now creating the scroll listener for the recycler view

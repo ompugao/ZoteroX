@@ -2,7 +2,7 @@ package com.mickstarify.zotero.AttachmentManager
 
 import android.content.Context
 import android.content.Intent
-import com.mickstarify.zotero.AttachmentViewerActivity
+import com.mickstarify.zotero.ui.AttachmentViewerActivity
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.adapters.AttachmentListAdapter
 import kotlinx.coroutines.CoroutineScope
@@ -129,6 +129,7 @@ class AttachmentManagerPresenter(val view: AttachmentManager, context: Context, 
 
                 val intent = Intent(view, AttachmentViewerActivity::class.java)
                 intent.data = attachment_uri
+                intent.putExtra(AttachmentViewerActivity.ATTACHMENT_KEY, item.itemKey)
                 intent.putExtra(AttachmentViewerActivity.ATTACHMENT_TYPE, itemType)
                 view.startActivity(intent)
 
