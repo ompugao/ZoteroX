@@ -11,9 +11,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.mickstarify.zotero.R
-import com.mickstarify.zotero.global.PdfPreviewUtils
+import com.moyear.pdfview.utils.PdfPreviewUtils
 import com.shockwave.pdfium.PdfDocument
-
 import com.shockwave.pdfium.PdfiumCore
 import java.lang.Exception
 

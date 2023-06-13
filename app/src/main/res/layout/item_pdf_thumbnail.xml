@@ -14,13 +14,12 @@
         android:layout_height="120dp"
         android:focusable="true"
         android:clickable="true"
-        android:padding="5dp"
         android:foreground="?selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/img_journal" />
+        app:srcCompat="@drawable/empty_pdf_thumbnail" />
 
     <TextView
         android:id="@+id/txt_page"
@@ -28,7 +27,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#2B2B2B"
-        android:text="10"
+        android:gravity="center"
+        tools:text="10"
+        android:minEms="1"
         android:textColor="@color/white"
         android:padding="2dp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -3,9 +3,7 @@ package com.mickstarify.zotero.LibraryActivity
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.content.res.Configuration
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -21,7 +19,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -30,9 +27,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.blankj.utilcode.util.BarUtils
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayoutMediator
@@ -52,9 +46,8 @@ import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.ZoteroStorage.ZoteroUtils
 import com.mickstarify.zotero.adapters.ItemPageAdapter
 import com.mickstarify.zotero.databinding.ContentDialogProgressBinding
-import com.mickstarify.zotero.databinding.FragmentTagManagerBinding
 import com.mickstarify.zotero.databinding.LayoutContentTabViewpagerBinding
-import com.mickstarify.zotero.global.ScreenUtils
+import com.mickstarify.zotero.utils.ScreenUtils
 import com.mickstarify.zotero.views.TabBottomSheetHelper
 
 

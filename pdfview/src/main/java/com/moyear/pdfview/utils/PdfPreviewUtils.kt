@@ -1,4 +1,4 @@
-package com.mickstarify.zotero.global
+package com.moyear.pdfview.utils
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -8,6 +8,7 @@ import android.os.Looper
 import android.util.Log
 import android.util.LruCache
 import android.widget.ImageView
+import com.blankj.utilcode.util.ConvertUtils
 import com.shockwave.pdfium.PdfDocument
 
 import com.shockwave.pdfium.PdfiumCore
@@ -70,18 +71,23 @@ class PdfPreviewUtils private constructor() {
 
             //为图片控件设置标记
             imageView.tag = keyPage
-            Log.i("PreViewUtils", "加载pdf缩略图：$keyPage")
+//            Log.i("PreViewUtils", "加载pdf缩略图：$keyPage")
+
+            val maxWidth = 200
+            val maxHeight = 300
 
             //获得imageview的尺寸（注意：如果使用正常控件尺寸，太占内存了）
-            /*int w = imageView.getMeasuredWidth();
-            int h = imageView.getMeasuredHeight();
-            final int reqWidth = w == 0 ? UIUtils.dip2px(context,100) : w;
-            final int reqHeight = h == 0 ? UIUtils.dip2px(context,150) : h;*/
+            val w = imageView.measuredWidth
+            val h = imageView.measuredHeight
+            val reqWidth = if (w == 0 || w > maxWidth) ConvertUtils.dp2px(100f) else w
+            val reqHeight = if (h == 0 || h > maxHeight) ConvertUtils.dp2px(150f) else h
+
+            Log.i("PreViewUtils", "pdf缩略图宽：$reqWidth  高: $reqHeight")
 
             //内存大小= 图片宽度 * 图片高度 * 一个像素占的字节数（RGB_565 所占字节：2）
             //注意：如果使用正常控件尺寸，太占内存了，所以此处指定四缩略图看着会模糊一点
-            val reqWidth = 100
-            val reqHeight = 150
+//            val reqWidth = 100
+//            val reqHeight = 150
 
             //从缓存中取图片
             val bitmap = imageCache.getBitmapFromLruCache(keyPage)
@@ -108,7 +114,7 @@ class PdfPreviewUtils private constructor() {
                     Handler(Looper.getMainLooper()).post {
                         if (imageView.tag.toString() == keyPage) {
                             imageView.setImageBitmap(bm)
-                            Log.i("PreViewUtils", "加载pdf缩略图：$keyPage......已设置！！")
+//                            Log.i("PreViewUtils", "加载pdf缩略图：$keyPage......已设置！！")
                         }
                     }
                 }

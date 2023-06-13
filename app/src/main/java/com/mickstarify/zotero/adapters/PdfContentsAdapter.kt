@@ -15,6 +15,7 @@ import android.widget.ImageButton
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import com.mickstarify.zotero.MyLog
+import com.moyear.pdfview.view.MyPDFView
 
 
 class PdfContentsAdapter(val context: Context, data: List<TreeNodeData>? = null) : RecyclerView.Adapter<PdfContentsAdapter.TreeNodeViewHolder>() {

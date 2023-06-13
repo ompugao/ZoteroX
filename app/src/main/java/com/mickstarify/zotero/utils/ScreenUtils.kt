@@ -1,4 +1,4 @@
-package com.mickstarify.zotero.global
+package com.mickstarify.zotero.utils
 
 import android.content.Context
 import android.content.res.Configuration

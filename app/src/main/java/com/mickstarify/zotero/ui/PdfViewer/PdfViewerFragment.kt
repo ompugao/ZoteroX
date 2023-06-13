@@ -11,7 +11,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import com.github.barteksc.pdfviewer.PDFView
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener
 import com.github.barteksc.pdfviewer.listener.OnTapListener
@@ -22,6 +21,9 @@ import com.mickstarify.zotero.adapters.ItemPageAdapter
 import com.mickstarify.zotero.databinding.PdfViewerFragmentBinding
 import com.mickstarify.zotero.views.TabBottomSheetHelper
 import android.view.animation.AnimationUtils
+import android.widget.Toast
+import com.github.barteksc.pdfviewer.PDFView
+import com.moyear.pdfview.view.MyPDFView
 
 class PdfViewerFragment(private val pdfUri: Uri?,
                         private val attachmentKey: String?) : Fragment(), OnPageChangeListener, OnTapListener, OnLoadCompleteListener {
@@ -46,6 +48,12 @@ class PdfViewerFragment(private val pdfUri: Uri?,
         
         mBinding.btnBack.setOnClickListener {
             requireActivity().finish()
+        }
+
+        mBinding.txtPdfTitle.text = viewModel.getAttachmentName()
+        mBinding.txtPdfTitle.setOnLongClickListener {
+            Toast.makeText(requireContext(), viewModel.getAttachmentName(), Toast.LENGTH_SHORT).show()
+            false
         }
 
         mBinding.btnMore.setOnClickListener { showMoreMenu(it) }
@@ -165,6 +173,7 @@ class PdfViewerFragment(private val pdfUri: Uri?,
 
     override fun onTap(e: MotionEvent?): Boolean {
         viewModel.showTools.value = !viewModel.showTools.value!!
+
         return false
     }
 
@@ -203,7 +212,7 @@ class PdfViewerFragment(private val pdfUri: Uri?,
         //获得文档书签信息
         viewModel.bookmarks.value = mBinding.pdfView.getTableOfContents()
 
-        MyLog.e("ZoteroDebug", "获取到的目录数量：${mBinding.pdfView.getTableOfContents()}")
+//        MyLog.e("ZoteroDebug", "获取到的目录数量：${mBinding.pdfView.getTableOfContents()}")
     }
 
 

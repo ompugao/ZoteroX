@@ -1,7 +1,9 @@
 package com.mickstarify.zotero.ui.PdfViewer
 
 import android.app.Application
+import android.content.Context
 import android.net.Uri
+import android.os.ParcelFileDescriptor
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.mickstarify.zotero.ZoteroApplication
@@ -9,10 +11,13 @@ import com.mickstarify.zotero.ZoteroStorage.AttachmentStorageManager
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
 import com.mickstarify.zotero.models.TreeNodeData
+import com.shockwave.pdfium.PdfDocument
 import com.shockwave.pdfium.PdfDocument.Bookmark
+import com.shockwave.pdfium.PdfiumCore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 
@@ -33,6 +38,9 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
     var bookmarks = MutableLiveData<List<Bookmark>>()
 
     val nightMode = MutableLiveData<Boolean>(false)
+
+    var pdfiumCore: PdfiumCore? = null
+    var pdfDocument: PdfDocument? = null
 
     @Inject
     lateinit var attachmentStorageManager: AttachmentStorageManager
@@ -101,6 +109,10 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
         this.pdfUri = pdfUri
         this.attachmentKey = attachmentKey ?:""
 
+        pdfUri?.let {
+            loadUriPdfFile(it)
+        }
+
         CoroutineScope(Dispatchers.IO).launch {
             attachmentKey?.let {
                 attachmentItem = getItemWithKey(it)
@@ -108,9 +120,32 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+
+    private fun getApplicationContext(): Context {
+        return getApplication<ZoteroApplication>().applicationContext
+    }
+
+    /**
+     * 基于uri加载pdf文件
+     */
+    private fun loadUriPdfFile(uri: Uri) {
+        try {
+            val pfd: ParcelFileDescriptor? = getApplicationContext().contentResolver.openFileDescriptor(uri, "r")
+            pdfiumCore = PdfiumCore(getApplicationContext())
+            pdfDocument = pdfiumCore!!.newDocument(pfd)
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+    }
+
     fun fetchAnnotations() {
 //        zoteroDB?.items?.filter {  }
 
     }
+
+//    fun getPageCount(): Int {
+//        if (pdfiumCore == null || pdfDocument == null) return -1
+//        return pdfiumCore!!.getPageCount(pdfDocument)
+//    }
 
 }

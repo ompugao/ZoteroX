@@ -25,7 +25,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_operate_more" />
 
-        <com.github.barteksc.pdfviewer.PDFView
+        <com.moyear.pdfview.view.MyPDFView
             android:id="@+id/pdfView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -35,7 +35,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingClass">
 
-        </com.github.barteksc.pdfviewer.PDFView>
+        </com.moyear.pdfview.view.MyPDFView>
 
         <FrameLayout
             android:id="@+id/show_content"
@@ -63,7 +63,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/top_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="56dp"
             android:background="@color/white"
             android:elevation="3dp"
             android:clickable="true"
@@ -71,6 +71,22 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/txt_pdf_title"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                tools:text="PDF TITLE"
+                android:ems="8"
+                android:lines="1"
+                android:ellipsize="end"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btn_back"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/btn_back"

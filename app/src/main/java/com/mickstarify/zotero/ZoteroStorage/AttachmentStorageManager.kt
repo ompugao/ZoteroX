@@ -516,8 +516,6 @@ class AttachmentStorageManager @Inject constructor(
                     return openAttachment(uri, item.data["contentType"]?:"")
                 }
             }
-
-
         }
         else {
             throw  NotImplementedError()
