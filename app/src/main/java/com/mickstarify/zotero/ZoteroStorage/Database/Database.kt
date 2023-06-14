@@ -219,6 +219,14 @@ class ZoteroDatabase @Inject constructor(val context: Context) {
     fun deleteEverything() {
         //todo implement.
     }
+
+    fun getAnnotationKeys(attachmentKey: String): Maybe<List<ItemData>> {
+        return db.itemDao().getItemDataWithAttachmentKey(attachmentKey)
+    }
+
+    fun getAnnotationData(annotationKey: String): Maybe<List<ItemData>> {
+        return db.itemDao().getDataForAnnotationKey(annotationKey)
+    }
 }
 
 private fun Boolean.Companion.fromInt(param: Int): Boolean {

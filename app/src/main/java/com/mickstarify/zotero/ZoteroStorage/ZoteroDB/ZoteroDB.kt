@@ -7,12 +7,18 @@ import android.util.ArrayMap
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.ZoteroApplication
 import com.mickstarify.zotero.ZoteroAPI.Model.ItemPOJO
 import com.mickstarify.zotero.ZoteroAPI.Model.Note
 import com.mickstarify.zotero.ZoteroStorage.Database.*
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
+import com.mickstarify.zotero.models.PdfAnnotation
 import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
@@ -145,8 +151,61 @@ class ZoteroDB constructor(
         return completable
     }
 
+    fun getAttachmentAnnotations(attachmentKey: String): Observable<List<PdfAnnotation>> {
+        val annotations = mutableListOf<PdfAnnotation>()
+//        val annotationKeys = mutableListOf<String>()
 
-    fun loadTrashItemsFromDB(): Completable{
+
+        val observable = Observable.create(ObservableOnSubscribe<List<PdfAnnotation>> { emitter ->
+            val annotationKeys = zoteroDatabase.getAnnotationKeys(attachmentKey).blockingGet()
+
+            annotationKeys.forEach {
+                if (it.name == "parentItem") {
+//                    annotationKeys.add(it.parent)
+
+                    val data = zoteroDatabase.getAnnotationData(it.parent).blockingGet()
+                    data?.let {
+                        val annotation = PdfAnnotation.parse(it)
+                        annotations.add(annotation)
+
+//                        MyLog.e("ZoteroDebug", "注释：$annotation")
+                    }
+                }
+            }
+
+            emitter.onNext(annotations)
+            emitter.onComplete()
+        })
+
+        return observable
+
+
+//        val loadAnnotationKey = Observable.fromMaybe(zoteroDatabase.getAnnotationKeys(attachmentKey).doOnSuccess { itemData ->
+//            itemData.forEach {
+//                if (it.name == "parentItem") {
+////                    annotationKeys.add(it.parent)
+//
+//                    val data = zoteroDatabase.getAnnotationData(it.parent).blockingGet()
+//                    data?.let {
+//                        val annotation = PdfAnnotation.parse(it)
+//                        annotations.add(annotation)
+//
+//                        MyLog.e("ZoteroDebug", "注释：$annotation")
+//                    }
+//                }
+//            }
+//        })
+//
+//        loadAnnotationKey
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread()).doOnComplete {
+//
+//            }
+//            .subscribe()
+    }
+
+
+    fun loadTrashItemsFromDB(): Completable {
         zoteroDatabase.getItemsFromUserTrash()
         return Completable.fromMaybe(zoteroDatabase.getItemsFromUserTrash().doOnSuccess{
             this.trashItems = it

@@ -198,7 +198,7 @@ class PdfViewerFragment(private val pdfUri: Uri?,
         val tabs = arrayListOf(
             ItemPageAdapter.TabItem("缩略图", PdfThumbnailsFragment(pdfView)),
             ItemPageAdapter.TabItem("大纲", PdfContentsFragment(pdfView)),
-//            ItemPageAdapter.TabItem("目录", ItemNotesFragment.newInstance(item))
+            ItemPageAdapter.TabItem("注释", PdfAnnotationsFragment(pdfView))
         )
 
         val dialogHelper = TabBottomSheetHelper.get(this, tabs)

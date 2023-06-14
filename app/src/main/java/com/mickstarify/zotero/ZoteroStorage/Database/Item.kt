@@ -304,6 +304,19 @@ interface ItemDao {
     @Query("SELECT parent from ItemTags where `tag`=:tag")
     fun getItemKeysWithTag(tag: String): Maybe<List<String>>
 
+    /**
+     * 获取属于annotationKey下的所有annotation信息
+     */
+    @Query("SELECT * from ItemData where `parent`=:annotationKey")
+    fun getDataForAnnotationKey(annotationKey: String): Maybe<List<ItemData>>
+
+    /**
+     * 获取属于attachmentKey下的所有信息，
+     * 根据数据库推断获取的应该是附件的每条注释的key，其
+     */
+    @Query("SELECT * from ItemData where `value`=:attachmentKey")
+    fun getItemDataWithAttachmentKey(attachmentKey: String): Maybe<List<ItemData>>
+
     @Query("SELECT * FROM ItemTags")
     fun getItemTags(): Maybe<List<ItemTag>>
 

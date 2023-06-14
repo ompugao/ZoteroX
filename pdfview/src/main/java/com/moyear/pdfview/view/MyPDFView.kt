@@ -27,5 +27,4 @@ class MyPDFView(context: Context, set: AttributeSet?) : PDFView(context, set) {
     }
 
 
-
 }

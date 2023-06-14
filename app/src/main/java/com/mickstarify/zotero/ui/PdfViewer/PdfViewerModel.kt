@@ -6,14 +6,20 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.ZoteroApplication
 import com.mickstarify.zotero.ZoteroStorage.AttachmentStorageManager
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
+import com.mickstarify.zotero.models.PdfAnnotation
 import com.mickstarify.zotero.models.TreeNodeData
+import com.moyear.pdfview.view.MyPDFView
 import com.shockwave.pdfium.PdfDocument
 import com.shockwave.pdfium.PdfDocument.Bookmark
 import com.shockwave.pdfium.PdfiumCore
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Consumer
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,6 +48,8 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
     var pdfiumCore: PdfiumCore? = null
     var pdfDocument: PdfDocument? = null
 
+    val pdfAnnotations = MutableLiveData<List<PdfAnnotation>>()
+
     @Inject
     lateinit var attachmentStorageManager: AttachmentStorageManager
 
@@ -49,9 +57,7 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
 
     init {
         (application as ZoteroApplication).component.inject(this)
-
         zoteroDB = (application as ZoteroApplication).zoteroDB
-
     }
 
     /**
@@ -138,14 +144,30 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun fetchAnnotations() {
-//        zoteroDB?.items?.filter {  }
+    fun loadAttachmentAnnotations() {
+        val attachmentAnnotations =
+            getApplication<ZoteroApplication>().zoteroDB?.getAttachmentAnnotations(attachmentKey)
+                ?: return
+
+        val result = attachmentAnnotations
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .onErrorReturn { listOf() }
+            .subscribe({ list -> pdfAnnotations.value = list?.sortedBy { it.sortIndex } }) { }
 
     }
 
-//    fun getPageCount(): Int {
-//        if (pdfiumCore == null || pdfDocument == null) return -1
-//        return pdfiumCore!!.getPageCount(pdfDocument)
-//    }
+    fun navigateToAnnotation(pdfView: MyPDFView, annotation: PdfAnnotation) {
+        val sortIndex = annotation.sortIndex
+        val pos = sortIndex.split("|")
+
+        val page = pos[0].toInt()
+        val x = pos[1].toInt()
+        val y = pos[2].toInt()
+
+        MyLog.d("zotero", "navigate to annotation, in page:$page, x:$x and y:$y")
+
+        pdfView.jumpTo(page, true)
+    }
 
 }
