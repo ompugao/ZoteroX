@@ -210,7 +210,8 @@ class PdfViewerFragment(private val pdfUri: Uri?,
 
     override fun loadComplete(nbPages: Int) {
         //获得文档书签信息
-        viewModel.bookmarks.value = mBinding.pdfView.getTableOfContents()
+        viewModel.setContents(mBinding.pdfView.getTableOfContents())
+
 
 //        MyLog.e("ZoteroDebug", "获取到的目录数量：${mBinding.pdfView.getTableOfContents()}")
     }

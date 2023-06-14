@@ -18,7 +18,6 @@ import com.shockwave.pdfium.PdfDocument
 import com.shockwave.pdfium.PdfDocument.Bookmark
 import com.shockwave.pdfium.PdfiumCore
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,6 +48,11 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
     var pdfDocument: PdfDocument? = null
 
     val pdfAnnotations = MutableLiveData<List<PdfAnnotation>>()
+
+    /**
+     * 是否展开所有的目录
+     */
+    var isExpandAllContents = true
 
     @Inject
     lateinit var attachmentStorageManager: AttachmentStorageManager
@@ -87,10 +91,20 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-    fun convertToCatalogues(bookmarks: List<Bookmark>): List<TreeNodeData> {
+
+    fun convertToCatalogues(bookmarks: List<Bookmark>, expandAll: Boolean = isExpandAllContents): List<TreeNodeData> {
         val catalogues = mutableListOf<TreeNodeData>()
         bookmarkToCatalogues(catalogues, bookmarks, 1)
+
+        expandOrCollapseCatalogues(catalogues, isExpandAllContents)
         return catalogues
+    }
+
+    fun expandOrCollapseCatalogues(catalogues: List<TreeNodeData>?, isExpanded: Boolean) {
+        catalogues?.forEach { data ->
+            data.isExpanded = isExpanded
+            expandOrCollapseCatalogues(data.subSet, isExpanded)
+        }
     }
 
     fun getAttachmentName(): String {
@@ -168,6 +182,11 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
         MyLog.d("zotero", "navigate to annotation, in page:$page, x:$x and y:$y")
 
         pdfView.jumpTo(page, true)
+    }
+
+    fun setContents(tableOfContents: List<Bookmark>) {
+        bookmarks.value = tableOfContents
+
     }
 
 }
