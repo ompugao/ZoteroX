@@ -12,8 +12,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.mickstarify.zotero.R
 import com.moyear.pdfview.utils.PdfPreviewUtils
-import com.shockwave.pdfium.PdfDocument
-import com.shockwave.pdfium.PdfiumCore
+import org.benjinus.pdfium.PdfiumSDK
 import java.lang.Exception
 
 /**
@@ -23,8 +22,8 @@ import java.lang.Exception
  */
 class PdfThumbnailAdapter(
     private val context: Context,
-    private val pdfiumCore: PdfiumCore,
-    private val pdfDocument: PdfDocument,
+    private val pdfiumSDK: PdfiumSDK,
+//    private val pdfDocument: PdfDocument,
     pdfName: String,
     totalPageNum: Int
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -42,10 +41,9 @@ class PdfThumbnailAdapter(
 
         //设置PDF图片
         PdfPreviewUtils.getInstance().loadBitmapFromPdf(
-            context,
             holder.imgThumbnail,
-            pdfiumCore,
-            pdfDocument,
+            pdfiumSDK,
+//            pdfDocument,
             pdfName,
             position
         )

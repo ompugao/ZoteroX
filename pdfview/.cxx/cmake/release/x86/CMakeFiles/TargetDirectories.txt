@@ -1,0 +1,3 @@
+F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/release/x86/CMakeFiles/pdfsdk_jni.dir
+F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/release/x86/CMakeFiles/edit_cache.dir
+F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/release/x86/CMakeFiles/rebuild_cache.dir

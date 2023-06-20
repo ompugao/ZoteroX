@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.github.barteksc.pdfviewer.PdfFile
 import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.ZoteroApplication
 import com.mickstarify.zotero.ZoteroStorage.AttachmentStorageManager
@@ -14,14 +15,13 @@ import com.mickstarify.zotero.ZoteroStorage.ZoteroDB.ZoteroDB
 import com.mickstarify.zotero.models.PdfAnnotation
 import com.mickstarify.zotero.models.TreeNodeData
 import com.moyear.pdfview.view.MyPDFView
-import com.shockwave.pdfium.PdfDocument
-import com.shockwave.pdfium.PdfDocument.Bookmark
-import com.shockwave.pdfium.PdfiumCore
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.benjinus.pdfium.Bookmark
+import org.benjinus.pdfium.PdfiumSDK
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -35,8 +35,10 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
     var attachmentKey: String = ""
 
     var attachmentItem: Item? = null
+        private set
 
     var pdfUri: Uri? = null
+        private set
 
     var showTools = MutableLiveData<Boolean>(true)
 
@@ -44,8 +46,13 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
 
     val nightMode = MutableLiveData<Boolean>(false)
 
-    var pdfiumCore: PdfiumCore? = null
-    var pdfDocument: PdfDocument? = null
+    var pdfiumSDK: PdfiumSDK? = null
+        private set
+//    var pdfDocument: PdfDocument? = null
+//        private set
+
+    var pdfFile: PdfFile? = null
+        private set
 
     val pdfAnnotations = MutableLiveData<List<PdfAnnotation>>()
 
@@ -129,9 +136,11 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
         this.pdfUri = pdfUri
         this.attachmentKey = attachmentKey ?:""
 
-        pdfUri?.let {
-            loadUriPdfFile(it)
-        }
+
+
+//        pdfUri?.let {
+//            loadUriPdfFile(it)
+//        }
 
         CoroutineScope(Dispatchers.IO).launch {
             attachmentKey?.let {
@@ -140,23 +149,29 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun bindPdfiumSDK(pdfiumSDK: PdfiumSDK) {
+        this.pdfiumSDK = pdfiumSDK
+    }
+
 
     private fun getApplicationContext(): Context {
         return getApplication<ZoteroApplication>().applicationContext
     }
 
-    /**
-     * 基于uri加载pdf文件
-     */
-    private fun loadUriPdfFile(uri: Uri) {
-        try {
-            val pfd: ParcelFileDescriptor? = getApplicationContext().contentResolver.openFileDescriptor(uri, "r")
-            pdfiumCore = PdfiumCore(getApplicationContext())
-            pdfDocument = pdfiumCore!!.newDocument(pfd)
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-    }
+//    /**
+//     * 基于uri加载pdf文件
+//     */
+//    private fun loadUriPdfFile(uri: Uri) {
+//        try {
+//            val pfd: ParcelFileDescriptor? = getApplicationContext().contentResolver.openFileDescriptor(uri, "r")
+//            pdfiumSDK = PdfiumSDK(getApplicationContext())
+////            pdfDocument = pdfiumCore!!.newDocument(pfd)
+//            pdfiumSDK!!.newDocument(pfd)
+//
+//        } catch (ex: Exception) {
+//            ex.printStackTrace()
+//        }
+//    }
 
     fun loadAttachmentAnnotations() {
         val attachmentAnnotations =
@@ -187,6 +202,14 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
     fun setContents(tableOfContents: List<Bookmark>) {
         bookmarks.value = tableOfContents
 
+    }
+
+    fun showOrCollapseToolbar() {
+        showTools.value = !showTools.value!!
+    }
+
+    fun loadPdfCore(pdfFile: PdfFile) {
+        this.pdfFile = pdfFile
     }
 
 }

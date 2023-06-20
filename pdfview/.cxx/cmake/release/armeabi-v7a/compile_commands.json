@@ -1,0 +1,7 @@
+[
+{
+  "directory": "F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/release/armeabi-v7a",
+  "command": "C:\\Users\\Moyear\\.android\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=armv7-none-linux-androideabi21 --gcc-toolchain=C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dpdfsdk_jni_EXPORTS -IF:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/src/main/cpp/utils -IF:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/src/main/cpp/pdfium/include -IF:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/src/main/cpp/pdfium/include/cpp  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -std=c++11 -frtti -fexceptions -std=c++11 -Oz -DNDEBUG  -fPIC   -o CMakeFiles\\pdfsdk_jni.dir\\pdfsdk_jni.cpp.o -c F:\\Moyear\\Dev\\Android\\Zoo-For-Zotero\\pdfview\\src\\main\\cpp\\pdfsdk_jni.cpp",
+  "file": "F:\\Moyear\\Dev\\Android\\Zoo-For-Zotero\\pdfview\\src\\main\\cpp\\pdfsdk_jni.cpp"
+}
+]

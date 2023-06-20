@@ -6,8 +6,8 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import com.github.barteksc.pdfviewer.PDFView
-import com.github.barteksc.pdfviewer.model.LinkTapEvent
-import com.moyear.pdfview.core.PdfiumSDK
+import com.github.barteksc.pdfviewer.PdfFile
+import org.benjinus.pdfium.PdfiumSDK
 
 class MyPDFView(context: Context, set: AttributeSet?) : PDFView(context, set) {
 
@@ -16,7 +16,6 @@ class MyPDFView(context: Context, set: AttributeSet?) : PDFView(context, set) {
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-
         return super.onTouchEvent(event)
     }
 
@@ -26,5 +25,12 @@ class MyPDFView(context: Context, set: AttributeSet?) : PDFView(context, set) {
         invalidate()
     }
 
+    fun getPdfFile(): PdfFile {
+        return pdfFile
+    }
+
+    fun getPdfiumSdk(): PdfiumSDK {
+        return pdfiumSDK
+    }
 
 }

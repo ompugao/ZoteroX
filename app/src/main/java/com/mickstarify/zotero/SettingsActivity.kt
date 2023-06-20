@@ -52,6 +52,8 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+
+
     class SettingsFragment : PreferenceFragmentCompat(),
         SharedPreferences.OnSharedPreferenceChangeListener {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

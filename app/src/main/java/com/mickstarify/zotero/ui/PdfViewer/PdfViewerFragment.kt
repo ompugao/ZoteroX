@@ -15,7 +15,6 @@ import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener
 import com.github.barteksc.pdfviewer.listener.OnTapListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.adapters.ItemPageAdapter
 import com.mickstarify.zotero.databinding.PdfViewerFragmentBinding
@@ -32,11 +31,15 @@ class PdfViewerFragment(private val pdfUri: Uri?,
 
     private lateinit var mBinding: PdfViewerFragmentBinding
 
+    private lateinit var pdfView: MyPDFView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(PdfViewerModel::class.java)
 
+        //初始化参数
         viewModel.initParams(attachmentKey, pdfUri)
+
 //        Toast.makeText(requireContext(), "key: $attachmentKey", Toast.LENGTH_SHORT).show()
     }
 
@@ -69,28 +72,32 @@ class PdfViewerFragment(private val pdfUri: Uri?,
                 }
             })
 
-        val cPDFView: PDFView = mBinding.pdfView
-        cPDFView.enableAntialiasing(true)
-        cPDFView.isScrollbarFadingEnabled = true
+        pdfView = mBinding.pdfView
+        pdfView.enableAntialiasing(true)
+        pdfView.isScrollbarFadingEnabled = true
 //        cPDFView.isSwipeEnabled = true
 
         if (pdfUri != null) {
-            cPDFView.fromUri(pdfUri)
+            pdfView.fromUri(pdfUri)
                 .onPageChange(this)
                 .onTap(this)
                 .onLoad(this)
                 .load()
-            viewModel.pageCount = cPDFView.pageCount
+            viewModel.pageCount = pdfView.pageCount
         }
 
         viewModel.nightMode.observe(viewLifecycleOwner,
             { nightMode ->
                 if (nightMode) {
-                    cPDFView.setNightMode(true)
+                    pdfView.setNightMode(true)
                 } else {
-                    cPDFView.setNightMode(false)
+                    pdfView.setNightMode(false)
                 }
             })
+
+
+        //
+        viewModel.bindPdfiumSDK(pdfView.getPdfiumSdk())
 
         return mBinding.root
     }
@@ -172,7 +179,43 @@ class PdfViewerFragment(private val pdfUri: Uri?,
     }
 
     override fun onTap(e: MotionEvent?): Boolean {
-        viewModel.showTools.value = !viewModel.showTools.value!!
+        viewModel.showOrCollapseToolbar()
+
+//        val pdfView = mBinding.pdfView
+//
+//        val pdfSdk = PdfiumSDK(requireContext())
+//
+//        val x = e?.x ?:0f
+//        val y = e?.y ?:0f
+//
+////        val pdfFile = PdfFile()
+//        val mappedX: Float = -pdfView.currentXOffset + x
+//        val mappedY: Float = -pdfView.currentYOffset + y
+//
+//        val page = pdfView.currentPage
+//        val page = pdfFile.getPageAtOffset(
+//            if (pdfView.isSwipeVertical) mappedY else mappedX,
+//            pdfView.zoom
+//        )
+//        val pageSize = pdfView.getPageSize(page)
+
+//        val pageSize = pdfFile.getScaledPageSize(page, pdfView.zoom)
+//        val pageX: Int
+//        val pageY: Int
+//        if (pdfView.isSwipeVertical) {
+//            pageX = pdfFile.getSecondaryPageOffset(page, pdfView.zoom).toInt()
+//            pageY = pdfFile.getPageOffset(page, pdfView.zoom).toInt()
+//        } else {
+//            pageY = pdfFile.getSecondaryPageOffset(page, pdfView.zoom).toInt()
+//            pageX = pdfFile.getPageOffset(page, pdfView.zoom).toInt()
+//        }
+
+
+
+//        val pos = pdfSdk.nativeGetCharIndexAtCoord(page.toLong(), pageSize!!.width.toDouble(), pageSize!!.height.toDouble(), 0, 0.0, 0.0, 0.0, 0.0)
+//        MyLog.e("ZoteroDebug", "position: $pos")
+
+//        pdfSdk.nativeCha
 
         return false
     }
@@ -211,6 +254,7 @@ class PdfViewerFragment(private val pdfUri: Uri?,
     override fun loadComplete(nbPages: Int) {
         //获得文档书签信息
         viewModel.setContents(mBinding.pdfView.getTableOfContents())
+        viewModel.loadPdfCore(mBinding.pdfView.getPdfFile())
 
 
 //        MyLog.e("ZoteroDebug", "获取到的目录数量：${mBinding.pdfView.getTableOfContents()}")

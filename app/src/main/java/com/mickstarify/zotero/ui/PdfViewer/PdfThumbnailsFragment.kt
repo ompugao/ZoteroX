@@ -1,6 +1,5 @@
 package com.mickstarify.zotero.ui.PdfViewer
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.github.barteksc.pdfviewer.PDFView
 import com.mickstarify.zotero.adapters.PdfThumbnailAdapter
 import com.mickstarify.zotero.databinding.FragmentPdfThumbnailsBinding
-import com.shockwave.pdfium.PdfDocument
-import com.shockwave.pdfium.PdfiumCore
-import android.os.ParcelFileDescriptor
 import androidx.recyclerview.widget.GridLayoutManager
 import com.blankj.utilcode.util.EncryptUtils
-import java.lang.Exception
 
 class PdfThumbnailsFragment(val pdfView: PDFView): Fragment() {
 
@@ -51,7 +46,7 @@ class PdfThumbnailsFragment(val pdfView: PDFView): Fragment() {
         //绑定列表数据
         adapter = PdfThumbnailAdapter(
             requireContext(),
-            viewModel.pdfiumCore!!, viewModel.pdfDocument!!, md5String, totalCount
+            viewModel.pdfiumSDK!!, md5String, totalCount
         )
 
 //        adapter.setGridEvent(this)

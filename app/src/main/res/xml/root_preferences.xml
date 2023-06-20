@@ -90,9 +90,7 @@
 
     </PreferenceCategory>
 
-
-
-    <PreferenceCategory app:title="Attachments">
+    <PreferenceCategory app:title="附件">
         <SwitchPreference
             android:defaultValue="false"
             android:enabled="true"
@@ -109,4 +107,15 @@
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
+
+    <PreferenceCategory app:title="PDF阅读">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:enabled="true"
+            app:enabled="true"
+            android:key="pdf_reader_night_mode"
+            android:title="Night Mode" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

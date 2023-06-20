@@ -1,17 +1,12 @@
 package com.mickstarify.zotero.ui.PdfViewer
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.mickstarify.zotero.MyLog
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.adapters.PdfAnnotationAdapter
@@ -45,7 +40,7 @@ class PdfAnnotationsFragment(private val pdfView: MyPDFView) : Fragment(), PdfAn
     }
 
     private fun initLayout() {
-        val adapter = PdfAnnotationAdapter()
+        val adapter = PdfAnnotationAdapter(viewModel.pdfiumSDK, viewModel.getAttachmentFileName())
         adapter.onAnnotationNavigateListener = this
         adapter.setEmptyView(R.layout.layout_empty_list)
 
@@ -58,11 +53,6 @@ class PdfAnnotationsFragment(private val pdfView: MyPDFView) : Fragment(), PdfAn
                     adapter.data = list as MutableList<PdfAnnotation>
                     adapter.notifyDataSetChanged()
                 }
-
-                list?.forEach {
-                    MyLog.e("ZoteroDebug", "sortIndex：${it.sortIndex}")
-//                    MyLog.e("ZoteroDebug", "position：${it.position}")
-                }
             })
 
         viewModel.loadAttachmentAnnotations()
@@ -71,7 +61,9 @@ class PdfAnnotationsFragment(private val pdfView: MyPDFView) : Fragment(), PdfAn
     override fun onNavigate(annotation: PdfAnnotation) {
         viewModel.navigateToAnnotation(pdfView, annotation)
 
-    }
+        MyLog.e("ZoteroDebug", "click annotation: $annotation")
 
+
+    }
 
 }

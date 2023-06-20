@@ -1,5 +1,6 @@
 package com.mickstarify.zotero.models
 
+import android.graphics.pdf.PdfDocument
 import com.mickstarify.zotero.ZoteroStorage.Database.ItemData
 
 data class PdfAnnotation(var key: String,

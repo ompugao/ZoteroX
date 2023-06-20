@@ -1,0 +1,3 @@
+ninja: Entering directory `F:\Moyear\Dev\Android\Zoo-For-Zotero\pdfview\.cxx\cmake\release\armeabi-v7a'
+[1/2] Building CXX object CMakeFiles/pdfsdk_jni.dir/pdfsdk_jni.cpp.o
+[2/2] Linking CXX shared library F:\Moyear\Dev\Android\Zoo-For-Zotero\pdfview\build\intermediates\cmake\release\obj\armeabi-v7a\libpdfsdk_jni.so

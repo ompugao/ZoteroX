@@ -1,0 +1,7 @@
+Executable : C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe
+arguments : 
+-C
+F:\Moyear\Dev\Android\Zoo-For-Zotero\pdfview\.cxx\cmake\release\x86
+pdfsdk_jni
+jvmArgs : 
+

@@ -1,0 +1,42 @@
+{
+  "stringTable": {},
+  "buildFiles": [
+    "F:\\Moyear\\Dev\\Android\\Zoo-For-Zotero\\pdfview\\src\\main\\cpp\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\Moyear\\.android\\cmake\\3.10.2.4988404\\bin\\ninja.exe",
+      "-C",
+      "F:\\Moyear\\Dev\\Android\\Zoo-For-Zotero\\pdfview\\.cxx\\cmake\\debug\\x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\Moyear\\.android\\cmake\\3.10.2.4988404\\bin\\ninja.exe",
+    "-C",
+    "F:\\Moyear\\Dev\\Android\\Zoo-For-Zotero\\pdfview\\.cxx\\cmake\\debug\\x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "pdfsdk_jni-Debug-x86": {
+      "buildCommandComponents": [
+        "C:\\Users\\Moyear\\.android\\cmake\\3.10.2.4988404\\bin\\ninja.exe",
+        "-C",
+        "F:\\Moyear\\Dev\\Android\\Zoo-For-Zotero\\pdfview\\.cxx\\cmake\\debug\\x86",
+        "pdfsdk_jni"
+      ],
+      "buildType": "debug",
+      "abi": "x86",
+      "artifactName": "pdfsdk_jni",
+      "output": "F:\\Moyear\\Dev\\Android\\Zoo-For-Zotero\\pdfview\\build\\intermediates\\cmake\\debug\\obj\\x86\\libpdfsdk_jni.so",
+      "runtimeFiles": [
+        "F:\\Moyear\\Dev\\Android\\Zoo-For-Zotero\\pdfview\\src\\main\\cpp\\pdfium\\lib\\x86\\libpdfsdk.so"
+      ]
+    }
+  },
+  "toolchains": {},
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

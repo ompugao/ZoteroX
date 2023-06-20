@@ -14,8 +14,6 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
-import com.mickstarify.zotero.MyLog
-import com.moyear.pdfview.view.MyPDFView
 
 
 class PdfContentsAdapter(val context: Context, data: List<TreeNodeData>? = null) : RecyclerView.Adapter<PdfContentsAdapter.TreeNodeViewHolder>() {
@@ -120,8 +118,6 @@ class PdfContentsAdapter(val context: Context, data: List<TreeNodeData>? = null)
         //设置标题偏移位置
         val ratio = if (data.treeLevel <= 0) 0 else data.treeLevel - 1
         holder.title.setPadding(marginLeft * ratio, 0, 0, 0)
-
-        MyLog.d("Zptfasjf", "${data.name} painyi: ${marginLeft * ratio}")
 
         //显示文本
         holder.title.text = data.name

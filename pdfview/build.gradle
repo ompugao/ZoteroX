@@ -14,6 +14,34 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+
+        ndk {
+            abiFilters 'x86', 'armeabi-v7a', 'arm64-v8a'
+        }
+
+        externalNativeBuild {
+            cmake {
+
+                arguments "-DANDROID_STL=c++_static",
+                        "-DANDROID_PLATFORM=android-21",
+                        "-DANDROID_ARM_NEON=TRUE"
+
+                cppFlags "-std=c++11 -frtti -fexceptions"
+            }
+        }
+    }
+
+//    sourceSets {
+//        main {
+//            // let gradle pack the shared library into apk
+//            jniLibs.srcDirs = ['src/main/cpp/pdfium/lib']
+//        }
+//    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+        }
     }
 
     buildTypes {
@@ -40,7 +68,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     // pdf viewer
-    implementation 'com.github.barteksc:android-pdf-viewer:3.1.0-beta.1'
+//    implementation 'com.github.barteksc:android-pdf-viewer:3.1.0-beta.1'
+
+//    api 'com.github.barteksc:pdfium-android:1.9.0'
 
     // utils
     implementation 'com.blankj:utilcode:1.28.4'
