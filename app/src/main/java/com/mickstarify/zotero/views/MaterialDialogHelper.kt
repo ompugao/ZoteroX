@@ -1,24 +1,25 @@
 package com.mickstarify.zotero.views
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.widget.ImageButton
 import android.widget.PopupMenu
 import androidx.annotation.DrawableRes
 import androidx.annotation.MenuRes
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
-import com.blankj.utilcode.util.BarUtils
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mickstarify.zotero.R
 import com.mickstarify.zotero.adapters.ItemPageAdapter
 import com.mickstarify.zotero.databinding.LayoutContentTabViewpagerBinding
+import kotlin.math.roundToInt
 
-class TabBottomSheetHelper private constructor(val context: Context,
+
+class MaterialDialogHelper private constructor(val context: Context,
                                                val fragmentManager: FragmentManager,
                                                val layoutInflater: LayoutInflater,
                                                val lifecycle: Lifecycle, val tabs: List<ItemPageAdapter.TabItem>) {
@@ -37,13 +38,15 @@ class TabBottomSheetHelper private constructor(val context: Context,
 
     companion object {
 
-        fun get(activity: AppCompatActivity, tabs: List<ItemPageAdapter.TabItem>): TabBottomSheetHelper {
-            val INSTANCE = TabBottomSheetHelper(activity, activity.supportFragmentManager, activity.layoutInflater, activity.lifecycle, tabs)
+//        private lateinit var INSTANCE: TabBottomSheetHelper
+
+        fun get(activity: AppCompatActivity, tabs: List<ItemPageAdapter.TabItem>): MaterialDialogHelper {
+            val INSTANCE = MaterialDialogHelper(activity, activity.supportFragmentManager, activity.layoutInflater, activity.lifecycle, tabs)
             return INSTANCE
         }
 
-        fun get(fragment: Fragment, tabs: List<ItemPageAdapter.TabItem>): TabBottomSheetHelper {
-            val INSTANCE = TabBottomSheetHelper(fragment.requireActivity(), fragment.childFragmentManager, fragment.layoutInflater, fragment.lifecycle, tabs)
+        fun get(fragment: Fragment, tabs: List<ItemPageAdapter.TabItem>): MaterialDialogHelper {
+            val INSTANCE = MaterialDialogHelper(fragment.requireActivity(), fragment.childFragmentManager, fragment.layoutInflater, fragment.lifecycle, tabs)
             return INSTANCE
         }
 
@@ -63,33 +66,31 @@ class TabBottomSheetHelper private constructor(val context: Context,
 
     }
 
-    fun create(): BottomSheetDialog {
-        val dialog = BottomSheetDialog(context)
+    fun create(): AlertDialog {
+        val dialogBuilder = MaterialAlertDialogBuilder(context)
+        dialogBuilder.setView(binding.root)
 
-        val heightPixels = context.resources.displayMetrics.heightPixels
-        dialog.behavior.peekHeight = (heightPixels * 0.8).toInt()
+        val dialog = dialogBuilder.create()
 
-        dialog.setContentView(binding.root)
+        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display: Display = windowManager.defaultDisplay
+        val layoutParams: WindowManager.LayoutParams = dialog.window!!.attributes
+        layoutParams.height = ((display.height * 0.8).roundToInt())
+        layoutParams.width = display.width
+        dialog.window!!.attributes = layoutParams
 
         binding.btnClose.setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
         }
 
         binding.btnMore.setOnClickListener {
             showMenu()
         }
 
-        dialog.setOnShowListener {
-            val contentHeight = heightPixels - BarUtils.getStatusBarHeight()
-            val containerLayoutParam = binding.lvContainer.layoutParams
-            containerLayoutParam.height = contentHeight
-            binding.lvContainer.layoutParams = containerLayoutParam
-        }
-
         return dialog
     }
 
-    fun setTitle(title: String): TabBottomSheetHelper {
+    fun setTitle(title: String): MaterialDialogHelper {
         this.title = title
         binding.txtDialogTitle.text = title
         return this
@@ -117,6 +118,15 @@ class TabBottomSheetHelper private constructor(val context: Context,
             popupMenu.setOnMenuItemClickListener(it)
         }
         popupMenu.show()
+    }
+
+    fun setTabVisibility(isVisible: Boolean): MaterialDialogHelper {
+        if (isVisible) {
+            binding.tabLayout.visibility = View.VISIBLE
+        } else {
+            binding.tabLayout.visibility = View.GONE
+        }
+        return this
     }
 
 }

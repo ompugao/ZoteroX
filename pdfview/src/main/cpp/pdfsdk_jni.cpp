@@ -1027,6 +1027,10 @@ JNI_FUNC(jlong, PdfiumSDK, nativeAddTextAnnotation)(JNI_ARGS, jlong docPtr, int 
     FPDFAnnot_SetColor(annot, FPDFANNOT_COLORTYPE_Color, R, G, B, A);
     env->ReleaseIntArrayElements(color_, colors, 0);
 
+//    // set ap
+//    FPDFAnnot_SetAP(annot, FPDF_ANNOT_APPEARANCEMODE_NORMAL, NULL);
+//    FPDFAnnot_SetAP(annot, FPDF_ANNOT_APPEARANCEMODE_NORMAL, kContents);
+
     // Set the content of the annotation.
     unsigned short *kContents = convertWideString(env, text_);
     FPDFAnnot_SetStringValue(annot, kContentsKey, kContents);

@@ -37,6 +37,9 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
     var attachmentItem: Item? = null
         private set
 
+    var parentItem: Item? = null
+        private set
+
     var pdfUri: Uri? = null
         private set
 
@@ -55,6 +58,8 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
         private set
 
     val pdfAnnotations = MutableLiveData<List<PdfAnnotation>>()
+
+    val scrollHorizontal = MutableLiveData(false)
 
     /**
      * 是否展开所有的目录
@@ -145,6 +150,11 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
         CoroutineScope(Dispatchers.IO).launch {
             attachmentKey?.let {
                 attachmentItem = getItemWithKey(it)
+                attachmentItem?.apply {
+                    attachmentStorageManager.getAttachmentParentKey(this)?.also {
+                        parentItem = zoteroDB!!.getItemWithKey(it)
+                    }
+                }
             }
         }
     }
@@ -211,5 +221,16 @@ class PdfViewerModel(application: Application) : AndroidViewModel(application) {
     fun loadPdfCore(pdfFile: PdfFile) {
         this.pdfFile = pdfFile
     }
+
+    val jumpToPageObserver = MutableLiveData<Int>()
+
+    fun jumpToPage(page: Int) {
+        jumpToPageObserver.value = page
+    }
+
+    /**
+     * 滑动进度条的时候即时跳转页面
+     */
+    var isJumpToPageWhenScroll = false
 
 }

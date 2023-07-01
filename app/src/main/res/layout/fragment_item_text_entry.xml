@@ -38,8 +38,6 @@
                 android:layout_marginStart="8dp"
                 android:autoLink="web"
                 android:lineSpacingExtra="3dp"
-                android:maxLines="5"
-                android:ellipsize="end"
                 android:text="item content"
                 android:textColor="#8c919a"
                 android:textIsSelectable="true"

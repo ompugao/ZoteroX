@@ -2,16 +2,25 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+<!--    <item-->
+<!--        android:id="@+id/day_night_mode"-->
+<!--        android:title="夜间模式" />-->
 
     <item
-        android:id="@+id/day_night_mode"
-        android:title="夜间模式" />
+        android:id="@+id/page_view"
+        android:title="视图布局" />
 
     <item
         android:id="@+id/pdf_info"
         android:title="文档信息" />
 
     <item
-        android:id="@+id/open_pdf_external"
-        android:title="在其他软件中打开" />
+        android:title="更多">
+        <menu>
+            <item
+                android:id="@+id/open_pdf_external"
+                android:title="在其他软件中打开" />
+        </menu>
+    </item>
+
 </menu>

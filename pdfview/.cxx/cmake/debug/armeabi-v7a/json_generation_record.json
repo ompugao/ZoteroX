@@ -2,21 +2,21 @@
   {
     "level": "INFO",
     "message": "Start JSON generation. Platform version: 21 min SDK version: armeabi-v7a",
-    "file": "F:\\Moyear\\Dev\\Android\\Zoo-For-Zotero\\pdfview\\src\\main\\cpp\\CMakeLists.txt",
+    "file": "E:\\Moyear\\Dev\\Android\\Zotero\\pdfview\\src\\main\\cpp\\CMakeLists.txt",
     "tag": "debug|armeabi-v7a",
     "diagnosticCode": "UNKNOWN"
   },
   {
     "level": "INFO",
-    "message": "JSON \u0027F:\\Moyear\\Dev\\Android\\Zoo-For-Zotero\\pdfview\\.cxx\\cmake\\debug\\armeabi-v7a\\android_gradle_build.json\u0027 was up-to-date",
-    "file": "F:\\Moyear\\Dev\\Android\\Zoo-For-Zotero\\pdfview\\src\\main\\cpp\\CMakeLists.txt",
+    "message": "JSON \u0027E:\\Moyear\\Dev\\Android\\Zotero\\pdfview\\.cxx\\cmake\\debug\\armeabi-v7a\\android_gradle_build.json\u0027 was up-to-date",
+    "file": "E:\\Moyear\\Dev\\Android\\Zotero\\pdfview\\src\\main\\cpp\\CMakeLists.txt",
     "tag": "debug|armeabi-v7a",
     "diagnosticCode": "UNKNOWN"
   },
   {
     "level": "INFO",
     "message": "JSON generation completed without problems",
-    "file": "F:\\Moyear\\Dev\\Android\\Zoo-For-Zotero\\pdfview\\src\\main\\cpp\\CMakeLists.txt",
+    "file": "E:\\Moyear\\Dev\\Android\\Zotero\\pdfview\\src\\main\\cpp\\CMakeLists.txt",
     "tag": "debug|armeabi-v7a",
     "diagnosticCode": "UNKNOWN"
   }

@@ -16,6 +16,7 @@
 package com.github.barteksc.pdfviewer;
 
 import android.graphics.Bitmap;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.SparseBooleanArray;
@@ -30,6 +31,7 @@ import org.benjinus.pdfium.Meta;
 import org.benjinus.pdfium.PdfiumSDK;
 import org.benjinus.pdfium.util.Size;
 import org.benjinus.pdfium.util.SizeF;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -377,5 +379,12 @@ public class PdfFile {
         }
 
         return documentPage;
+    }
+
+    @NotNull
+    public PointF mapDeviceCoordinateToPage(int page, int startX, int startY, int sizeX, int sizeY, int rotate, int deviceX, int deviceY) {
+
+
+        return pdfiumSDK.mapDeviceCoordinateToPage(page, startX, startY, sizeX, sizeY, rotate, deviceX, deviceY);
     }
 }

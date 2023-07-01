@@ -2,8 +2,10 @@ package org.benjinus.pdfium;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.ParcelFileDescriptor;
 import android.util.ArrayMap;
@@ -952,4 +954,30 @@ public class PdfiumSDK {
     public boolean hasSearchHandle(int index) {
         return mNativeSearchHandlePtr.containsKey(index);
     }
+
+    public int textGetCharIndexAtPos(int pageIndex, double x, double y, double xTolerance, double yTolerance) {
+        long textPagePtr = mNativePagesPtr.get(pageIndex);
+        return nativeTextGetCharIndexAtPos(textPagePtr, x, y, xTolerance, yTolerance);
+    }
+
+    public synchronized long addTextAnnotation(int pageIndex, String text, String hexColor, Rect rect) {
+        int intColor = Color.parseColor(hexColor);
+
+        int alpha = ((intColor >> 24) & 0xff);
+        int red = ((intColor >> 16) & 0xff);
+        int green = ((intColor >> 8) & 0xff);
+        int blue = (intColor & 0xff);
+
+//        Log.i("ZoteroDebug", alpha + " " + red + " " + green + " " + blue);
+
+        int[] color = {red, green, blue, alpha};
+        int[] bound = new int[] {rect.left, rect.top, rect.right, rect.bottom};
+
+        if (color == null || bound == null) {
+            return 0;
+        }
+
+        return nativeAddTextAnnotation(mNativeDocPtr, pageIndex, text, color, bound);
+    }
+
 }

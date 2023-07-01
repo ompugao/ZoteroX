@@ -1,3 +1,6 @@
 # ninja log v5
-2	1597	708969092	CMakeFiles/pdfsdk_jni.dir/pdfsdk_jni.cpp.o	3e26fed31153df6c
-1600	1900	708969093	F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/build/intermediates/cmake/release/obj/x86/libpdfsdk_jni.so	b6664deeeb07f2d9
+0	1785	709890743	CMakeFiles/pdfsdk_jni.dir/pdfsdk_jni.cpp.o	aeb2e5aa16b98f49
+1788	2005	709890743	E:/Moyear/Dev/Android/Zotero/pdfview/build/intermediates/cmake/release/obj/x86/libpdfsdk_jni.so	3f69179a8701dc27
+0	21	0	clean	5aa2d7cb148113be
+3	2056	709909492	CMakeFiles/pdfsdk_jni.dir/pdfsdk_jni.cpp.o	aeb2e5aa16b98f49
+2057	2295	709909492	E:/Moyear/Dev/Android/Zotero/pdfview/build/intermediates/cmake/release/obj/x86/libpdfsdk_jni.so	3f69179a8701dc27

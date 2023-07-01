@@ -1,6 +1,8 @@
 package com.mickstarify.zotero.ui.PdfViewer
 
 import android.content.Intent
+import android.graphics.Rect
+import android.graphics.RectF
 import android.net.Uri
 import android.os.Build
 import androidx.lifecycle.ViewModelProvider
@@ -21,8 +23,17 @@ import com.mickstarify.zotero.databinding.PdfViewerFragmentBinding
 import com.mickstarify.zotero.views.TabBottomSheetHelper
 import android.view.animation.AnimationUtils
 import android.widget.Toast
-import com.github.barteksc.pdfviewer.PDFView
+import androidx.lifecycle.Observer
+import com.mickstarify.zotero.LibraryActivity.ItemView.ItemBasicInfoFragment
+import com.mickstarify.zotero.LibraryActivity.ItemView.ItemTagsFragment
+import com.mickstarify.zotero.MyLog
+import com.mickstarify.zotero.models.PdfAnnotation
+import com.mickstarify.zotero.ui.PdfViewer.operate.PdfViewOperateFragment
+import com.mickstarify.zotero.views.MaterialDialogHelper
 import com.moyear.pdfview.view.MyPDFView
+import org.json.JSONArray
+import org.json.JSONObject
+import kotlin.math.roundToInt
 
 class PdfViewerFragment(private val pdfUri: Uri?,
                         private val attachmentKey: String?) : Fragment(), OnPageChangeListener, OnTapListener, OnLoadCompleteListener {
@@ -63,6 +74,8 @@ class PdfViewerFragment(private val pdfUri: Uri?,
 
         mBinding.showContent.setOnClickListener { showPdfContents() }
 
+        mBinding.fabMore.setOnClickListener { showOperateBottomDialog() }
+
         viewModel.showTools.observe(viewLifecycleOwner,
             { isShow ->
                 if (isShow!!) {
@@ -81,6 +94,7 @@ class PdfViewerFragment(private val pdfUri: Uri?,
             pdfView.fromUri(pdfUri)
                 .onPageChange(this)
                 .onTap(this)
+//                .swipeHorizontal(true)
                 .onLoad(this)
                 .load()
             viewModel.pageCount = pdfView.pageCount
@@ -98,30 +112,71 @@ class PdfViewerFragment(private val pdfUri: Uri?,
 
         //
         viewModel.bindPdfiumSDK(pdfView.getPdfiumSdk())
+        viewModel.loadAttachmentAnnotations()
+
+
+        viewModel.scrollHorizontal.observe(viewLifecycleOwner, {
+            isHorizontal ->
+            setScrollHorizontally(isHorizontal)
+        })
+
+        viewModel.jumpToPageObserver.observe(viewLifecycleOwner, {
+            pageIndex ->
+            pdfView.jumpTo(pageIndex, true)
+        })
 
         return mBinding.root
+    }
+
+    private fun showOperateBottomDialog() {
+        val tabs = listOf(
+            ItemPageAdapter.TabItem("信息", ItemBasicInfoFragment.newInstance(viewModel.parentItem!!)),
+            ItemPageAdapter.TabItem("标签", ItemTagsFragment.newInstance(viewModel.parentItem!!)),
+        )
+
+        val helper = TabBottomSheetHelper.get(this, tabs)
+        helper.setTitle("更多")
+        val dialog = helper.create()
+        dialog.show()
+
     }
 
     private fun showMoreMenu(view: View) {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.inflate(R.menu.menu_fragment_pdf)
 
-        val dayNightItem = popupMenu.menu.findItem(R.id.day_night_mode)
-        if (viewModel.nightMode.value!!) {
-            dayNightItem.title = "日间模式"
-        } else {
-            dayNightItem.title = "夜间模式"
-        }
+//        val dayNightItem = popupMenu.menu.findItem(R.id.day_night_mode)
+//        if (viewModel.nightMode.value!!) {
+//            dayNightItem.title = "日间模式"
+//        } else {
+//            dayNightItem.title = "夜间模式"
+//        }
 
         popupMenu.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.day_night_mode -> switchDayNightMode()
+                R.id.page_view -> showPdfViewConfigDialog()
+//                R.id.day_night_mode -> switchDayNightMode()
                 R.id.pdf_info -> showPdfInfo()
                 R.id.open_pdf_external -> openPdfInOtherApp()
             }
             false
         }
         popupMenu.show()
+    }
+
+    private fun showPdfViewConfigDialog() {
+        val tabs = listOf(
+            ItemPageAdapter.TabItem("查看", PdfViewOperateFragment()),
+//            ItemPageAdapter.TabItem("信息", ItemBasicInfoFragment.newInstance(viewModel.parentItem!!)),
+//            ItemPageAdapter.TabItem("标签", ItemTagsFragment.newInstance(viewModel.parentItem!!)),
+        )
+
+        val helper = MaterialDialogHelper.get(this, tabs)
+        helper.setTitle("视图布局")
+        helper.setTabVisibility(false)
+        val dialog = helper.create()
+        dialog.show()
+
     }
 
     private fun switchDayNightMode() {
@@ -181,43 +236,74 @@ class PdfViewerFragment(private val pdfUri: Uri?,
     override fun onTap(e: MotionEvent?): Boolean {
         viewModel.showOrCollapseToolbar()
 
-//        val pdfView = mBinding.pdfView
-//
-//        val pdfSdk = PdfiumSDK(requireContext())
-//
-//        val x = e?.x ?:0f
-//        val y = e?.y ?:0f
-//
-////        val pdfFile = PdfFile()
-//        val mappedX: Float = -pdfView.currentXOffset + x
-//        val mappedY: Float = -pdfView.currentYOffset + y
-//
-//        val page = pdfView.currentPage
-//        val page = pdfFile.getPageAtOffset(
-//            if (pdfView.isSwipeVertical) mappedY else mappedX,
-//            pdfView.zoom
-//        )
-//        val pageSize = pdfView.getPageSize(page)
+        val x = e?.x ?:0f
+        val y = e?.y ?:0f
 
-//        val pageSize = pdfFile.getScaledPageSize(page, pdfView.zoom)
-//        val pageX: Int
-//        val pageY: Int
-//        if (pdfView.isSwipeVertical) {
-//            pageX = pdfFile.getSecondaryPageOffset(page, pdfView.zoom).toInt()
-//            pageY = pdfFile.getPageOffset(page, pdfView.zoom).toInt()
-//        } else {
-//            pageY = pdfFile.getSecondaryPageOffset(page, pdfView.zoom).toInt()
-//            pageX = pdfFile.getPageOffset(page, pdfView.zoom).toInt()
-//        }
+        extraText(x, y)
 
-
-
-//        val pos = pdfSdk.nativeGetCharIndexAtCoord(page.toLong(), pageSize!!.width.toDouble(), pageSize!!.height.toDouble(), 0, 0.0, 0.0, 0.0, 0.0)
-//        MyLog.e("ZoteroDebug", "position: $pos")
-
-//        pdfSdk.nativeCha
-
+//        addAnnotation(x, y)
         return false
+    }
+
+    private fun addAnnotation(x: Float, y: Float) {
+        val bound = Rect(197,376,552,383)
+        viewModel.pdfiumSDK!!.openPage(0)
+        viewModel.pdfiumSDK!!.addTextAnnotation(0, "fasfd", "#ffff0000", bound)
+    }
+
+    private fun extraText(x: Float, y: Float) {
+        val pdfSdk = viewModel.pdfiumSDK
+
+        val pdfFile = viewModel.pdfFile
+        val mappedX: Float = -pdfView.currentXOffset + x
+        val mappedY: Float = -pdfView.currentYOffset + y
+
+        val page = viewModel.pdfFile?.getPageAtOffset(
+            if (pdfView.isSwipeVertical) mappedY else mappedX,
+            pdfView.zoom
+        )
+
+        val pageScaledSize = viewModel.pdfFile?.getScaledPageSize(page!!, pdfView.zoom)
+        val pageX: Int
+        val pageY: Int
+        if (pdfView.isSwipeVertical) {
+            pageX = pdfFile!!.getSecondaryPageOffset(page!!, pdfView.zoom).toInt()
+            pageY = pdfFile.getPageOffset(page, pdfView.zoom).toInt()
+        } else {
+            pageY = pdfFile!!.getSecondaryPageOffset(page!!, pdfView.zoom).toInt()
+            pageX = pdfFile.getPageOffset(page, pdfView.zoom).toInt()
+        }
+
+        val deviceX = x.roundToInt()
+        val deviceY = y.roundToInt()
+
+//        // pdfview的左上角位置
+//        val startX = -pdfView.currentXOffset.toInt() - pageX
+//        val startY = -pdfView.currentYOffset.toInt() - pageY
+//
+//        MyLog.e("ZoteroDebug", "startX: $startX, startY: $startY")
+        MyLog.e("ZoteroDebug", "page:$page 未缩放的deviceX: $deviceX, 未缩放的deviceY: $deviceY")
+
+//        MyLog.e("ZoteroDebug", "pageX: $pageX, pageY: ${pageY}")
+
+
+        val pointF = pdfFile.mapDeviceCoordinateToPage(page, pageX, pageY, pageScaledSize!!.width.toInt(), pageScaledSize.height.toInt(), 0,  deviceX, deviceY)
+
+//        val mapped = pdfFile.mapRectToDevice(
+//            page, pageX, pageY,
+//            pageSize!!.width.toInt(),
+//            pageSize!!.height.toInt(), link.getBounds()
+//        )
+//        mapped.sort()
+
+        val pos = pdfSdk!!.textGetCharIndexAtPos(page, pointF.x.toDouble(), pointF.y.toDouble(), 5.0, 5.0)
+        MyLog.e("ZoteroDebug", "TextCharIndex: $pos, x: ${pointF.x}, y: ${pointF.y}")
+
+        val rectF = RectF(0f, 0f, 100f, 100f)
+
+        val extractText = pdfSdk!!.extractText(page, rectF)
+        MyLog.e("ZoteroDebug", "extractText: $extractText")
+
     }
 
     private fun showTools() {
@@ -256,10 +342,47 @@ class PdfViewerFragment(private val pdfUri: Uri?,
         viewModel.setContents(mBinding.pdfView.getTableOfContents())
         viewModel.loadPdfCore(mBinding.pdfView.getPdfFile())
 
+        viewModel.pdfAnnotations.observe(viewLifecycleOwner,
+            { annotations ->
+                annotations?.forEach { annotation->
+
+                    // position={"pageIndex":0,"rects":[[303.65,385.82,552.745,392.985],[197.234,376.238,552.717,383.404],[197.234,366.657,248.672,373.823]]}, type=highlight)
+
+                    val jsonObject = JSONObject(annotation.position)
+                    val pageIndex = jsonObject.get("pageIndex") as Int
+                    val rects = jsonObject.get("rects") as JSONArray
+
+//                    for (i in 0 until rects.length()) {
+//                        val array = rects.getJSONArray(i)
+//
+//                        MyLog.e("ZoteroDebug", "pageIndex: $pageIndex  array: $array")
+//
+//                        array?.let {
+//                            val left = it[0].toString().toFloat().roundToInt() ?:0
+//                            val top = it[1].toString().toFloat().roundToInt() ?:0
+//                            val right = it[2].toString().toFloat().roundToInt() ?:0
+//                            val bottom = it[3].toString().toFloat().roundToInt() ?:0
+//
+//                            val bound = Rect(left, top, right, bottom)
+//
+//                            MyLog.e("ZoteroDebug", "bound: $bound")
+//                            viewModel.pdfiumSDK!!.addTextAnnotation(pageIndex!!, annotation.text, annotation.color, bound)
+//
+//                            return@observe
+//                        }
+//                    }
+                }
+            })
 
 //        MyLog.e("ZoteroDebug", "获取到的目录数量：${mBinding.pdfView.getTableOfContents()}")
     }
 
+    fun setScrollHorizontally(isHorizontal: Boolean) {
+        pdfView.setSwipeHorizon(isHorizontal)
+//        pdfView.setSwipe
+//        pdfView.isAnnotationRendering = false
+
+    }
 
 
 }

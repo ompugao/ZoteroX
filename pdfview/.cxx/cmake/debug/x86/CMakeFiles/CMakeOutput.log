@@ -1,19 +1,19 @@
 The target system is: Android - 1 - i686
 The host system is: Windows - 10.0.19045 - AMD64
 Determining if the C compiler works passed with the following output:
-Change Dir: F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Moyear/Dev/Android/Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_7de66"
-[1/2] Building C object CMakeFiles/cmTC_7de66.dir/testCCompiler.c.o
-[2/2] Linking C executable cmTC_7de66
+Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_b3a68"
+[1/2] Building C object CMakeFiles/cmTC_b3a68.dir/testCCompiler.c.o
+[2/2] Linking C executable cmTC_b3a68
 
 
 Detecting C compiler ABI info compiled with the following output:
-Change Dir: F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Moyear/Dev/Android/Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_551d3"
-[1/2] Building C object CMakeFiles/cmTC_551d3.dir/CMakeCCompilerABI.c.o
-[2/2] Linking C executable cmTC_551d3
+Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_5cc36"
+[1/2] Building C object CMakeFiles/cmTC_5cc36.dir/CMakeCCompilerABI.c.o
+[2/2] Linking C executable cmTC_5cc36
 Android (7019983 based on r365631c3) clang version 9.0.9 (https://android.googlesource.com/toolchain/llvm-project a2a1e703c0edb03ba29944e529ccbf457742737b) (based on LLVM 9.0.9svn)
 Target: i686-none-linux-android21
 Thread model: posix
@@ -23,16 +23,16 @@ Found candidate GCC installation: C:/Users/Moyear/.android/ndk/21.4.7075529/tool
 Selected GCC installation: C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x
 Candidate multilib: .;@m32
 Selected multilib: .;@m32
- "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/bin\\ld" --sysroot=C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z noexecstack --warn-shared-textrel -z now -z relro --hash-style=both --enable-new-dtags --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_551d3 "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtbegin_dynamic.o" "-LC:\\Users\\Moyear\\.android\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\9.0.9\\lib\\linux\\i386" -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21 -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/lib -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --exclude-libs libgcc.a --exclude-libs libgcc_real.a --exclude-libs libatomic.a --build-id --fatal-warnings --no-undefined --gc-sections CMakeFiles/cmTC_551d3.dir/CMakeCCompilerABI.c.o -lgcc -ldl -lc -lgcc -ldl "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtend_android.o"
+ "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/bin\\ld" --sysroot=C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z noexecstack --warn-shared-textrel -z now -z relro --hash-style=both --enable-new-dtags --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_5cc36 "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtbegin_dynamic.o" "-LC:\\Users\\Moyear\\.android\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\9.0.9\\lib\\linux\\i386" -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21 -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/lib -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --exclude-libs libgcc.a --exclude-libs libgcc_real.a --exclude-libs libatomic.a --build-id --fatal-warnings --no-undefined --gc-sections CMakeFiles/cmTC_5cc36.dir/CMakeCCompilerABI.c.o -lgcc -ldl -lc -lgcc -ldl "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtend_android.o"
 
 
 Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(i686-linux-android-ld\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
-  ignore line: [Change Dir: F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp]
+  ignore line: [Change Dir: E:/Moyear/Dev/Android/Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_551d3"]
-  ignore line: [[1/2] Building C object CMakeFiles/cmTC_551d3.dir/CMakeCCompilerABI.c.o]
-  ignore line: [[2/2] Linking C executable cmTC_551d3]
+  ignore line: [Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_5cc36"]
+  ignore line: [[1/2] Building C object CMakeFiles/cmTC_5cc36.dir/CMakeCCompilerABI.c.o]
+  ignore line: [[2/2] Linking C executable cmTC_5cc36]
   ignore line: [Android (7019983 based on r365631c3) clang version 9.0.9 (https://android.googlesource.com/toolchain/llvm-project a2a1e703c0edb03ba29944e529ccbf457742737b) (based on LLVM 9.0.9svn)]
   ignore line: [Target: i686-none-linux-android21]
   ignore line: [Thread model: posix]
@@ -44,7 +44,7 @@ Parsed C implicit link information from above output:
   ignore line: [@m32]
   ignore line: [Selected multilib: .]
   ignore line: [@m32]
-  link line: [ "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/bin\\ld" --sysroot=C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z noexecstack --warn-shared-textrel -z now -z relro --hash-style=both --enable-new-dtags --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_551d3 "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtbegin_dynamic.o" "-LC:\\Users\\Moyear\\.android\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\9.0.9\\lib\\linux\\i386" -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21 -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/lib -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --exclude-libs libgcc.a --exclude-libs libgcc_real.a --exclude-libs libatomic.a --build-id --fatal-warnings --no-undefined --gc-sections CMakeFiles/cmTC_551d3.dir/CMakeCCompilerABI.c.o -lgcc -ldl -lc -lgcc -ldl "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtend_android.o"]
+  link line: [ "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/bin\\ld" --sysroot=C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z noexecstack --warn-shared-textrel -z now -z relro --hash-style=both --enable-new-dtags --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_5cc36 "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtbegin_dynamic.o" "-LC:\\Users\\Moyear\\.android\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\9.0.9\\lib\\linux\\i386" -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21 -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/lib -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --exclude-libs libgcc.a --exclude-libs libgcc_real.a --exclude-libs libatomic.a --build-id --fatal-warnings --no-undefined --gc-sections CMakeFiles/cmTC_5cc36.dir/CMakeCCompilerABI.c.o -lgcc -ldl -lc -lgcc -ldl "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtend_android.o"]
     arg [C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/bin\\ld] ==> ignore
     arg [--sysroot=C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot] ==> ignore
     arg [-pie] ==> ignore
@@ -60,7 +60,7 @@ Parsed C implicit link information from above output:
     arg [-dynamic-linker] ==> ignore
     arg [/system/bin/linker] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_551d3] ==> ignore
+    arg [cmTC_5cc36] ==> ignore
     arg [C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtbegin_dynamic.o] ==> ignore
     arg [-LC:\\Users\\Moyear\\.android\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\9.0.9\\lib\\linux\\i386] ==> dir [C:\\Users\\Moyear\\.android\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\9.0.9\\lib\\linux\\i386]
     arg [-LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x] ==> dir [C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x]
@@ -78,7 +78,7 @@ Parsed C implicit link information from above output:
     arg [--fatal-warnings] ==> ignore
     arg [--no-undefined] ==> ignore
     arg [--gc-sections] ==> ignore
-    arg [CMakeFiles/cmTC_551d3.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [CMakeFiles/cmTC_5cc36.dir/CMakeCCompilerABI.c.o] ==> ignore
     arg [-lgcc] ==> lib [gcc]
     arg [-ldl] ==> lib [dl]
     arg [-lc] ==> lib [c]
@@ -99,11 +99,11 @@ Parsed C implicit link information from above output:
 
 
 Detecting C [-std=c11] compiler features compiled with the following output:
-Change Dir: F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Moyear/Dev/Android/Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_3261f"
-[1/2] Building C object CMakeFiles/cmTC_3261f.dir/feature_tests.c.o
-[2/2] Linking C executable cmTC_3261f
+Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_29add"
+[1/2] Building C object CMakeFiles/cmTC_29add.dir/feature_tests.c.o
+[2/2] Linking C executable cmTC_29add
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -113,11 +113,11 @@ Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" 
 
 
 Detecting C [-std=c99] compiler features compiled with the following output:
-Change Dir: F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Moyear/Dev/Android/Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_1194d"
-[1/2] Building C object CMakeFiles/cmTC_1194d.dir/feature_tests.c.o
-[2/2] Linking C executable cmTC_1194d
+Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_6c649"
+[1/2] Building C object CMakeFiles/cmTC_6c649.dir/feature_tests.c.o
+[2/2] Linking C executable cmTC_6c649
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -127,11 +127,11 @@ Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" 
 
 
 Detecting C [-std=c90] compiler features compiled with the following output:
-Change Dir: F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Moyear/Dev/Android/Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_c8f30"
-[1/2] Building C object CMakeFiles/cmTC_c8f30.dir/feature_tests.c.o
-[2/2] Linking C executable cmTC_c8f30
+Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_0c19f"
+[1/2] Building C object CMakeFiles/cmTC_0c19f.dir/feature_tests.c.o
+[2/2] Linking C executable cmTC_0c19f
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -139,19 +139,19 @@ Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" 
     Feature record: C_FEATURE:0c_static_assert
     Feature record: C_FEATURE:0c_variadic_macros
 Determining if the CXX compiler works passed with the following output:
-Change Dir: F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Moyear/Dev/Android/Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_b0ac3"
-[1/2] Building CXX object CMakeFiles/cmTC_b0ac3.dir/testCXXCompiler.cxx.o
-[2/2] Linking CXX executable cmTC_b0ac3
+Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_7da69"
+[1/2] Building CXX object CMakeFiles/cmTC_7da69.dir/testCXXCompiler.cxx.o
+[2/2] Linking CXX executable cmTC_7da69
 
 
 Detecting CXX compiler ABI info compiled with the following output:
-Change Dir: F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Moyear/Dev/Android/Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_9900c"
-[1/2] Building CXX object CMakeFiles/cmTC_9900c.dir/CMakeCXXCompilerABI.cpp.o
-[2/2] Linking CXX executable cmTC_9900c
+Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_ae902"
+[1/2] Building CXX object CMakeFiles/cmTC_ae902.dir/CMakeCXXCompilerABI.cpp.o
+[2/2] Linking CXX executable cmTC_ae902
 Android (7019983 based on r365631c3) clang version 9.0.9 (https://android.googlesource.com/toolchain/llvm-project a2a1e703c0edb03ba29944e529ccbf457742737b) (based on LLVM 9.0.9svn)
 Target: i686-none-linux-android21
 Thread model: posix
@@ -161,16 +161,16 @@ Found candidate GCC installation: C:/Users/Moyear/.android/ndk/21.4.7075529/tool
 Selected GCC installation: C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x
 Candidate multilib: .;@m32
 Selected multilib: .;@m32
- "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/bin\\ld" --sysroot=C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z noexecstack --warn-shared-textrel -z now -z relro --hash-style=both --enable-new-dtags --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_9900c "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtbegin_dynamic.o" "-LC:\\Users\\Moyear\\.android\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\9.0.9\\lib\\linux\\i386" -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21 -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/lib -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --exclude-libs libgcc.a --exclude-libs libgcc_real.a --exclude-libs libatomic.a --build-id --fatal-warnings --no-undefined --gc-sections CMakeFiles/cmTC_9900c.dir/CMakeCXXCompilerABI.cpp.o -Bstatic -lc++ -Bdynamic -lm -lgcc -ldl -lc -lgcc -ldl "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtend_android.o"
+ "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/bin\\ld" --sysroot=C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z noexecstack --warn-shared-textrel -z now -z relro --hash-style=both --enable-new-dtags --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_ae902 "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtbegin_dynamic.o" "-LC:\\Users\\Moyear\\.android\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\9.0.9\\lib\\linux\\i386" -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21 -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/lib -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --exclude-libs libgcc.a --exclude-libs libgcc_real.a --exclude-libs libatomic.a --build-id --fatal-warnings --no-undefined --gc-sections CMakeFiles/cmTC_ae902.dir/CMakeCXXCompilerABI.cpp.o -Bstatic -lc++ -Bdynamic -lm -lgcc -ldl -lc -lgcc -ldl "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtend_android.o"
 
 
 Parsed CXX implicit link information from above output:
   link line regex: [^( *|.*[/\])(i686-linux-android-ld\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
-  ignore line: [Change Dir: F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp]
+  ignore line: [Change Dir: E:/Moyear/Dev/Android/Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_9900c"]
-  ignore line: [[1/2] Building CXX object CMakeFiles/cmTC_9900c.dir/CMakeCXXCompilerABI.cpp.o]
-  ignore line: [[2/2] Linking CXX executable cmTC_9900c]
+  ignore line: [Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_ae902"]
+  ignore line: [[1/2] Building CXX object CMakeFiles/cmTC_ae902.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [[2/2] Linking CXX executable cmTC_ae902]
   ignore line: [Android (7019983 based on r365631c3) clang version 9.0.9 (https://android.googlesource.com/toolchain/llvm-project a2a1e703c0edb03ba29944e529ccbf457742737b) (based on LLVM 9.0.9svn)]
   ignore line: [Target: i686-none-linux-android21]
   ignore line: [Thread model: posix]
@@ -182,7 +182,7 @@ Parsed CXX implicit link information from above output:
   ignore line: [@m32]
   ignore line: [Selected multilib: .]
   ignore line: [@m32]
-  link line: [ "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/bin\\ld" --sysroot=C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z noexecstack --warn-shared-textrel -z now -z relro --hash-style=both --enable-new-dtags --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_9900c "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtbegin_dynamic.o" "-LC:\\Users\\Moyear\\.android\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\9.0.9\\lib\\linux\\i386" -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21 -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/lib -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --exclude-libs libgcc.a --exclude-libs libgcc_real.a --exclude-libs libatomic.a --build-id --fatal-warnings --no-undefined --gc-sections CMakeFiles/cmTC_9900c.dir/CMakeCXXCompilerABI.cpp.o -Bstatic -lc++ -Bdynamic -lm -lgcc -ldl -lc -lgcc -ldl "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtend_android.o"]
+  link line: [ "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/bin\\ld" --sysroot=C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z noexecstack --warn-shared-textrel -z now -z relro --hash-style=both --enable-new-dtags --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_ae902 "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtbegin_dynamic.o" "-LC:\\Users\\Moyear\\.android\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\9.0.9\\lib\\linux\\i386" -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21 -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/lib -LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --exclude-libs libgcc.a --exclude-libs libgcc_real.a --exclude-libs libatomic.a --build-id --fatal-warnings --no-undefined --gc-sections CMakeFiles/cmTC_ae902.dir/CMakeCXXCompilerABI.cpp.o -Bstatic -lc++ -Bdynamic -lm -lgcc -ldl -lc -lgcc -ldl "C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtend_android.o"]
     arg [C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x/../../../../i686-linux-android/bin\\ld] ==> ignore
     arg [--sysroot=C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot] ==> ignore
     arg [-pie] ==> ignore
@@ -198,7 +198,7 @@ Parsed CXX implicit link information from above output:
     arg [-dynamic-linker] ==> ignore
     arg [/system/bin/linker] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_9900c] ==> ignore
+    arg [cmTC_ae902] ==> ignore
     arg [C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/21\\crtbegin_dynamic.o] ==> ignore
     arg [-LC:\\Users\\Moyear\\.android\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\9.0.9\\lib\\linux\\i386] ==> dir [C:\\Users\\Moyear\\.android\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\lib64\\clang\\9.0.9\\lib\\linux\\i386]
     arg [-LC:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x] ==> dir [C:/Users/Moyear/.android/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/lib/gcc/i686-linux-android/4.9.x]
@@ -216,7 +216,7 @@ Parsed CXX implicit link information from above output:
     arg [--fatal-warnings] ==> ignore
     arg [--no-undefined] ==> ignore
     arg [--gc-sections] ==> ignore
-    arg [CMakeFiles/cmTC_9900c.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [CMakeFiles/cmTC_ae902.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
     arg [-Bstatic] ==> ignore
     arg [-lc++] ==> lib [c++]
     arg [-Bdynamic] ==> ignore
@@ -241,11 +241,11 @@ Parsed CXX implicit link information from above output:
 
 
 Detecting CXX [-std=c++1z] compiler features compiled with the following output:
-Change Dir: F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Moyear/Dev/Android/Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_1fb68"
-[1/2] Building CXX object CMakeFiles/cmTC_1fb68.dir/feature_tests.cxx.o
-[2/2] Linking CXX executable cmTC_1fb68
+Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_14045"
+[1/2] Building CXX object CMakeFiles/cmTC_14045.dir/feature_tests.cxx.o
+[2/2] Linking CXX executable cmTC_14045
 
 
     Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers
@@ -308,11 +308,11 @@ Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" 
 
 
 Detecting CXX [-std=c++14] compiler features compiled with the following output:
-Change Dir: F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Moyear/Dev/Android/Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_b5817"
-[1/2] Building CXX object CMakeFiles/cmTC_b5817.dir/feature_tests.cxx.o
-[2/2] Linking CXX executable cmTC_b5817
+Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_9bb03"
+[1/2] Building CXX object CMakeFiles/cmTC_9bb03.dir/feature_tests.cxx.o
+[2/2] Linking CXX executable cmTC_9bb03
 
 
     Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers
@@ -375,11 +375,11 @@ Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" 
 
 
 Detecting CXX [-std=c++11] compiler features compiled with the following output:
-Change Dir: F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Moyear/Dev/Android/Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_aba06"
-[1/2] Building CXX object CMakeFiles/cmTC_aba06.dir/feature_tests.cxx.o
-[2/2] Linking CXX executable cmTC_aba06
+Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_8e99d"
+[1/2] Building CXX object CMakeFiles/cmTC_8e99d.dir/feature_tests.cxx.o
+[2/2] Linking CXX executable cmTC_8e99d
 
 
     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
@@ -442,11 +442,11 @@ Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" 
 
 
 Detecting CXX [-std=c++98] compiler features compiled with the following output:
-Change Dir: F:/Moyear/Dev/Android/Zoo-For-Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Moyear/Dev/Android/Zotero/pdfview/.cxx/cmake/debug/x86/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_6cdfe"
-[1/2] Building CXX object CMakeFiles/cmTC_6cdfe.dir/feature_tests.cxx.o
-[2/2] Linking CXX executable cmTC_6cdfe
+Run Build Command:"C:\Users\Moyear\.android\cmake\3.10.2.4988404\bin\ninja.exe" "cmTC_db6b5"
+[1/2] Building CXX object CMakeFiles/cmTC_db6b5.dir/feature_tests.cxx.o
+[2/2] Linking CXX executable cmTC_db6b5
 
 
     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers

@@ -181,7 +181,7 @@ public class PDFView extends RelativeLayout {
     private int defaultPage = 0;
 
     /** True if should scroll through pages vertically instead of horizontally */
-    private boolean swipeVertical = true;
+    protected boolean swipeVertical = true;
 
     private boolean enableSwipe = true;
 
@@ -1191,7 +1191,7 @@ public class PDFView extends RelativeLayout {
         return enableSwipe;
     }
 
-    private void setSwipeVertical(boolean swipeVertical) {
+    protected void setSwipeVertical(boolean swipeVertical) {
         this.swipeVertical = swipeVertical;
     }
 

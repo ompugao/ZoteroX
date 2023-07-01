@@ -140,7 +140,7 @@ class ItemAttachmentEntry(
         if (context is OnAttachmentFragmentInteractionListener) {
             fileOpenListener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnAttachmentFragmentInteractionListener")
+//            throw RuntimeException(context.toString() + " must implement OnAttachmentFragmentInteractionListener")
         }
     }
 

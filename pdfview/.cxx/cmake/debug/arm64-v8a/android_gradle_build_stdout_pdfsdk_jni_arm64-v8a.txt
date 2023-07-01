@@ -1,2 +1,2 @@
-ninja: Entering directory `F:\Moyear\Dev\Android\Zoo-For-Zotero\pdfview\.cxx\cmake\debug\arm64-v8a'
+ninja: Entering directory `E:\Moyear\Dev\Android\Zotero\pdfview\.cxx\cmake\debug\arm64-v8a'
 ninja: no work to do.

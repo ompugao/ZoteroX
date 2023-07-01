@@ -33,4 +33,10 @@ class MyPDFView(context: Context, set: AttributeSet?) : PDFView(context, set) {
         return pdfiumSDK
     }
 
+    fun setSwipeHorizon(isHorizon: Boolean) {
+        swipeVertical = !isHorizon
+        //立即刷新视图
+        invalidate()
+    }
+
 }

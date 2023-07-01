@@ -55,7 +55,7 @@ class PdfAnnotationsFragment(private val pdfView: MyPDFView) : Fragment(), PdfAn
                 }
             })
 
-        viewModel.loadAttachmentAnnotations()
+
     }
 
     override fun onNavigate(annotation: PdfAnnotation) {

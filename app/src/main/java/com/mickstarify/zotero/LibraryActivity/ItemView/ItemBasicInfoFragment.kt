@@ -131,7 +131,23 @@ class ItemBasicInfoFragment : Fragment() {
         textLabel.text = label
 
         val textViewInfo = textLayout.findViewById<TextView>(R.id.textView_item_info)
-        textViewInfo.setText(content)
+        textViewInfo.text = content
+
+        if (label == "摘要") {
+            // OR using options to customize
+            val readMoreOption = ReadMoreOption.Builder(requireContext())
+                .textLength(8, ReadMoreOption.TYPE_LINE) // OR
+                //.textLength(300, ReadMoreOption.TYPE_CHARACTER)
+                .moreLabel("展开")
+                .lessLabel("折叠")
+                .moreLabelColor(Color.RED)
+                .lessLabelColor(Color.BLUE)
+                .labelUnderLine(true)
+                .expandAnimation(true)
+                .build()
+
+            readMoreOption.addReadMoreTo(textViewInfo, content)
+        }
     }
 
     private fun showBasicInfo(item: Item) {
