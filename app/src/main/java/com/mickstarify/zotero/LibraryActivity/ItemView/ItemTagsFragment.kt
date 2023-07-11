@@ -77,19 +77,26 @@ class ItemTagsFragment : Fragment() {
             chip.text = tag.tag
             chip.setTextColor(Color.parseColor(ZoteroUtils.getTagColor(tag.tag)))
 
-            if (libraryListModel.filteredTag.value == tag.tag) {
-                checkTagChip(chip, true)
+//            if (libraryListModel.filteredTag.value!!.contains(tag.tag)) {
+//                checkTagChip(chip, true)
+//            }
+
+            libraryListModel.filteredTag.value?.let {
+                if (it.contains(tag.tag)) checkTagChip(chip, true)
+
             }
 
             chip.setOnClickListener {
-                if (libraryListModel.filteredTag.value == tag.tag) {
-                    libraryListModel.filteredTag.value = ""
+                if (libraryListModel.filteredTag.value!!.contains(tag.tag)) {
+//                    libraryListModel.filteredTag.value = ""
+                    libraryListModel.setTagFilter("")
 
                     chip.setTextColor(Color.parseColor(ZoteroUtils.getTagColor(tag.tag)))
 
                     checkTagChip(chip, false)
                 } else {
-                    libraryListModel.filteredTag.value = tag.tag
+//                    libraryListModel.filteredTag.value = tag.tag
+                    libraryListModel.setTagFilter(tag.tag)
 
                     checkTagChip(chip, true)
                 }

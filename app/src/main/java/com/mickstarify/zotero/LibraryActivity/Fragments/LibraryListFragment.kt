@@ -148,24 +148,35 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         linearLayoutManager.scrollToPositionWithOffset(viewModel.getMutativePosition(), viewModel.getMutativeOffset())
 
         viewModel.getItems().observe(viewLifecycleOwner) { entries ->
-            if (entries.isNullOrEmpty()) {
+            val filteredTag = viewModel.filteredTag.value
+
+            val filteredEntries = if (filteredTag.isNullOrEmpty()) {
+                entries
+            } else {
+                viewModel.filterByTags(filteredTag, entries)
+            }
+
+            if (filteredEntries.isNullOrEmpty()) {
                 showEmptyList()
             } else {
                 hideEmptyList()
             }
 
-            adapter.setData(entries)
+            adapter.setData(filteredEntries)
 
-            MyLog.d("zotero", "Loading new set of item (${entries.size} length)")
+            MyLog.d("zotero", "Loading new set of item (${filteredEntries!!.size} length)")
         }
 
         viewModel.filteredTag.observe(viewLifecycleOwner) {
-            tag ->
-            tag?.let {
-                val filteredEntries = if (it == "") {
-                    viewModel.getItems().value
+            tags ->
+            tags?.let {
+                val items = viewModel.getItems().value
+                if (items.isNullOrEmpty()) return@observe
+
+                val filteredEntries = if (it.isNullOrEmpty()) {
+                    items
                 } else {
-                    viewModel.filterByTag(it, viewModel.getItems().value!!)
+                    viewModel.filterByTags(it, items!!)
                 }
 
                 if (filteredEntries.isNullOrEmpty()) {
@@ -189,7 +200,6 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         }
 
         fab = requireView().findViewById(R.id.fab_add_item)
-
         fab.setOnClickListener {
 //            val array = arrayOf("Zotero Save", "Scan ISBN")
             val array = arrayOf("Zotero Save")
@@ -220,6 +230,8 @@ class LibraryListFragment : Fragment(), LibraryListInteractionListener,
         })
 
         hideFabButtonWhenScrolling()
+
+        viewModel.init()
     }
 
     private fun showMoreOperateMenuDialog(item: Item) {

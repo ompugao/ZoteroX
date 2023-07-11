@@ -64,11 +64,15 @@ class TagManagerFragment : Fragment {
         }
 
         libraryListModel.filteredTag.observe(viewLifecycleOwner) {
-            viewModel.filterWithTag(it)
+            viewModel.filterWithTags(it)
         }
 
         viewModel.tagItems.observe(viewLifecycleOwner) {
-            if (it == null) return@observe
+            if (it.isNullOrEmpty()) {
+                showEmptyView()
+            } else {
+                hideEmptyView()
+            }
             // 对标签先按照指定得偏好排序后显示
             adapter.updateData(it)
         }
@@ -92,17 +96,35 @@ class TagManagerFragment : Fragment {
 
         adapter.clickListener = object : TagListAdapter.OnTagClickListener {
             override fun onClick(tag: String) {
-                if (libraryListModel.filteredTag.value == tag) {
-                    libraryListModel.filteredTag.value = ""
-                } else {
-                    libraryListModel.filteredTag.value = tag
+                if (libraryListModel.filteredTag.value == null) {
+                    libraryListModel.setTagFilter(tag)
+                    return
                 }
+
+                val filterTags = mutableListOf<String>()
+                filterTags.addAll(libraryListModel.filteredTag.value!!)
+
+                if (filterTags.contains(tag)) {
+                    filterTags.remove(tag)
+                } else {
+                    filterTags.add(tag)
+                }
+
+                libraryListModel.setTagFilters(filterTags)
             }
 
             override fun onLongClick(tag: String) {
                 showTagOperate(tag)
             }
         }
+    }
+
+    private fun hideEmptyView() {
+        mBinding.layoutEmptyView.visibility = View.GONE
+    }
+
+    private fun showEmptyView() {
+        mBinding.layoutEmptyView.visibility = View.VISIBLE
     }
 
     private fun fetchTags() {
@@ -117,7 +139,7 @@ class TagManagerFragment : Fragment {
                 }
             }
 
-            MyLog.e("ZoteroDebug", "从数据库中获取")
+//            MyLog.e("ZoteroDebug", "从数据库中获取")
         }
     }
 

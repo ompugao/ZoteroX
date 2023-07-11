@@ -4,7 +4,7 @@ def version_pdf_viewer = "3.1.0-beta.1"
 
 buildscript {
 //    ext.kotlin_version = '1.4.32'
-    ext.kotlin_version = '1.6.0'
+    ext.kotlin_version = '1.8.0'
     repositories {
         google()
         mavenCentral()
@@ -14,8 +14,8 @@ buildscript {
     }
     dependencies {
 
-        classpath 'com.android.tools.build:gradle:4.2.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0"
+        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.5'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.2'
         // NOTE: Do not place your application dependencies here; they belong

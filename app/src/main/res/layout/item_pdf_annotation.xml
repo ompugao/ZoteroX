@@ -21,7 +21,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp">
+            android:layout_margin="10dp"
+            android:layout_marginBottom="10dp">
 
             <TextView
                 android:id="@+id/txt_annotation_page"
@@ -29,7 +30,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:textColor="#011e3d"
                 tools:text="页 96"
                 app:layout_constraintStart_toStartOf="parent"
@@ -63,7 +63,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
-                    tools:src="@drawable/empty_pdf_thumbnail" />
+                    tools:src="@drawable/empty_pdf_thumbnail"
+                    tools:visibility="gone"/>
 
             </LinearLayout>
 
@@ -73,9 +74,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
                 tools:text="评论"
                 android:textColor="#7E8E9D"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -110,8 +110,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     </androidx.cardview.widget.CardView>
-
 
 </layout>

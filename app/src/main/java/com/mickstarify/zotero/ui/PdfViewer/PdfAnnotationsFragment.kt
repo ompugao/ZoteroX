@@ -49,21 +49,28 @@ class PdfAnnotationsFragment(private val pdfView: MyPDFView) : Fragment(), PdfAn
 
         viewModel.pdfAnnotations.observe(viewLifecycleOwner,
             { list ->
-                list?.let {
-                    adapter.data = list as MutableList<PdfAnnotation>
-                    adapter.notifyDataSetChanged()
+                if (list.isNullOrEmpty()) {
+                    showEmptyView()
+                } else {
+                    hideEmptyView()
                 }
+
+                adapter.submitData(list)
             })
+    }
 
+    private fun hideEmptyView() {
+        mBinding.layoutEmptyView.visibility = View.GONE
+    }
 
+    private fun showEmptyView() {
+        mBinding.layoutEmptyView.visibility = View.VISIBLE
     }
 
     override fun onNavigate(annotation: PdfAnnotation) {
         viewModel.navigateToAnnotation(pdfView, annotation)
 
-        MyLog.e("ZoteroDebug", "click annotation: $annotation")
-
-
+        MyLog.d("ZoteroDebug", "click annotation: $annotation")
     }
 
 }

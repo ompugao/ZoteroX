@@ -1165,6 +1165,13 @@ class LibraryActivityModel(application: Application) : AndroidViewModel(
         attachmentStorageManager.deleteAttachment(attachment)
     }
 
+    /**
+     * 将用于过滤的标签保存到配置文件中
+     */
+    fun saveTagFilterConfig(tags: List<String>) {
+        preferences.setFilterTags(tags)
+    }
+
     init {
 //        ((context as Activity).application as ZoteroApplication).component.inject(this)
         (application as ZoteroApplication).component.inject(this)

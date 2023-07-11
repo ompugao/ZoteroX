@@ -16,7 +16,6 @@ import org.json.JSONObject
 import kotlin.math.roundToInt
 
 class PdfAnnotationAdapter(private val pdfiumSDK: PdfiumSDK?,
-//                           private val pdfDocument: PdfDocument?,
                            private val fileName: String): BaseQuickAdapter<PdfAnnotation, BaseViewHolder>(R.layout.item_pdf_annotation, null) {
 
     var onAnnotationNavigateListener: OnAnnotationNavigateListener? = null
@@ -35,7 +34,13 @@ class PdfAnnotationAdapter(private val pdfiumSDK: PdfiumSDK?,
 
         txtAnnoPage.text = "页 ${item.pageLabel}"
         txtAnnoText.text = item.text
+
         txtAnnoComment.text = item.comment
+        if (!item.comment.isNullOrEmpty()) {
+            txtAnnoComment.visibility = View.VISIBLE
+        } else {
+            txtAnnoComment.visibility = View.GONE
+        }
 
         when (item.type) {
             "image" -> {
@@ -83,8 +88,16 @@ class PdfAnnotationAdapter(private val pdfiumSDK: PdfiumSDK?,
 //        MyLog.e("ZoteroDebug", "pageIndex: $pageIndex, $startX, $startY, $endX, $endY")
 
         PdfPreviewUtils.getInstance().loadAnnotationThumbnail(imgAnnotationThumbnail, pdfiumSDK,
-//            pdfDocument,
             fileName, pageIndex, startX, startY, endX, endY)
+    }
+
+    fun submitData(list: List<PdfAnnotation>?) {
+        data.clear()
+        list?.let {
+            data.addAll(it)
+        }
+
+        notifyDataSetChanged()
     }
 
     interface OnAnnotationNavigateListener {

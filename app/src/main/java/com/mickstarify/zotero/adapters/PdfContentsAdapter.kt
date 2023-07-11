@@ -88,10 +88,12 @@ class PdfContentsAdapter(val context: Context, data: List<TreeNodeData>? = null)
         dataToDisplayData(data)
     }
 
-    fun setData(data: List<TreeNodeData>?) {
+    fun submitList(data: List<TreeNodeData>?) {
         this.data = data
         //数据转为展示数据
         dataToDisplayData(data)
+
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TreeNodeViewHolder {

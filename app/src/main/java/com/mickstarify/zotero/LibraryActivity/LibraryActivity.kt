@@ -268,7 +268,13 @@ class LibraryActivity : BaseActivity(),
     }
 
     fun showFilterMenu() {
-        LibraryFilterMenuDialog(this, { presenter.redisplayItems() }).show()
+        val dialog = LibraryFilterMenuDialog(this) { presenter.redisplayItems() }
+        dialog.onTagFilterClearListener = object : LibraryFilterMenuDialog.OnTagFilterClearListener {
+            override fun onClear() {
+                presenter.clearTagFilter()
+            }
+        }
+        dialog.show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

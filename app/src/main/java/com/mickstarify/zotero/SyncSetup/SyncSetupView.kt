@@ -166,7 +166,7 @@ class SyncSetupView : AppCompatActivity(), SyncSetupContract.View {
         val binding = ContentDialogProgressBinding.inflate(layoutInflater)
         binding.txtContent.text = message
 
-        progressDialog = dialogBuilder?.setView(binding.root)
+        progressDialog = dialogBuilder.setView(binding.root)
             .setCancelable(false)
             .show()
     }

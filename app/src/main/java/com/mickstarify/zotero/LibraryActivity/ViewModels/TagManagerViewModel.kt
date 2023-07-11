@@ -173,7 +173,19 @@ class TagManagerViewModel(application: Application) : AndroidViewModel(applicati
         tagItems.value = old?.map {
             TagWrapper(it.tag, it.color, it.tag == tag)
         }
+    }
 
+    fun filterWithTags(tags: List<String>?) {
+        val old = tagItems.value
+
+        if (tags.isNullOrEmpty()) {
+            tagItems.value = old?.map { TagWrapper(it.tag, it.color, false) }
+            return
+        }
+
+        tagItems.value = old?.map {
+            TagWrapper(it.tag, it.color, tags.contains(it.tag))
+        }
     }
 
     var itemTags: List<ItemTag>? = null

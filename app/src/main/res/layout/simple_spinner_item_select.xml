@@ -4,6 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="left"
-    android:padding="@dimen/dp_10"
+    android:padding="10dp"
     style="@style/TextAppearance.AppCompat.Body1"
     android:text="item 01"/>

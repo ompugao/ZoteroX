@@ -725,4 +725,8 @@ class LibraryActivityPresenter(val view: LibraryActivity, context: Context) : Co
 
     }
 
+    fun clearTagFilter() {
+        libraryListViewModel.filteredTag.value = emptyList()
+    }
+
 }

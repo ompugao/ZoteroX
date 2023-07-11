@@ -1,27 +1,17 @@
 package com.mickstarify.zotero.ui.PdfViewer
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.chad.library.adapter.base.BaseNodeAdapter
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.entity.node.BaseNode
-import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.github.barteksc.pdfviewer.PDFView
 import com.mickstarify.zotero.MyLog
-import com.mickstarify.zotero.R
 import com.mickstarify.zotero.databinding.FragmentPdfContentsBinding
 import com.mickstarify.zotero.models.TreeNodeData
 
-import com.chad.library.adapter.base.provider.BaseNodeProvider
 import com.mickstarify.zotero.adapters.PdfContentsAdapter
 
 class PdfContentsFragment(val pdfView: PDFView): Fragment() {
@@ -61,34 +51,27 @@ class PdfContentsFragment(val pdfView: PDFView): Fragment() {
 
         viewModel.bookmarks.observe(requireActivity(),
             { list ->
-                MyLog.e("ZoteroDebug", "接受到的目录数量：${list.size}")
-
                 if (list.isNullOrEmpty()) {
                     showEmptyView()
+                    adapter.submitList(emptyList())
                     return@observe
                 } else {
                     hideEmptyView()
                 }
 
                 val catalogues = viewModel.convertToCatalogues(list)
-
-                adapter.setData(catalogues)
-                adapter.notifyDataSetChanged()
+                adapter.submitList(catalogues)
             })
 
         return mBinding.root
     }
 
-    fun showEmptyView() {
-        mBinding.txtEmptyView.visibility = View.VISIBLE
+    private fun showEmptyView() {
+        mBinding.layoutEmptyView.visibility = View.VISIBLE
     }
 
-    fun hideEmptyView() {
-        mBinding.txtEmptyView.visibility = View.GONE
+    private fun hideEmptyView() {
+        mBinding.layoutEmptyView.visibility = View.GONE
     }
-
-
-
-
 
 }

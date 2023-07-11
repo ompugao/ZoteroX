@@ -25,6 +25,7 @@
             android:layout_margin="5dp"
             android:textColor="#4B5162"
             android:text="Tag" />
+
     </LinearLayout>
 
 </layout>

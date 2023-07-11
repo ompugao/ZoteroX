@@ -4,10 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.mickstarify.zotero.LibraryActivity.ListEntry
 import com.mickstarify.zotero.MyItemFilter
-import com.mickstarify.zotero.MyLog
+import com.mickstarify.zotero.PreferenceManager
 import com.mickstarify.zotero.ZoteroStorage.Database.Collection
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
 import com.mickstarify.zotero.global.SingleLiveEvent
@@ -98,11 +97,37 @@ class LibraryListViewModel(application: Application) : AndroidViewModel(applicat
         rvMutativeOffset = offset
     }
 
-    val filteredTag = MutableLiveData<String>()
-    fun filterByTag(tag: String, items: List<ListEntry>): List<ListEntry> {
-        return items.filter {
-            return@filter it.isItem() && it.getItem().tags.map {it.tag}.contains(tag)
+    val filteredTag = MutableLiveData<List<String>>()
+//    fun filterByTag(tag: String, items: List<ListEntry>): List<ListEntry> {
+//        return items.filter {
+//            return@filter it.isItem() && it.getItem().tags.map {it.tag}.contains(tag)
+//        }
+//    }
+    /**
+     * 筛选同时包含指定标签列表的item，必须同时满足才能筛选出来
+     */
+    fun filterByTags(tags: List<String>, items: List<ListEntry>): List<ListEntry> {
+        return items.filter { listEntry ->
+            if (!listEntry.isItem()) return@filter false
+            val list = listEntry.getItem().tags.map {it.tag}
+
+            tags.forEach {
+                if (!list.contains(it)) return@filter false
+            }
+
+            return@filter true
         }
+    }
+
+    fun setTagFilter(tag: String) {
+        setTagFilters(listOf(tag))
+    }
+
+    fun setTagFilters(tags: List<String>) {
+        filteredTag.value = tags
+
+        val preferenceManager = PreferenceManager(getApplication())
+        preferenceManager.setFilterTags(tags)
     }
 
     private var isInMyStarPage = false
@@ -130,6 +155,10 @@ class LibraryListViewModel(application: Application) : AndroidViewModel(applicat
 
     fun removeStar(collection: Collection) {
         MyItemFilter.get(getApplication()).removeStar(collection)
+    }
+
+    fun init() {
+        filteredTag.value = PreferenceManager(getApplication()).getTagFilters()
     }
 
 

@@ -78,6 +78,27 @@ class PreferenceManager @Inject constructor(context: Context) {
         editor.apply()
     }
 
+    fun getTagFilters(): List<String> {
+        val tagFilterString = getTagFilterString()
+        if (tagFilterString.isNullOrEmpty()) return emptyList()
+
+        val filterTags = tagFilterString.split(",")
+        return filterTags.filter { !it.isNullOrEmpty() }
+
+//        return tagFilterString.split(",")
+    }
+
+    fun getTagFilterString(): String {
+        return sharedPreferences.getString("filter_by_tags", "") ?:""
+    }
+
+    fun setFilterTags(tags: List<String>) {
+        val tagString = tags.joinToString(",")
+        val editor = sharedPreferences.edit()
+        editor.putString("filter_by_tags", tagString)
+        editor.apply()
+    }
+
     fun isLoadLastLibraryState(): Boolean {
         return sharedPreferences.getBoolean("load_last_position", true)
     }
