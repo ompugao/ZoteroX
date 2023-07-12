@@ -28,7 +28,7 @@
         app:showAsAction="collapseActionView" />
 
     <item
-        android:id="@+id/download_msg"
+        android:id="@+id/download_manager"
         android:icon="@drawable/ic_cloud_download"
         android:title="@string/download_manager"
         app:showAsAction="collapseActionView" />

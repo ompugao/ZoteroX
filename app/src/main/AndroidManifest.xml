@@ -20,6 +20,9 @@
         android:theme="@style/AppTheme.Light"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.DownloadManagerActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.AttachmentViewerActivity"
             android:exported="false" />
         <activity
@@ -56,6 +59,7 @@
 
         <activity
             android:name=".LibraryActivity.SearchResultsActivity"
+            android:exported="true"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -66,7 +70,8 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".LibraryActivity.LibraryActivity">
+            android:name=".LibraryActivity.LibraryActivity"
+            android:exported="true">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -79,6 +84,7 @@
         </activity>
         <activity
             android:name=".SyncSetup.ZoteroAPISetup.ZoteroAPISetup"
+            android:exported="true"
             android:label="@string/title_activity_zotero_api_setup"
             android:parentActivityName=".SyncSetup.SyncSetupView">
             <meta-data
@@ -99,7 +105,9 @@
         <activity
             android:name=".SyncSetup.SyncSetupView"
             android:label="@string/title_activity_sync_setup" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

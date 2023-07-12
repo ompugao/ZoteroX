@@ -47,8 +47,10 @@ import com.mickstarify.zotero.ZoteroStorage.ZoteroUtils
 import com.mickstarify.zotero.adapters.ItemPageAdapter
 import com.mickstarify.zotero.databinding.ContentDialogProgressBinding
 import com.mickstarify.zotero.databinding.LayoutContentTabViewpagerBinding
+import com.mickstarify.zotero.ui.DownloadManagerActivity
 import com.mickstarify.zotero.utils.ScreenUtils
 import com.mickstarify.zotero.views.TabBottomSheetHelper
+import java.text.NumberFormat
 
 
 class LibraryActivity : BaseActivity(),
@@ -294,7 +296,10 @@ class LibraryActivity : BaseActivity(),
 
             R.id.tag_manager -> {
                 showTagManger()
-                
+            }
+            R.id.download_manager -> {
+                val intent = Intent(this, DownloadManagerActivity::class.java)
+                startActivity(intent)
             }
             R.id.attachment_manager -> {
                 val intent = Intent(this, AttachmentManager::class.java)
@@ -585,11 +590,17 @@ class LibraryActivity : BaseActivity(),
             if (total > 0) {
                 "$progress/${total} KB"
             } else {
-                "${progress} KB"
+                "$progress KB"
             }
         }
 
-        progressContentBinding?.txtContent?.text = "${getString(R.string.downloading_your_attachment)} : $progressString"
+        val percentageStr = if (progress==0) {
+            ""
+        } else {
+            NumberFormat.getPercentInstance().format(progress.toFloat() / total)
+        }
+
+        progressContentBinding?.txtContent?.text = "${getString(R.string.downloading_your_attachment)}: $percentageStr $progressString"
     }
 
     fun hideAttachmentDownloadProgress() {

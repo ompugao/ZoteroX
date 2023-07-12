@@ -100,7 +100,7 @@ class WebDAVSetup : AppCompatActivity() {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
-    fun formatAddress(address: String): String {
+    private fun formatAddress(address: String): String {
         var mAddress = address.trim()
         if (mAddress == "") {
             return ""
@@ -122,11 +122,11 @@ class WebDAVSetup : AppCompatActivity() {
         return mAddress
     }
 
-    fun allowInsecureSSL(): Boolean {
+    private fun allowInsecureSSL(): Boolean {
         return findViewById<CheckBox>(R.id.checkBox_allow_insecure_ssl).isChecked
     }
 
-    fun makeConnection(address: String, username: String, password: String) {
+    private fun makeConnection(address: String, username: String, password: String) {
         val webDav = Webdav(address, username, password, allowInsecureSSL())
         startProgressDialog()
         Completable.fromAction {
@@ -197,7 +197,7 @@ class WebDAVSetup : AppCompatActivity() {
         this.finish()
     }
 
-    fun destroyWebDAVAuthentication() {
+    private fun destroyWebDAVAuthentication() {
         preferenceManager.destroyWebDAVAuthentication()
         preferenceManager.setWebDAVEnabled(false)
         this.finish()

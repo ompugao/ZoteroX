@@ -4,9 +4,11 @@ import android.content.Context
 import android.util.Log
 import com.mickstarify.zotero.ZoteroStorage.AttachmentStorageManager
 import com.mickstarify.zotero.ZoteroStorage.Database.Item
+import com.mickstarify.zotero.utils.WebDavFileDownloader
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
 import net.lingala.zip4j.ZipFile
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
@@ -25,6 +27,7 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
+
 class Webdav(
     address: String,
     val username: String,
@@ -33,6 +36,11 @@ class Webdav(
 ) {
     var sardine: OkHttpSardine
     var address: String
+
+    private val DOWNLOAD_THREAD = 4
+
+//    private val downloadManager = DownloadManager.getInstance()
+
     fun testConnection(): Boolean {
         return sardine.exists(address)
     }
@@ -50,70 +58,54 @@ class Webdav(
         context: Context,
         attachmentStorageManager: AttachmentStorageManager
     ): Observable<DownloadProgress> {
-        val webpathProp = address + "/${attachment.itemKey.toUpperCase(Locale.ROOT)}.prop"
-        val webpathZip = address + "/${attachment.itemKey.toUpperCase(Locale.ROOT)}.zip"
+        val webpathProp = address + "/${attachment.itemKey.uppercase(Locale.ROOT)}.prop"
+        val webpathZip = address + "/${attachment.itemKey.uppercase(Locale.ROOT)}.zip"
 
         val observable: Observable<DownloadProgress> = Observable.create { emitter ->
             try {
                 val propString = downloadPropToString(webpathProp)
                 val prop = WebdavProp(propString)
 
-                var inputStream: InputStream? = null
-                try {
-                    inputStream = sardine.get(webpathZip)
-                } catch (e: IllegalArgumentException) {
-                    Log.e("zotero", "${e}")
-                    throw(e)
-                } catch (e: Exception) {
-                    Log.e("zotero", "${e}")
-                    throw(e)
-                }
+                val tempFile = attachmentStorageManager.createTempFile("${attachment.itemKey.uppercase(Locale.ROOT)}.zip")
 
-                val zipFile =
-                    attachmentStorageManager.createTempFile(
-                        "${attachment.itemKey.toUpperCase(Locale.ROOT)}.pdf"
-                    )
-                val downloadOutputStream = zipFile.outputStream()
+                val downloadListener = object: WebDavFileDownloader.DownloadListener {
+                    override fun onDownload(progress: Long, total: Long) {
+                        emitter.onNext(DownloadProgress(progress, total, prop.mtime, prop.hash))
+                    }
 
-                val buffer = ByteArray(32768)
-                var read = inputStream.read(buffer)
-                var total: Long = 0
-                while (read > 0) {
-                    try {
-                        total += read
-                        emitter.onNext(DownloadProgress(total, -1, prop.mtime, prop.hash))
-                        downloadOutputStream.write(buffer, 0, read)
-                        read = inputStream.read(buffer)
-                    } catch (e: Exception) {
-                        Log.e("zotero", "exception downloading webdav attachment ${e.message}")
-                        throw RuntimeException("Error downloading webdav attachment ${e.message}")
+                    override fun onComplete(file: File?) {
+                        file?.let {
+                            val zipFile2 = ZipFile(it)
+                            if (!zipFile2.isValidZipFile) {
+                                throw RuntimeException("${file.name} is not a valid zip file.")
+                            }
+
+                            val attachmentFilename =
+                                zipFile2.fileHeaders.firstOrNull()?.fileName
+                                    ?: throw RuntimeException("Error empty zipfile.")
+
+                            zipFile2.extractAll(context.cacheDir.absolutePath)
+                            it.delete() // don't need this anymore.
+                            attachmentStorageManager.writeAttachmentFromFile(
+                                File(
+                                    context.cacheDir,
+                                    attachmentFilename
+                                ), attachment
+                            )
+                            File(context.cacheDir, attachmentFilename).delete()
+                            emitter.onComplete()
+                        }
+                    }
+
+                    override fun onFail(e: Exception) {
+                        emitter.onError(e)
                     }
                 }
-                downloadOutputStream.close()
-                inputStream.close()
-                if (read > 0) {
-                    throw RuntimeException(
-                        "Error did not finish downloading ${
-                            attachment.itemKey.toUpperCase(
-                                Locale.ROOT
-                            )
-                        }.zip"
-                    )
-                }
-                val zipFile2 = ZipFile(zipFile)
-                val attachmentFilename =
-                    zipFile2.fileHeaders.firstOrNull()?.fileName
-                        ?: throw Exception("Error empty zipfile.")
-                ZipFile(zipFile).extractAll(context.cacheDir.absolutePath)
-                zipFile.delete() // don't need this anymore.
-                attachmentStorageManager.writeAttachmentFromFile(
-                    File(
-                        context.cacheDir,
-                        attachmentFilename
-                    ), attachment
-                )
-                File(context.cacheDir, attachmentFilename).delete()
-                emitter.onComplete()
+
+                val downloader = WebDavFileDownloader(sardine, webpathZip, tempFile.path)
+                downloader.downloadListener = downloadListener
+                downloader.startDownload()
+
             } catch (e: Exception) {
                 Log.e("zotero", "big exception hit ${e} || ${emitter.isDisposed}")
                 // this your brain on rxjava. this is to avoid a undeliverable crash on dispose().
@@ -136,7 +128,7 @@ class Webdav(
         * 4. send a delete request and  rename request to server so we have
         *  F3FXJF.zip + F3FXJF.prop resulting*/
 
-        return Completable.fromAction({
+        return Completable.fromAction {
             // STEP 1 CREATE ZIP
             val fileInputStream =
                 attachmentStorageManager.getItemInputStream(attachment).source()
@@ -194,12 +186,12 @@ class Webdav(
             sardine.move(newZipPath, zipPath)
 
             // DONE.
-        })
+        }
 
     }
 
     init {
-        val clientBuillder = OkHttpClient.Builder()
+        val clientBuilder = OkHttpClient.Builder()
             .protocols(Collections.singletonList(Protocol.HTTP_1_1))
             .callTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
@@ -230,12 +222,12 @@ class Webdav(
             val sslContext = SSLContext.getInstance("SSL")
             sslContext.init(null, trustAllCerts, SecureRandom())
             val sslSocketFactory = sslContext.socketFactory
-            clientBuillder.sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
-            clientBuillder.hostnameVerifier(HostnameVerifier { hostname, session -> true })
+            clientBuilder.sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
+            clientBuilder.hostnameVerifier(HostnameVerifier { hostname, session -> true })
         }
 
         sardine = OkHttpSardine(
-            clientBuillder.build()
+            clientBuilder.build()
         )
 
         if (username != "" && password != "") {
@@ -252,5 +244,7 @@ class Webdav(
             }
         }
     }
+
+
 
 }

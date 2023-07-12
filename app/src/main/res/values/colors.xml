@@ -5,4 +5,5 @@
     <color name="colorAccent">#5B6CD8</color>
 
     <color name="chip_background_color">#F1F2FA</color>
+    <color name="white">#ffffff</color>
 </resources>
