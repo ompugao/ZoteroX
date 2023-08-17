@@ -16,9 +16,16 @@ ZoteroX is a third-party zotero client. This project is based on zoo-for-zotero.
 
 There are some screenshot of ZoteroX.
 
-<img src="github/screenshot01.jpg" width="280"/>   <img src="github/screenshot02.jpg" width="280"/>   <img src="github/screenshot03.jpg" width="280" />
+**HomeScreen:**
 
-<img src="github/screenshot04.jpg" width="280"/>   <img src="github/screenshot05.jpg" width="280"/>   <img src="github/screenshot06.jpg" width="280" />
+<img src="github/screenshot01.jpg" width="280"/>   <img src="github/screenshot02.jpg" width="280"/>
+<img src="github/screenshot03.jpg" width="280" />   <img src="github/screenshot04.jpg" width="280"/>
+
+**Tags viewer:**
+<img src="github/screenshot05.jpg" width="280"/>   
+
+**PDF viewer:**
+<img src="github/screenshot06.jpg" width="280" />
 
 
 
